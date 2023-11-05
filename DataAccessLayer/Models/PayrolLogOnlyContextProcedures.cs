@@ -142,6 +142,58 @@ namespace DataAccessLayer.Models
         {
             _context = context;
         }
+        public async Task<List<T>> ExecuteStoredProcedureAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default) where T : class
+        {
+            List<SqlParameter> sqlParameters = new List<SqlParameter>();
+
+            if (parameters != null)
+            {
+                foreach (var kvp in parameters)
+                {
+                    var parameter = new SqlParameter(kvp.Key, kvp.Value ?? DBNull.Value);
+                    if (kvp.Value != null)
+                    {
+                        parameter.SqlDbType = GetSqlDbTypeFromValue(kvp.Value);
+                    }
+                    sqlParameters.Add(parameter);
+                }
+            }
+
+            if (returnValue != null)
+            {
+                var parameterReturnValue = new SqlParameter
+                {
+                    ParameterName = "returnValue",
+                    Direction = ParameterDirection.Output,
+                    SqlDbType = SqlDbType.Int,
+                };
+
+                sqlParameters.Add(parameterReturnValue);
+            }
+
+            var parameterNames = string.Join(", ", sqlParameters.Select(p => $"@{p.ParameterName}"));
+            var sqlCommand = $"EXEC {storedProcedureName} {parameterNames}";
+
+            var result = await _context.SqlQueryAsync<T>(sqlCommand, sqlParameters.ToArray(), cancellationToken);
+
+            if (returnValue != null)
+            {
+                returnValue.SetValue(sqlParameters.Last().Value);
+            }
+
+            return result;
+        }
+
+        private SqlDbType GetSqlDbTypeFromValue(object value)
+        {
+            // This function attempts to infer the SqlDbType based on the value's type
+            if (value is int) return SqlDbType.Int;
+            if (value is string) return SqlDbType.VarChar;
+            // Add more type mappings as needed
+
+            // Default to SqlDbType.NVarChar for unknown types
+            return SqlDbType.NVarChar;
+        }
 
         public virtual async Task<List<ArrangeEMployeeWeeklyHolidayResult>> ArrangeEMployeeWeeklyHolidayAsync(int? pFromDate, int? pToDate, int? pCreatedBy, int? pProjectID, int? pMonthID, int? pYearID, OutputParameter<int?> pError, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {

@@ -19,7 +19,7 @@ namespace ManaretAmman.Controllers.Employees
         [HttpGet("GetList")]
         public async Task<IApiResponse> GetList() 
         {
-            var result = await _employeeService.GetList();
+            var result = await _employeeService.GetEmployeesProc();
 
             return ApiResponse<List<EmployeeLookup>>.Success("data has been retrieved succussfully", result);
         }

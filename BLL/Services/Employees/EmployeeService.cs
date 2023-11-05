@@ -15,13 +15,39 @@ internal class EmployeeService : IEmployeeService
     private readonly IMapper _mapper;
     IProjectProvider _projectProvider;
     IAuthService _authService;
-
-    public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, IProjectProvider projectProvider, IAuthService authService)
+    private readonly PayrolLogOnlyContext _payrolLogOnlyContext;
+    public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, IProjectProvider projectProvider, IAuthService authService, PayrolLogOnlyContext payrolLogOnlyContext)
     {
         _unitOfWork = unitOfWork;
         _mapper     = mapper;
         _projectProvider = projectProvider;
         _authService = authService;
+        _payrolLogOnlyContext = payrolLogOnlyContext;
+    }
+    public async Task<List<EmployeeLookup>> GetEmployeesProc()
+    {
+        int userId = _projectProvider.UserId();
+        int projecId = _projectProvider.GetProjectId();
+        if (userId == -1) throw new UnauthorizedAccessException("Incorrect userId from header");
+        if (!_authService.IsValidUser(userId)) throw new UnauthorizedAccessException("Incorrect userId");
+        //  int? employeeId = _authService.IsHr(userId);
+
+        var parameters = new Dictionary<string, object>
+                        {
+                            { "pProjectID", projecId } ,
+                            {"pStatusID",null },
+                            {"pEmployeeID",null},
+                            {"pSearch",null },
+                            { "psupervisorid", null },
+                            {"pLoginUserID",userId }
+
+                        };
+
+        var employees = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<Employee>("dbo.GetEmployees", parameters, null);
+        var result = _mapper.Map<List<EmployeeLookup>>(employees);
+
+        return result;
+
     }
 
     public async Task<List<EmployeeLookup>> GetList()

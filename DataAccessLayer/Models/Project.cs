@@ -114,7 +114,8 @@ namespace DataAccessLayer.Models
         [Unicode(false)]
         public string projectcode { get; set; }
         [MaxLength(1000)]
-        public byte[] apiurl { get; set; }
+        public string apiurl { get; set; }
+       // public byte[] apiurl { get; set; }
 
         [InverseProperty("Project")]
         public virtual ICollection<Allowance_deduction> Allowance_deductions { get; set; }

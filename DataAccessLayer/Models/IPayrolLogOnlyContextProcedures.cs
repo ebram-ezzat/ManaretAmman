@@ -188,5 +188,6 @@ namespace DataAccessLayer.Models
         Task<int> UpdateTemplateAsync(string pTableName, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> UpdateUsersAsync(int? pUserID, string pUserName, string pUserPassword, int? pProjectID, OutputParameter<int?> pError, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> ValidateUserAsync(string pUserName, DateTime? pValidateFrom, DateTime? pValidateTo, OutputParameter<int?> pError, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<T>> ExecuteStoredProcedureAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default) where T : class;
     }
 }
