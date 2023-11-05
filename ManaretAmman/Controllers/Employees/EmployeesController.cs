@@ -23,5 +23,13 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<List<EmployeeLookup>>.Success("data has been retrieved succussfully", result);
         }
+
+        [HttpPost("SaveAttendanceByUser")]
+        public async Task<IApiResponse> SaveAttendanceByUser(SaveAttendance saveAttendance)
+        {
+            await _employeeService.SaveAttendanceByUser(saveAttendance);
+
+            return ApiResponse.Success("data has been retrieved succussfully");
+        }
     }
 }

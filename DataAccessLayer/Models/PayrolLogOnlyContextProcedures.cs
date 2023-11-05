@@ -12609,5 +12609,32 @@ namespace DataAccessLayer.Models
 
             return _;
         }
+
+        public async Task<int> SaveAttendanceByUserAsync(int? pprojectID, DateTime? pattendancedate, int? ptypeID, int? pemployeeid, string pmacip, string plangtitude, string platitude, int? plocationid, int? pcreatedby, CancellationToken cancellationToken = default)
+        {
+            var projectID = new SqlParameter("@pprojectID", pprojectID);
+            var attendancedate = new SqlParameter("@pattendancedate", pattendancedate);
+            var typeID = new SqlParameter("@ptypeID", ptypeID);
+            var employeeid = new SqlParameter("@pemployeeid", pemployeeid);
+            var macip = new SqlParameter("@pmacip", pmacip);
+            var langtitude = new SqlParameter("@plangtitude", plangtitude);
+            var latitude = new SqlParameter("@platitude", platitude);
+            var locationid = new SqlParameter("@plocationid", plocationid);
+            var createdby = new SqlParameter("@pcreatedby", pcreatedby);
+            var parameterPError = new SqlParameter
+            {
+                ParameterName = "@pError",
+                Direction = ParameterDirection.Output,
+                SqlDbType = SqlDbType.Int
+            };
+
+            var result = await _context.Database.ExecuteSqlRawAsync("EXEC [dbo].[saveattndancebyuser] @pprojectID, @pattendancedate, @ptypeID, @pemployeeid, @pmacip, @plangtitude, @platitude, @plocationid, @pcreatedby, @pError OUTPUT",
+        projectID, attendancedate, typeID, employeeid, macip, langtitude, latitude, locationid, createdby, parameterPError);
+
+            OutputParameter<int?> pError = new OutputParameter<int?>();
+            pError.SetValue(parameterPError.Value);
+
+            return result;
+        }
     }
 }

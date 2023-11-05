@@ -6,5 +6,6 @@ public interface IEmployeeService
 {
     Task<List<EmployeeLookup>> GetList();
     Task<List<EmployeeLookup>> GetEmployeesProc();
+    Task SaveAttendanceByUser(SaveAttendance saveAttendance);
 
 }

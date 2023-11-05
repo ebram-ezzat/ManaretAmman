@@ -50,6 +50,17 @@ internal class EmployeeService : IEmployeeService
 
     }
 
+    public async Task SaveAttendanceByUser(SaveAttendance saveAttendance)
+    {
+        int userId = _projectProvider.UserId();
+        int projecId = _projectProvider.GetProjectId();
+        if (userId == -1) throw new UnauthorizedAccessException("Incorrect userId from header");
+        if (!_authService.IsValidUser(userId)) throw new UnauthorizedAccessException("Incorrect userId");
+
+        await _payrolLogOnlyContext.GetProcedures().SaveAttendanceByUserAsync(projecId, saveAttendance.attendanceDate, saveAttendance.typeId, saveAttendance.employeeId,
+            saveAttendance.macIp, saveAttendance.langtitude, saveAttendance.latitude, saveAttendance.locationId, userId);
+    }
+
     public async Task<List<EmployeeLookup>> GetList()
     {
 
