@@ -65,4 +65,13 @@ public static class TimingExtensions
 
         return timeSpan.ToString(@"hh\:mm");
     }
+
+    public static string ConvertFromMinutesToTimeString(this int minutes)
+    {
+        //if (minutes == null) return null;
+
+        var timeSpan = TimeSpan.FromMinutes((int)minutes);
+
+        return timeSpan.ToString(@"hh\:mm");
+    }
 }

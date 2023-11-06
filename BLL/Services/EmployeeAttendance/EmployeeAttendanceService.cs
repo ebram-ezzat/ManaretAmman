@@ -41,10 +41,12 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
                                   AttendanceDate = item.AttendanceDate.IntToDateValue(),
                                   DayDesc = item.DayDesc,
                                   EmployeeNumber = item.EmployeeNumber,
-                                  EndTime = item.EndTime.ConvertFromMinutesToTimeString(),
+                                  //EndTime = item.EndTime.ConvertFromMinutesToTimeString(),
+                                  EndTime = item.CheckOut.ConvertFromMinutesToTimeString(),
                                   Notes = item.Notes,
                                   ShiftName = item.ShiftName,
-                                  StartTime = item.StartTime.ConvertFromMinutesToTimeString(),
+                                  //StartTime = item.StartTime.ConvertFromMinutesToTimeString(),
+                                  StartTime = item.CheckIn.ConvertFromMinutesToTimeString(),
                                   Workhours= (TimeSpan.FromMinutes((double)item.EndTime)- TimeSpan.FromMinutes((double)item.StartTime)).ToString(@"hh\:mm"),
                                   ShiftWithTimes = $"{item.StartTime.ConvertFromMinutesToTimeString()} | {item.EndTime.ConvertFromMinutesToTimeString()} | {item.ShiftName}"
                               }).ToList();
