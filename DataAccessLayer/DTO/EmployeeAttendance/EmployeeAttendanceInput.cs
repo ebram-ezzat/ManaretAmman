@@ -9,5 +9,7 @@
         public int? EmployeeID { get; set; }
         public int? UserId { get; set; }
         public int? YearId { get; set; }
+        public int? ShiftID { get; set; }
+        public int? LoginUserID { get; set; }
     }
 }

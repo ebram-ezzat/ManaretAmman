@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using BusinessLogicLayer.Common;
 using BusinessLogicLayer.Exceptions;
 using BusinessLogicLayer.Services.Auth;
 using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.Models;
+using System.Data;
 using UnauthorizedAccessException = BusinessLogicLayer.Exceptions.UnauthorizedAccessException;
 
 namespace BusinessLogicLayer.Services.Employees;
@@ -89,5 +91,38 @@ internal class EmployeeService : IEmployeeService
         var result = _mapper.Map<List<EmployeeLookup>>(employees);
 
         return result;
+    }
+
+    public async Task<List<GetEmployeePaperResponse>> GetEmployeePaperProc(GetEmployeePaperRequest getEmployeePaperRequest)
+    {
+        getEmployeePaperRequest.LoginUserID = _projectProvider.UserId();
+        getEmployeePaperRequest.ProjectID= _projectProvider.GetProjectId();
+        var parameters = PublicHelper.GetPropertiesWithPrefix<GetEmployeePaperRequest>(getEmployeePaperRequest, "p");
+        var employeePapersResponse = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeePaperResponse>("[dbo].[GetEmployeePaper]", parameters, null);
+        return employeePapersResponse;
+    }
+    
+
+   public async Task<int> DeleteEmployeePaperProc(int EmployeeId, int DetailId)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pEmployeeID", EmployeeId },
+            { "pDetailID", DetailId },
+            
+        };
+
+        // Define output parameters (optional)
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" }, // Assuming the output parameter "pError" is of type int
+            // Add other output parameters as needed
+        };
+
+        // Call the ExecuteStoredProcedureAsync function
+        int result = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeePaper", inputParams, outputParams);
+       // int pErrorValue = (int)outputParams["pError"];
+        return result;
+
     }
 }

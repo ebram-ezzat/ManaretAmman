@@ -28,8 +28,9 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
 
         public async Task<PagedResponse<EmployeeAttendanceOutput>> GetEmployeeAttendance(PaginationFilter<EmployeeAttendanceInput> filter)
         {
+
             var _filter = filter.FilterCriteria;
-            var result = await _payrolLogOnlyContext.GetProcedures().GetEmployeeAttendanceAsync(_filter.EmployeeID, _filter.FromDate.DateToIntValue(), _filter.ToDate.DateToIntValue(), _projectId, _filter.YearId, null, _filter.Flag, null, _filter.LanguageID, null);
+            var result = await _payrolLogOnlyContext.GetProcedures().GetEmployeeAttendanceAsync(_filter.EmployeeID, _filter.FromDate.DateToIntValue(), _filter.ToDate.DateToIntValue(), _projectId, _filter.YearId, null, _filter.Flag, null, _filter.LanguageID, null,_filter.ShiftID, _userId);
 
             var totalRecords = result.Count;
 
