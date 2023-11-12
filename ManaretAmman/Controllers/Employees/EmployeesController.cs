@@ -80,7 +80,7 @@ namespace ManaretAmman.Controllers.Employees
 
 
 
-            return ApiResponse<int>.Success("data has been retrieved succussfully", 0);
+            return ApiResponse<int>.Success("data has been retrieved succussfully", result);
         }
 
     }
