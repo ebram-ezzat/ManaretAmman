@@ -32,8 +32,8 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse.Success("data has been retrieved succussfully");
         }
-        [HttpPost("GetEmployeePaper")]
-        public async Task<IApiResponse> GetEmployeePaper(GetEmployeePaperRequest getEmployeePaperRequest)
+        [HttpGet("Documents/GetEmployeePaper")]
+        public async Task<IApiResponse> GetEmployeePaper([FromQuery] GetEmployeePaperRequest getEmployeePaperRequest)
         {
             if (!ModelState.IsValid)
             {
@@ -48,9 +48,9 @@ namespace ManaretAmman.Controllers.Employees
 
 
 
-            return ApiResponse<List<GetEmployeePaperResponse>>.Success("data has been retrieved succussfully", result);
+            return ApiResponse<object>.Success("data has been retrieved succussfully", result);
         }
-        [HttpGet("DeleteEmployeePaper")]
+        [HttpGet("Documents/DeleteEmployeePaper")]
         public async Task<IApiResponse> DeleteEmployeePaper(int EmployeeId,int DetailId)
         {
             if (EmployeeId<=0 || DetailId<=0)
@@ -64,5 +64,23 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<int>.Success("data has been retrieved succussfully", result);
         }
+        public async Task<IApiResponse> SaveEmployeePaper(SaveEmployeePaper saveEmployeePaper)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+           // var result = await _employeeService.DeleteEmployeePaperProc(EmployeeId, DetailId);
+
+
+
+            return ApiResponse<int>.Success("data has been retrieved succussfully", 0);
+        }
+
     }
 }

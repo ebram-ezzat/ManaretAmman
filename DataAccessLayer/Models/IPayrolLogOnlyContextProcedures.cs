@@ -190,6 +190,6 @@ namespace DataAccessLayer.Models
         Task<int> ValidateUserAsync(string pUserName, DateTime? pValidateFrom, DateTime? pValidateTo, OutputParameter<int?> pError, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> SaveAttendanceByUserAsync(int? pprojectID, DateTime? pattendancedate, int? ptypeID, int? pemployeeid, string pmacip, string plangtitude, string platitude, int? plocationid, int? pcreatedby, CancellationToken cancellationToken = default);
         Task<List<T>> ExecuteStoredProcedureAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default) where T : class;
-        Task<int> ExecuteStoredProcedureAsync(string storedProcedureName, Dictionary<string, object> parameters, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default);
+        Task<(int, Dictionary<string, object>)> ExecuteStoredProcedureAsync(string storedProcedureName, Dictionary<string, object> parameters, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default);
     }
 }

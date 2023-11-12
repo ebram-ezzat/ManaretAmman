@@ -7,6 +7,7 @@ using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.Models;
 using System.Data;
+using System.Dynamic;
 using UnauthorizedAccessException = BusinessLogicLayer.Exceptions.UnauthorizedAccessException;
 
 namespace BusinessLogicLayer.Services.Employees;
@@ -93,13 +94,16 @@ internal class EmployeeService : IEmployeeService
         return result;
     }
 
-    public async Task<List<GetEmployeePaperResponse>> GetEmployeePaperProc(GetEmployeePaperRequest getEmployeePaperRequest)
+    public async Task<object> GetEmployeePaperProc(GetEmployeePaperRequest getEmployeePaperRequest)
     {
+        dynamic obj = new ExpandoObject();
         getEmployeePaperRequest.LoginUserID = _projectProvider.UserId();
         getEmployeePaperRequest.ProjectID= _projectProvider.GetProjectId();
         var parameters = PublicHelper.GetPropertiesWithPrefix<GetEmployeePaperRequest>(getEmployeePaperRequest, "p");
         var employeePapersResponse = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeePaperResponse>("[dbo].[GetEmployeePaper]", parameters, null);
-        return employeePapersResponse;
+        obj.CountRows = 10000;
+        obj.Data = employeePapersResponse;
+        return obj;
     }
     
 
@@ -120,9 +124,14 @@ internal class EmployeeService : IEmployeeService
         };
 
         // Call the ExecuteStoredProcedureAsync function
-        int result = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeePaper", inputParams, outputParams);
-       // int pErrorValue = (int)outputParams["pError"];
+        var (result, outputValues)  = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeePaper", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
         return result;
 
+    }
+
+    public Task<int> SaveEmployeePaperProc(SaveEmployeePaper saveEmployeePaper)
+    {
+        throw new System.NotImplementedException();
     }
 }

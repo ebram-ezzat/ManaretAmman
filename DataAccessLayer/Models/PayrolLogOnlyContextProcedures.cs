@@ -195,7 +195,7 @@ namespace DataAccessLayer.Models
 
             return result;
         }
-        public async Task<int> ExecuteStoredProcedureAsync(string storedProcedureName, Dictionary<string, object> parameters, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default)
+        public async Task<(int,Dictionary<string,object>)> ExecuteStoredProcedureAsync(string storedProcedureName, Dictionary<string, object> parameters, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default)
         {
             var sqlParameters = new List<SqlParameter>();
 
@@ -231,7 +231,7 @@ namespace DataAccessLayer.Models
 
             var result = await _context.Database.ExecuteSqlRawAsync(sqlQuery, sqlParameters.ToArray(), cancellationToken);
 
-            
+            var outputValues = new Dictionary<string, object>();
             if (outputParameters != null)
             {
                 foreach (var outputParam in outputParameters)
@@ -241,12 +241,13 @@ namespace DataAccessLayer.Models
                         var key = outputParam.Key;
                         var outputParameter = sqlParameters.FirstOrDefault(p => p.ParameterName == "@" + outputParam.Key);
                         // Handle output values here, perhaps store them in the outputParameters dictionary.
-                       
+                        outputValues.Add(outputParam.Key, outputParameter.Value);
+
                     }
                 }
             }
 
-            return result;
+            return (result, outputValues);
         }
 
         private SqlDbType GetSqlDbTypeFromValue(object value)

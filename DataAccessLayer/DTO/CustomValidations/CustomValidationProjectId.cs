@@ -17,6 +17,7 @@ namespace DataAccessLayer.DTO.CustomValidations
             // Inject the IHttpContextAccessor using constructor injection
             // This assumes you've registered IHttpContextAccessor in the Startup.cs
             _httpContextAccessor = new HttpContextAccessor();
+            
         }
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
