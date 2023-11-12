@@ -64,6 +64,7 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<int>.Success("data has been retrieved succussfully", result);
         }
+        [HttpPost("Documents/SaveEmployeePaper")]
         public async Task<IApiResponse> SaveEmployeePaper(SaveEmployeePaper saveEmployeePaper)
         {
             if (!ModelState.IsValid)
@@ -75,7 +76,7 @@ namespace ManaretAmman.Controllers.Employees
 
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
-           // var result = await _employeeService.DeleteEmployeePaperProc(EmployeeId, DetailId);
+           var result = await _employeeService.SaveEmployeePaperProc(saveEmployeePaper);
 
 
 

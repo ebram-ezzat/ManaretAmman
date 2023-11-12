@@ -130,8 +130,28 @@ internal class EmployeeService : IEmployeeService
 
     }
 
-    public Task<int> SaveEmployeePaperProc(SaveEmployeePaper saveEmployeePaper)
+    public async Task<int> SaveEmployeePaperProc(SaveEmployeePaper saveEmployeePaper)
     {
-        throw new System.NotImplementedException();
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pEmployeeID", saveEmployeePaper.EmployeeID },
+            { "pPaperID", saveEmployeePaper.PaperID },
+            { "pPaperPath", saveEmployeePaper.PaperPath },
+            { "pNotes", saveEmployeePaper.Notes },
+            { "pCratedBy", saveEmployeePaper.CreatedBy },
+        };
+
+        // Define output parameters (optional)
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pDetailID","int" },
+            { "pError","int" }, // Assuming the output parameter "pError" is of type int
+            // Add other output parameters as needed
+
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeePaper", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+
+        return result;
     }
 }
