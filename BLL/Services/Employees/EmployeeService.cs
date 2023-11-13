@@ -96,13 +96,16 @@ internal class EmployeeService : IEmployeeService
 
     public async Task<object> GetEmployeePaperProc(GetEmployeePaperRequest getEmployeePaperRequest)
     {
+        int itemsPerPage = 10; // Number of items per page
         dynamic obj = new ExpandoObject();
         getEmployeePaperRequest.LoginUserID = _projectProvider.UserId();
         getEmployeePaperRequest.ProjectID= _projectProvider.GetProjectId();
         var parameters = PublicHelper.GetPropertiesWithPrefix<GetEmployeePaperRequest>(getEmployeePaperRequest, "p");
         var employeePapersResponse = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeePaperResponse>("[dbo].[GetEmployeePaper]", parameters, null);
-        obj.CountRows = 10000;
-        obj.Data = employeePapersResponse;
+        obj.totalPages = (getEmployeePaperRequest.PageSize + getEmployeePaperRequest.PageNo * itemsPerPage) / itemsPerPage;
+        obj.result = employeePapersResponse;
+        obj.pageIndex = getEmployeePaperRequest.PageNo;
+        obj.offset = getEmployeePaperRequest.PageSize;
         return obj;
     }
     
