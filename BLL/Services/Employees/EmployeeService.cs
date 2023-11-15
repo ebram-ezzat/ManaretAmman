@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Execution;
 using BusinessLogicLayer.Common;
 using BusinessLogicLayer.Exceptions;
 using BusinessLogicLayer.Services.Auth;
@@ -96,13 +97,17 @@ internal class EmployeeService : IEmployeeService
 
     public async Task<object> GetEmployeePaperProc(GetEmployeePaperRequest getEmployeePaperRequest)
     {
-        int itemsPerPage = 10; // Number of items per page
         dynamic obj = new ExpandoObject();
         getEmployeePaperRequest.LoginUserID = _projectProvider.UserId();
         getEmployeePaperRequest.ProjectID= _projectProvider.GetProjectId();
         var parameters = PublicHelper.GetPropertiesWithPrefix<GetEmployeePaperRequest>(getEmployeePaperRequest, "p");
-        var employeePapersResponse = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeePaperResponse>("[dbo].[GetEmployeePaper]", parameters, null);
-        obj.totalPages = (getEmployeePaperRequest.PageSize + getEmployeePaperRequest.PageNo * itemsPerPage) / itemsPerPage;
+        var outPutPara = new Dictionary<string, object> { { "prowcount", "int"} };
+        var (employeePapersResponse,outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeePaperResponse>("[dbo].[GetEmployeePaper]", parameters, outPutPara);
+        int totalRecords= (int)outputValues["prowcount"];
+        var totalPages = ((double)totalRecords / (double)getEmployeePaperRequest.PageSize);
+
+        int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
+        obj.totalPages = roundedTotalPages;
         obj.result = employeePapersResponse;
         obj.pageIndex = getEmployeePaperRequest.PageNo;
         obj.offset = getEmployeePaperRequest.PageSize;
@@ -135,11 +140,11 @@ internal class EmployeeService : IEmployeeService
 
     public async Task<int> SaveEmployeePaperProc(SaveEmployeePaper saveEmployeePaper)
     {
+        int projecId = _projectProvider.GetProjectId();
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
             { "pEmployeeID", saveEmployeePaper.EmployeeID },
-            { "pPaperID", saveEmployeePaper.PaperID },
-            { "pPaperPath", saveEmployeePaper.PaperPath },
+            { "pPaperID", saveEmployeePaper.PaperID },           
             { "pNotes", saveEmployeePaper.Notes },
             { "pCratedBy", saveEmployeePaper.CreatedBy },
         };
@@ -152,9 +157,19 @@ internal class EmployeeService : IEmployeeService
             // Add other output parameters as needed
 
         };
+        var fileExtension = Path.GetExtension(saveEmployeePaper.File.FileName);
+        var fileName=01+ saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0')+"."+fileExtension;
+        var (settingResult,output)= await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetSettingsResult>("dbo.InsertEmployeePaper", new Dictionary<string, object> { { "pProjectID", projecId } }, null);
+        var filePath = Path.Combine(settingResult.FirstOrDefault().AttachementPath, saveEmployeePaper.File.FileName);
+        int detailId = (int)output["pDetailID"];
+        //inputParams
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await saveEmployeePaper.File.CopyToAsync(stream);
+        }
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeePaper", inputParams, outputParams);
         int pErrorValue = (int)outputValues["pError"];
-
+       
         return result;
     }
 }

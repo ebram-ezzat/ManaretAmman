@@ -3,6 +3,7 @@ using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -145,7 +146,7 @@ namespace DataAccessLayer.Models
         {
             _context = context;
         }
-        public async Task<List<T>> ExecuteStoredProcedureAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default) where T : class
+        public async Task<(List<T>, Dictionary<string, object>)> ExecuteStoredProcedureAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default) where T : class
         {
             List<SqlParameter> sqlParameters = new List<SqlParameter>();
 
@@ -168,7 +169,7 @@ namespace DataAccessLayer.Models
                 {
                     var outputParamSql = new SqlParameter
                     {
-                        ParameterName = "@" + outputParam.Key,
+                        ParameterName =  outputParam.Key,
                         Direction = ParameterDirection.Output,
                         SqlDbType = GetSqlDbTypeFromOutPutValue(outputParam.Value) // Helper method to infer SqlDbType
                     };
@@ -176,24 +177,34 @@ namespace DataAccessLayer.Models
                 }
             }
 
-            var parameterNames = string.Join(", ", sqlParameters.Select(p => $"@{p.ParameterName}"));
-            var sqlCommand = $"EXEC {storedProcedureName} {parameterNames}";
-
+            var parameterNames = string.Join(", ", parameters.Keys);
+            var parameterNamesWithAt = "@" + string.Join(", @", parameters.Keys);
+            var sqlCommand = $"EXEC {storedProcedureName} {parameterNamesWithAt}";
+            if (outputParameters != null && outputParameters.Count > 0)
+            {
+                var outputParameterNames = string.Join(", ", outputParameters.Keys.Select(k => "@" + k));
+                sqlCommand += $", {outputParameterNames} OUTPUT";
+            }
             var result = await _context.SqlQueryAsync<T>(sqlCommand, sqlParameters.ToArray(), cancellationToken);
 
+
+            var outputValues = new Dictionary<string, object>();
             if (outputParameters != null)
             {
                 foreach (var outputParam in outputParameters)
                 {
-                    if (sqlParameters.FirstOrDefault(p => p.ParameterName == "@" + outputParam.Key).Direction == ParameterDirection.Output)
+                    if (sqlParameters.FirstOrDefault(p => p.ParameterName == outputParam.Key).Direction == ParameterDirection.Output)
                     {
-                        var outputParameter = sqlParameters.FirstOrDefault(p => p.ParameterName == "@" + outputParam.Key);
+                        var key = outputParam.Key;
+                        var outputParameter = sqlParameters.FirstOrDefault(p => p.ParameterName == outputParam.Key);
                         // Handle output values here, perhaps store them in the outputParameters dictionary.
+                        outputValues.Add(outputParam.Key, outputParameter.Value);
+
                     }
                 }
             }
 
-            return result;
+            return (result, outputValues);
         }
         public async Task<(int,Dictionary<string,object>)> ExecuteStoredProcedureAsync(string storedProcedureName, Dictionary<string, object> parameters, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default)
         {
