@@ -157,17 +157,34 @@ internal class EmployeeService : IEmployeeService
             // Add other output parameters as needed
 
         };
-        var fileExtension = Path.GetExtension(saveEmployeePaper.File.FileName);
-        var fileName=01+ saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0')+"."+fileExtension;
-        var (settingResult,output)= await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetSettingsResult>("dbo.InsertEmployeePaper", new Dictionary<string, object> { { "pProjectID", projecId } }, null);
-        var filePath = Path.Combine(settingResult.FirstOrDefault().AttachementPath, saveEmployeePaper.File.FileName);
-        int detailId = (int)output["pDetailID"];
-        //inputParams
-        using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await saveEmployeePaper.File.CopyToAsync(stream);
-        }
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeePaper", inputParams, outputParams);
+
+        if (saveEmployeePaper.File is not null)
+        {
+            var fileExtension = Path.GetExtension(saveEmployeePaper.File.FileName);
+
+            int detailId = (int)outputValues["pDetailID"];
+            outputParams["pDetailID"] = detailId;
+
+            var (settingResult, outputSetting) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetSettingsResult>("dbo.GetSettings", new Dictionary<string, object> { { "pProjectID", projecId } }, null);
+            var projectPath = settingResult.FirstOrDefault().AttachementPath;
+
+            var filePath = projectPath + "/" + 01 + saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0') + detailId.ToString().PadLeft(6, '0') + "." + fileExtension;
+
+            //var filePath = Path.Combine(settingResult.FirstOrDefault().AttachementPath, saveEmployeePaper.File.FileName);
+
+            
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await saveEmployeePaper.File.CopyToAsync(stream);
+            }
+            inputParams.Add("pPaperPath", filePath);
+            var (resultUpdate, outputUpdate) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeePaper", inputParams, outputParams);
+
+        }
+
+
+
         int pErrorValue = (int)outputValues["pError"];
        
         return result;

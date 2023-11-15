@@ -173,6 +173,10 @@ namespace DataAccessLayer.Models
                         Direction = ParameterDirection.Output,
                         SqlDbType = GetSqlDbTypeFromOutPutValue(outputParam.Value) // Helper method to infer SqlDbType
                     };
+                    if(outputParam.Value !="int" && outputParam.Value!="string")
+                    {
+                        outputParamSql.Value = outputParam.Value;
+                    }
                     sqlParameters.Add(outputParamSql);
                 }
             }
@@ -226,6 +230,10 @@ namespace DataAccessLayer.Models
                         Direction = ParameterDirection.Output,
                        SqlDbType = GetSqlDbTypeFromOutPutValue(outputParam.Value) // Helper method to infer SqlDbType
                     };
+                    if (outputParam.Value != "int" && outputParam.Value != "string")
+                    {
+                        outputParamSql.Value = outputParam.Value;
+                    }
                     sqlParameters.Add(outputParamSql);
                 }
             }
@@ -275,11 +283,15 @@ namespace DataAccessLayer.Models
         {
             // This function attempts to infer the SqlDbType based on the value's type
             if (value is "int") return SqlDbType.Int;
-            if (value is "string") return SqlDbType.VarChar;
+            else if (value is "string") return SqlDbType.VarChar;
+            else
+            {
+                return GetSqlDbTypeFromValue(value);
+            }
             // Add more type mappings as needed
 
             // Default to SqlDbType.NVarChar for unknown types
-            return SqlDbType.NVarChar;
+            
         }
         public virtual async Task<List<ArrangeEMployeeWeeklyHolidayResult>> ArrangeEMployeeWeeklyHolidayAsync(int? pFromDate, int? pToDate, int? pCreatedBy, int? pProjectID, int? pMonthID, int? pYearID, OutputParameter<int?> pError, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {

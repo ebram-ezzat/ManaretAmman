@@ -17,13 +17,13 @@ namespace DataAccessLayer.DTO.Employees
         [Required(ErrorMessage = "The PaperID is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "The PaperID must be bigger than 0")]
         public int PaperID { get; set; }
-        //GetAttachfromsetting
-        // genertedName
-        //Save DataBase :GetAttachfromsetting+ConcatTo genertedName+extentsion
-        public string PaperPath { get; set; }
+        
         public string Notes { get; set; }
         [CustomValidationLoginUserID]
         public int CreatedBy { get; set; }
+        //GetAttachfromsetting
+        // genertedName
+        //Save DataBase :GetAttachfromsetting+ConcatTo genertedName+extentsion
         //get file and save to dictory Info 
         public IFormFile File { get; set; }
 
