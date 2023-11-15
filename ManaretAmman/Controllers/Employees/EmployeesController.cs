@@ -65,8 +65,9 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<int>.Success("data has been retrieved succussfully", result);
         }
         [HttpPost("Documents/SaveEmployeePaper")]
-        public async Task<IApiResponse> SaveEmployeePaper(SaveEmployeePaper saveEmployeePaper)
+        public async Task<IApiResponse> SaveEmployeePaper([FromForm]SaveEmployeePaper saveEmployeePaper)
         {
+            //var formCollection = await Request.ReadFormAsync();
             if (!ModelState.IsValid)
             {
                 // Model validation failed based on data annotations including your custom validation
