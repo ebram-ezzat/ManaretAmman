@@ -107,7 +107,7 @@ internal class EmployeeService : IEmployeeService
         var totalPages = ((double)totalRecords / (double)getEmployeePaperRequest.PageSize);
 
         int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
-        obj.totalPages = roundedTotalPages;
+        obj.totalPages = 100;//roundedTotalPages;
         obj.result = employeePapersResponse;
         obj.pageIndex = getEmployeePaperRequest.PageNo;
         obj.offset = getEmployeePaperRequest.PageSize;
@@ -144,7 +144,8 @@ internal class EmployeeService : IEmployeeService
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
             { "pEmployeeID", saveEmployeePaper.EmployeeID },
-            { "pPaperID", saveEmployeePaper.PaperID },           
+            { "pPaperID", saveEmployeePaper.PaperID },
+            { "pPaperPath", "" },
             { "pNotes", saveEmployeePaper.Notes },
             { "pCratedBy", saveEmployeePaper.CreatedBy },
         };
@@ -168,18 +169,24 @@ internal class EmployeeService : IEmployeeService
 
             var (settingResult, outputSetting) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetSettingsResult>("dbo.GetSettings", new Dictionary<string, object> { { "pProjectID", projecId } }, null);
             var projectPath = settingResult.FirstOrDefault().AttachementPath;
-
-            var filePath = projectPath + "/" + 01 + saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0') + detailId.ToString().PadLeft(6, '0') + "." + fileExtension;
+            var fileName = saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0') + detailId.ToString().PadLeft(6, '0') + fileExtension;
+            var filePath = projectPath  + 01 + saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0') + detailId.ToString().PadLeft(6, '0')  + fileExtension;
 
             //var filePath = Path.Combine(settingResult.FirstOrDefault().AttachementPath, saveEmployeePaper.File.FileName);
-
-            
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            using (var fileStream = saveEmployeePaper.File.OpenReadStream())
             {
-                await saveEmployeePaper.File.CopyToAsync(stream);
+                await UploadFileAsync(projectPath, fileStream, "file", "image/jpeg", fileName);
             }
-            inputParams.Add("pPaperPath", filePath);
+
+            inputParams["pPaperPath"] = filePath;
             var (resultUpdate, outputUpdate) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeePaper", inputParams, outputParams);
+
+          
+            //using (var stream = new FileStream(filePath, FileMode.Create))
+            //{
+            //    await saveEmployeePaper.File.CopyToAsync(stream);
+            //}
+            
 
         }
 
@@ -188,5 +195,27 @@ internal class EmployeeService : IEmployeeService
         int pErrorValue = (int)outputValues["pError"];
        
         return result;
+    }
+    private async Task UploadFileAsync(string url, Stream fileStream, string paramName, string contentType,string fileName)
+    {
+        using (var httpClient = new HttpClient())
+        using (var form = new MultipartFormDataContent())
+        using (var fileContent = new StreamContent(fileStream))
+        {
+            fileContent.Headers.Add("Content-Type", contentType);
+            form.Add(fileContent, paramName, fileName);
+
+            var response = await httpClient.PostAsync(url, form);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Error uploading file. Status code: {response.StatusCode}");
+                // Handle error accordingly
+            }
+            else
+            {
+                Console.WriteLine("File uploaded successfully!");
+            }
+        }
     }
 }

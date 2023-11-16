@@ -244,8 +244,16 @@ namespace DataAccessLayer.Models
 
             if (outputParameters != null && outputParameters.Count > 0)
             {
-                var outputParameterNames = string.Join(", ", outputParameters.Keys.Select(k => "@" + k));
-                sqlQuery += $", {outputParameterNames} OUTPUT";
+                //var outputParameterNames = string.Join(", ", outputParameters.Keys.Select(k => "@" + k));
+                //sqlQuery += $", {outputParameterNames} OUTPUT";
+                var outputParameterNames = string.Empty;
+
+                foreach (var key in outputParameters.Keys)
+                {
+                    outputParameterNames += ", @" + key+" OUTPUT ";
+                }
+
+                sqlQuery += outputParameterNames; //$", {outputParameterNames.TrimStart(',', ' ')} OUTPUT";
             }
 
             var result = await _context.Database.ExecuteSqlRawAsync(sqlQuery, sqlParameters.ToArray(), cancellationToken);
