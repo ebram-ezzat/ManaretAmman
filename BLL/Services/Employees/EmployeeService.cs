@@ -7,6 +7,7 @@ using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.Models;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Dynamic;
 using System.Net;
@@ -20,14 +21,16 @@ internal class EmployeeService : IEmployeeService
     private readonly IMapper _mapper;
     IProjectProvider _projectProvider;
     IAuthService _authService;
+    private readonly IConfiguration _configuration;
     private readonly PayrolLogOnlyContext _payrolLogOnlyContext;
-    public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, IProjectProvider projectProvider, IAuthService authService, PayrolLogOnlyContext payrolLogOnlyContext)
+    public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, IProjectProvider projectProvider, IAuthService authService, PayrolLogOnlyContext payrolLogOnlyContext, IConfiguration configuration)
     {
         _unitOfWork = unitOfWork;
-        _mapper     = mapper;
+        _mapper = mapper;
         _projectProvider = projectProvider;
         _authService = authService;
         _payrolLogOnlyContext = payrolLogOnlyContext;
+        _configuration = configuration;
     }
     public async Task<List<EmployeeLookup>> GetEmployeesProc()
     {
@@ -108,7 +111,7 @@ internal class EmployeeService : IEmployeeService
         var totalPages = ((double)totalRecords / (double)getEmployeePaperRequest.PageSize);
 
         int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
-        obj.totalPages = 100;//roundedTotalPages;
+        obj.totalPages = roundedTotalPages;
         obj.result = employeePapersResponse;
         obj.pageIndex = getEmployeePaperRequest.PageNo;
         obj.offset = getEmployeePaperRequest.PageSize;
@@ -183,7 +186,9 @@ internal class EmployeeService : IEmployeeService
             {
                 string ftpUrl = projectPath + fileName;
                 //await UploadFileAsync(projectPath, fileStream, "file", "image/jpeg", fileName);
-                UploadFileToFtp(ftpUrl, "ayah123", "ayah123", fileStream, fileName);
+                string userName = _configuration["UploadServerCredentials:UserName"];
+                string password = _configuration["UploadServerCredentials:Password"];
+                bool IsComplete = PublicHelper.UploadFileToFtp(ftpUrl, userName,password, fileStream, fileName);
             }
 
            
@@ -201,49 +206,5 @@ internal class EmployeeService : IEmployeeService
         int pErrorValue = (int)outputValues["pError"];
        
         return result;
-    }
-    private async Task UploadFileAsync(string url, Stream fileStream, string paramName, string contentType,string fileName)
-    {
-        using (var httpClient = new HttpClient())
-        using (var form = new MultipartFormDataContent())
-        using (var fileContent = new StreamContent(fileStream))
-        {
-            fileContent.Headers.Add("Content-Type", contentType);
-            form.Add(fileContent, paramName, fileName);
-
-            var response = await httpClient.PostAsync(url, form);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                Console.WriteLine($"Error uploading file. Status code: {response.StatusCode}");
-                // Handle error accordingly
-            }
-            else
-            {
-                Console.WriteLine("File uploaded successfully!");
-            }
-        }
-    }
-    private void UploadFileToFtp(string ftpUrl, string userName, string password, Stream fileStream, string fileName)
-    {
-        // Create FTP request
-        FtpWebRequest ftpRequest = (FtpWebRequest)WebRequest.Create(ftpUrl);
-        ftpRequest.Credentials = new NetworkCredential(userName, password);
-        ftpRequest.Method = WebRequestMethods.Ftp.UploadFile;
-
-        // Set content type
-        //ftpRequest.ContentType = "application/octet-stream";
-
-        // Copy the file stream to the request stream
-        using (Stream requestStream = ftpRequest.GetRequestStream())
-        {
-            fileStream.CopyTo(requestStream);
-        }
-
-        // Get the FTP response
-        using (FtpWebResponse ftpResponse = (FtpWebResponse)ftpRequest.GetResponse())
-        {
-            Console.WriteLine($"Upload File Complete, status {ftpResponse.StatusDescription}");
-        }
     }
 }
