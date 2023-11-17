@@ -22,6 +22,7 @@ namespace DataAccessLayer.Models
 
             if (typeof(T).GetProperties().Any())
             {
+                           
                 return await db.Set<T>().FromSqlRaw(sql, parameters).ToListAsync(cancellationToken);
             }
             else

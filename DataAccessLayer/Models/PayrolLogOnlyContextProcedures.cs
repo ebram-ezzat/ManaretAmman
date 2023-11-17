@@ -233,6 +233,7 @@ namespace DataAccessLayer.Models
                     if (outputParam.Value != "int" && outputParam.Value != "string")
                     {
                         outputParamSql.Value = outputParam.Value;
+                        outputParamSql.Direction = ParameterDirection.InputOutput;
                     }
                     sqlParameters.Add(outputParamSql);
                 }

@@ -9,6 +9,7 @@ using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.Models;
 using System.Data;
 using System.Dynamic;
+using System.Net;
 using UnauthorizedAccessException = BusinessLogicLayer.Exceptions.UnauthorizedAccessException;
 
 namespace BusinessLogicLayer.Services.Employees;
@@ -147,7 +148,7 @@ internal class EmployeeService : IEmployeeService
             { "pPaperID", saveEmployeePaper.PaperID },
             { "pPaperPath", "" },
             { "pNotes", saveEmployeePaper.Notes },
-            { "pCratedBy", saveEmployeePaper.CreatedBy },
+            { "pCratedBy", _projectProvider.UserId() },
         };
 
         // Define output parameters (optional)
@@ -172,15 +173,20 @@ internal class EmployeeService : IEmployeeService
             var fileName = saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0') + detailId.ToString().PadLeft(6, '0') + fileExtension;
             var filePath = projectPath  + 01 + saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0') + detailId.ToString().PadLeft(6, '0')  + fileExtension;
 
+            inputParams["pPaperPath"] = filePath;
+            
+            var (resultUpdate, outputUpdate) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeePaper", inputParams, outputParams);
+
+
             //var filePath = Path.Combine(settingResult.FirstOrDefault().AttachementPath, saveEmployeePaper.File.FileName);
             using (var fileStream = saveEmployeePaper.File.OpenReadStream())
             {
-                await UploadFileAsync(projectPath, fileStream, "file", "image/jpeg", fileName);
+                string ftpUrl = projectPath + fileName;
+                //await UploadFileAsync(projectPath, fileStream, "file", "image/jpeg", fileName);
+                UploadFileToFtp(ftpUrl, "ayah123", "ayah123", fileStream, fileName);
             }
 
-            inputParams["pPaperPath"] = filePath;
-            var (resultUpdate, outputUpdate) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeePaper", inputParams, outputParams);
-
+           
           
             //using (var stream = new FileStream(filePath, FileMode.Create))
             //{
@@ -216,6 +222,28 @@ internal class EmployeeService : IEmployeeService
             {
                 Console.WriteLine("File uploaded successfully!");
             }
+        }
+    }
+    private void UploadFileToFtp(string ftpUrl, string userName, string password, Stream fileStream, string fileName)
+    {
+        // Create FTP request
+        FtpWebRequest ftpRequest = (FtpWebRequest)WebRequest.Create(ftpUrl);
+        ftpRequest.Credentials = new NetworkCredential(userName, password);
+        ftpRequest.Method = WebRequestMethods.Ftp.UploadFile;
+
+        // Set content type
+        //ftpRequest.ContentType = "application/octet-stream";
+
+        // Copy the file stream to the request stream
+        using (Stream requestStream = ftpRequest.GetRequestStream())
+        {
+            fileStream.CopyTo(requestStream);
+        }
+
+        // Get the FTP response
+        using (FtpWebResponse ftpResponse = (FtpWebResponse)ftpRequest.GetResponse())
+        {
+            Console.WriteLine($"Upload File Complete, status {ftpResponse.StatusDescription}");
         }
     }
 }
