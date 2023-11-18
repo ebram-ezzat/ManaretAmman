@@ -2,7 +2,9 @@
 using BusinessLogicLayer.Common;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
 namespace BusinessLogicLayer.Services.Lookups
@@ -11,10 +13,12 @@ namespace BusinessLogicLayer.Services.Lookups
     {
         private readonly IUnitOfWork _unit;
         private readonly IMapper _mapper;
-        public LookupsService(IUnitOfWork unit, IMapper mapper)
+        private readonly IConfiguration _configuration;
+        public LookupsService(IUnitOfWork unit, IMapper mapper, IConfiguration configuration)
         {
             _unit = unit;
             _mapper = mapper;
+            _configuration = configuration;
         }
         public async Task<string> GetDescription(string tableName, string columnName, int columnValue)
         {
@@ -36,6 +40,21 @@ namespace BusinessLogicLayer.Services.Lookups
                     .FirstOrDefault();
 
             return lookup.ColumnDescriptionAr;
+        }
+
+        public async Task<IFormFile> GetFileAsFormFileByFtpPath(string fullPath)
+        {
+            string userName = _configuration["UploadServerCredentials:UserName"];
+            string password = _configuration["UploadServerCredentials:Password"];
+            return await PublicHelper.GetFileAsFormFileByFtpPath(fullPath, userName, password);
+        }
+
+        public async Task<object> GetFileBase64ByFtpPath(string fullPath)
+        {
+            string userName = _configuration["UploadServerCredentials:UserName"];
+            string password = _configuration["UploadServerCredentials:Password"];
+            return await PublicHelper.GetFileBase64ByFtpPath(fullPath, userName, password);
+            
         }
 
         public async Task<IList<LookupDto>> GetLookups(string tableName, string columnName)

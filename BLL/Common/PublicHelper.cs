@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -72,6 +75,86 @@ namespace BusinessLogicLayer.Common
                 }
             }
         }
+        public async static Task <object> GetFileBase64ByFtpPath(string fullPath,string ftpUsername, string ftpPassword)
+        {
+            // FTP server details
+                       
 
+            // Create the FTP request
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"{fullPath}");
+            request.Method = WebRequestMethods.Ftp.DownloadFile;
+            request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+
+           
+                // Get the FTP response
+                using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
+                {
+                if (response.StatusCode == FtpStatusCode.CommandOK || response.StatusCode == FtpStatusCode.DataAlreadyOpen)
+                {
+                    // Get the response stream
+                    using (Stream ftpStream = response.GetResponseStream())
+                    {
+                        // Create a memory stream to store the file content
+                        MemoryStream memoryStream = new MemoryStream();
+
+                        // Copy the FTP stream to the memory stream
+                        ftpStream.CopyTo(memoryStream);
+
+                        // Convert the file content to a Base64 string
+                        string base64Content = Convert.ToBase64String(memoryStream.ToArray());
+                        //result.Base64FileContent = base64Content;
+                        // Return the Base64 string as IActionResult
+                        return new { Base64Content = base64Content };
+                    }
+                }
+                else
+                {
+                    // Handle FTP errors
+                    return ($"FTP Error: {response.StatusDescription}");
+                }
+            }
+            
+        }
+        public async static Task<IFormFile> GetFileAsFormFileByFtpPath(string fullPath, string ftpUsername, string ftpPassword)
+        {
+            
+                // Create the FTP request
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"{fullPath}");
+                request.Method = WebRequestMethods.Ftp.DownloadFile;
+                request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+
+                // Get the FTP response
+                using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
+                {
+                    if (response.StatusCode == FtpStatusCode.CommandOK || response.StatusCode == FtpStatusCode.DataAlreadyOpen)
+                    {
+                        // Get the response stream
+                        using (Stream ftpStream = response.GetResponseStream())
+                        {
+                            // Create a memory stream to store the file content
+                            MemoryStream memoryStream = new MemoryStream();
+
+                            // Copy the FTP stream to the memory stream
+                            await ftpStream.CopyToAsync(memoryStream);
+
+                            // Convert the memory stream to an array of bytes
+                            byte[] fileBytes = memoryStream.ToArray();
+                        string filename = Path.GetFileName(fullPath);
+                        // Create an IFormFile from the byte array
+                        IFormFile formFile = new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "file", filename);
+
+
+                        // Return the IFormFile
+                        return formFile;
+                        }
+                    }
+                    else
+                    {
+                        // Handle FTP errors
+                       return default;
+                    }
+                }
+            
+        }
     }
 }

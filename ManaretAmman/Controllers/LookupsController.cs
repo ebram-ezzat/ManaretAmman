@@ -19,5 +19,17 @@ namespace ManaretAmman.Controllers
             var result = await _lookupsService.GetLookups(tableName, columnName);
             return ApiResponse<IList<LookupDto>>.Success("data has been retrieved succussfully",result);
         }
+        [HttpGet]
+        public async Task<IApiResponse> DownloadFileAsBase64(string FilePath)
+        {
+            var result = await _lookupsService.GetFileBase64ByFtpPath(FilePath);
+            return ApiResponse<object>.Success("data has been retrieved succussfully", result);
+        }
+        [HttpGet]
+        public async Task<IApiResponse> DownloadFileAsIFormFile(string FilePath)
+        {
+            var result = await _lookupsService.GetFileAsFormFileByFtpPath(FilePath);
+            return ApiResponse<IFormFile>.Success("data has been retrieved succussfully", result);
+        }
     }
 }
