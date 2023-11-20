@@ -7,6 +7,7 @@ using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Dynamic;
@@ -76,18 +77,18 @@ internal class EmployeeService : IEmployeeService
         int userId = _projectProvider.UserId();
         int projecId = _projectProvider.GetProjectId();
         if (userId == -1) throw new UnauthorizedAccessException("Incorrect userId from header");
-        if(!_authService.IsValidUser(userId)) throw new UnauthorizedAccessException("Incorrect userId");
+        if (!_authService.IsValidUser(userId)) throw new UnauthorizedAccessException("Incorrect userId");
         int? employeeId = _authService.IsHr(userId);
 
 
-        IQueryable<Employee> employees ;
+        IQueryable<Employee> employees;
 
         employees =
             from e in _unitOfWork.EmployeeRepository.PQuery()
             join lt in _unitOfWork.LookupsRepository.PQuery() on e.DepartmentID equals lt.ID into ltGroup
             from lt in ltGroup.DefaultIfEmpty()
             where e.ProjectID == projecId && (e.EmployeeID == employeeId || lt.EmployeeID == employeeId || employeeId == null) && lt.TableName == "Department" && lt.ColumnName == "DepartmentID"
-            select  e;
+            select e;
 
         if (employees is null)
         {
@@ -103,11 +104,11 @@ internal class EmployeeService : IEmployeeService
     {
         dynamic obj = new ExpandoObject();
         getEmployeePaperRequest.LoginUserID = _projectProvider.UserId();
-        getEmployeePaperRequest.ProjectID= _projectProvider.GetProjectId();
+        getEmployeePaperRequest.ProjectID = _projectProvider.GetProjectId();
         var parameters = PublicHelper.GetPropertiesWithPrefix<GetEmployeePaperRequest>(getEmployeePaperRequest, "p");
-        var outPutPara = new Dictionary<string, object> { { "prowcount", "int"} };
-        var (employeePapersResponse,outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeePaperResponse>("[dbo].[GetEmployeePaper]", parameters, outPutPara);
-        int totalRecords= (int)outputValues["prowcount"];
+        var outPutPara = new Dictionary<string, object> { { "prowcount", "int" } };
+        var (employeePapersResponse, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeePaperResponse>("[dbo].[GetEmployeePaper]", parameters, outPutPara);
+        int totalRecords = (int)outputValues["prowcount"];
         var totalPages = ((double)totalRecords / (double)getEmployeePaperRequest.PageSize);
 
         int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
@@ -117,15 +118,16 @@ internal class EmployeeService : IEmployeeService
         obj.offset = getEmployeePaperRequest.PageSize;
         return obj;
     }
-    
 
-   public async Task<int> DeleteEmployeePaperProc(int EmployeeId, int DetailId)
+
+    public async Task<int> DeleteEmployeePaperProc(int EmployeeId, int DetailId)
     {
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
             { "pEmployeeID", EmployeeId },
             { "pDetailID", DetailId },
-            
+            { "pCreatedBy",  _projectProvider.UserId() },
+
         };
 
         // Define output parameters (optional)
@@ -136,8 +138,14 @@ internal class EmployeeService : IEmployeeService
         };
 
         // Call the ExecuteStoredProcedureAsync function
-        var (result, outputValues)  = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeePaper", inputParams, outputParams);
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeePaper", inputParams, outputParams);
         int pErrorValue = (int)outputValues["pError"];
+
+        //check if user not HR return -3 you have no permission
+        if (pErrorValue == -3)
+        {
+            throw new UnauthorizedAccessException("you don't have permission to add documents");
+        }
         return result;
 
     }
@@ -164,6 +172,15 @@ internal class EmployeeService : IEmployeeService
         };
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeePaper", inputParams, outputParams);
 
+        //check if user not HR return -3 you have no permission
+        if (outputValues.TryGetValue("pError", out var value))
+        {
+            if (Convert.ToInt32(value) == -3)
+            {
+                throw new UnauthorizedAccessException("you don't have permission to add documents");
+            }
+        }
+
         if (saveEmployeePaper.File is not null)
         {
             var fileExtension = Path.GetExtension(saveEmployeePaper.File.FileName);
@@ -173,11 +190,11 @@ internal class EmployeeService : IEmployeeService
 
             var (settingResult, outputSetting) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetSettingsResult>("dbo.GetSettings", new Dictionary<string, object> { { "pProjectID", projecId } }, null);
             var projectPath = settingResult.FirstOrDefault().AttachementPath;
-            var fileName = saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0') + detailId.ToString().PadLeft(6, '0') + fileExtension;
-            var filePath = projectPath  + 01 + saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0') + detailId.ToString().PadLeft(6, '0')  + fileExtension;
+            var fileName = "01" + saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0') + detailId.ToString().PadLeft(6, '0') + fileExtension;
+            var filePath = projectPath + "01" + saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0') + detailId.ToString().PadLeft(6, '0') + fileExtension;
 
             inputParams["pPaperPath"] = filePath;
-            
+
             var (resultUpdate, outputUpdate) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeePaper", inputParams, outputParams);
 
 
@@ -188,23 +205,23 @@ internal class EmployeeService : IEmployeeService
                 //await UploadFileAsync(projectPath, fileStream, "file", "image/jpeg", fileName);
                 string userName = _configuration["UploadServerCredentials:UserName"];
                 string password = _configuration["UploadServerCredentials:Password"];
-                bool IsComplete = PublicHelper.UploadFileToFtp(ftpUrl, userName,password, fileStream, fileName);
+                bool IsComplete = PublicHelper.UploadFileToFtp(ftpUrl, userName, password, fileStream, fileName);
             }
 
-           
-          
+
+
             //using (var stream = new FileStream(filePath, FileMode.Create))
             //{
             //    await saveEmployeePaper.File.CopyToAsync(stream);
             //}
-            
+
 
         }
 
 
 
         int pErrorValue = (int)outputValues["pError"];
-       
+
         return result;
     }
 }

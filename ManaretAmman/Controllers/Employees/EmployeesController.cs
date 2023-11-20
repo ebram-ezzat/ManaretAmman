@@ -50,15 +50,15 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<object>.Success("data has been retrieved succussfully", result);
         }
-        [HttpGet("Documents/DeleteEmployeePaper")]
-        public async Task<IApiResponse> DeleteEmployeePaper(int EmployeeId,int DetailId)
+        [HttpPost("Documents/DeleteEmployeePaper")]
+        public async Task<IApiResponse> DeleteEmployeePaper(DeleteEmployeePaper model)
         {
-            if (EmployeeId<=0 || DetailId<=0)
+            if (model.EmployeeId <= 0 || model.DetailId <= 0)
             {
 
                 return ApiResponse.Failure(" An unexpected error on validation occurred you should path each parameter bigger than 0",null);
             }
-            var result = await _employeeService.DeleteEmployeePaperProc(EmployeeId, DetailId);
+            var result = await _employeeService.DeleteEmployeePaperProc(model.EmployeeId, model.DetailId);
 
 
 

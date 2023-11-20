@@ -82,16 +82,18 @@ namespace BusinessLogicLayer.Common
 
             string ftpUrl = Convert.ToString(fullPath);
             // Create the FTP request
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);//$"{fullPath}" //@"ftp://193.203.15.167/test/1000821000032.jpg"
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);
             request.Method = WebRequestMethods.Ftp.DownloadFile;
+            //request.Credentials = new NetworkCredential("administrator", "o36GOR56euIWywTpyu933");
             request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
-            request.UsePassive = false;
+            request.UsePassive = true;
 
            
                 // Get the FTP response
                 using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
                 {
-                if (response.StatusCode == FtpStatusCode.CommandOK || response.StatusCode == FtpStatusCode.DataAlreadyOpen || response.StatusCode == FtpStatusCode.ClosingData)
+                if (response.StatusCode == FtpStatusCode.CommandOK || response.StatusCode == FtpStatusCode.DataAlreadyOpen 
+                    || response.StatusCode == FtpStatusCode.ClosingData || response.StatusCode == FtpStatusCode.OpeningData)
                 {
                     //Get the response stream
                     using (Stream ftpStream = response.GetResponseStream())
