@@ -9,6 +9,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace BusinessLogicLayer.Common
 {
@@ -78,20 +79,21 @@ namespace BusinessLogicLayer.Common
         public async static Task <object> GetFileBase64ByFtpPath(string fullPath,string ftpUsername, string ftpPassword)
         {
             // FTP server details
-                       
 
+            string ftpUrl = Convert.ToString(fullPath);
             // Create the FTP request
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"{fullPath}");
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);//$"{fullPath}" //@"ftp://193.203.15.167/test/1000821000032.jpg"
             request.Method = WebRequestMethods.Ftp.DownloadFile;
             request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+            request.UsePassive = false;
 
            
                 // Get the FTP response
                 using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
                 {
-                if (response.StatusCode == FtpStatusCode.CommandOK || response.StatusCode == FtpStatusCode.DataAlreadyOpen)
+                if (response.StatusCode == FtpStatusCode.CommandOK || response.StatusCode == FtpStatusCode.DataAlreadyOpen || response.StatusCode == FtpStatusCode.ClosingData)
                 {
-                    // Get the response stream
+                    //Get the response stream
                     using (Stream ftpStream = response.GetResponseStream())
                     {
                         // Create a memory stream to store the file content
@@ -106,6 +108,18 @@ namespace BusinessLogicLayer.Common
                         // Return the Base64 string as IActionResult
                         return new { Base64Content = base64Content };
                     }
+                    //using (Stream ftpStream = response.GetResponseStream())
+                    //{
+                    //    // Read the directory listing
+                    //    using (StreamReader reader = new StreamReader(ftpStream))
+                    //    {
+                    //        string directoryListing = reader.ReadToEnd();
+                    //        List<string> fileList = directoryListing.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                    //        // You now have a list of files and directories in the specified FTP directory
+                    //        return fileList;
+                    //    }
+                    //}
                 }
                 else
                 {
