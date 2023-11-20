@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using DataAccessLayer.DTO;
 
 namespace BusinessLogicLayer.Common
 {
@@ -129,32 +130,32 @@ namespace BusinessLogicLayer.Common
                     return ($"FTP Error: {response.StatusDescription}");
                 }
             }
-            
+
         }
         public async static Task<IFormFile> GetFileAsFormFileByFtpPath(string fullPath, string ftpUsername, string ftpPassword)
         {
-            
-                // Create the FTP request
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"{fullPath}");
-                request.Method = WebRequestMethods.Ftp.DownloadFile;
-                request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
 
-                // Get the FTP response
-                using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
+            // Create the FTP request
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"{fullPath}");
+            request.Method = WebRequestMethods.Ftp.DownloadFile;
+            request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+
+            // Get the FTP response
+            using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
+            {
+                if (response.StatusCode == FtpStatusCode.CommandOK || response.StatusCode == FtpStatusCode.DataAlreadyOpen)
                 {
-                    if (response.StatusCode == FtpStatusCode.CommandOK || response.StatusCode == FtpStatusCode.DataAlreadyOpen)
+                    // Get the response stream
+                    using (Stream ftpStream = response.GetResponseStream())
                     {
-                        // Get the response stream
-                        using (Stream ftpStream = response.GetResponseStream())
-                        {
-                            // Create a memory stream to store the file content
-                            MemoryStream memoryStream = new MemoryStream();
+                        // Create a memory stream to store the file content
+                        MemoryStream memoryStream = new MemoryStream();
 
-                            // Copy the FTP stream to the memory stream
-                            await ftpStream.CopyToAsync(memoryStream);
+                        // Copy the FTP stream to the memory stream
+                        await ftpStream.CopyToAsync(memoryStream);
 
-                            // Convert the memory stream to an array of bytes
-                            byte[] fileBytes = memoryStream.ToArray();
+                        // Convert the memory stream to an array of bytes
+                        byte[] fileBytes = memoryStream.ToArray();
                         string filename = Path.GetFileName(fullPath);
                         // Create an IFormFile from the byte array
                         IFormFile formFile = new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "file", filename);
@@ -162,15 +163,36 @@ namespace BusinessLogicLayer.Common
 
                         // Return the IFormFile
                         return formFile;
-                        }
-                    }
-                    else
-                    {
-                        // Handle FTP errors
-                       return default;
                     }
                 }
-            
+                else
+                {
+                    // Handle FTP errors
+                    return default;
+                }
+            }
+
+        }
+        public static object CreateResultPaginationObject<TRequest, TResponse>(
+         TRequest request,
+         List<TResponse> response,
+         Dictionary<string, object> outputValues)
+                where TRequest : PageModel
+        {
+            dynamic obj = new ExpandoObject();
+
+            if (outputValues.TryGetValue("prowcount", out var totalRecordsObj) && totalRecordsObj is int totalRecords)
+            {
+                var totalPages = ((double)totalRecords / (double)request.PageSize);
+                int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
+
+                obj.totalPages = roundedTotalPages;
+                obj.result = response;
+                obj.pageIndex = request.PageNo;
+                obj.offset = request.PageSize;
+            }
+
+            return obj;
         }
     }
 }
