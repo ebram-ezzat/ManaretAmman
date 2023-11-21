@@ -144,7 +144,7 @@ internal class EmployeeService : IEmployeeService
         //check if user not HR return -3 you have no permission
         if (pErrorValue == -3)
         {
-            throw new UnauthorizedAccessException("you don't have permission to add documents");
+            throw new UnauthorizedAccessException("NoPermisson");
         }
         return result;
 
@@ -177,7 +177,7 @@ internal class EmployeeService : IEmployeeService
         {
             if (Convert.ToInt32(value) == -3)
             {
-                throw new UnauthorizedAccessException("you don't have permission to add documents");
+                throw new UnauthorizedAccessException("NoPermisson");
             }
         }
 
