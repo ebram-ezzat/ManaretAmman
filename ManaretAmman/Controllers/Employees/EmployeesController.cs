@@ -50,8 +50,8 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<object>.Success("data has been retrieved succussfully", result);
         }
-        [HttpPost("Documents/DeleteEmployeePaper")]
-        public async Task<IApiResponse> DeleteEmployeePaper(DeleteEmployeePaper model)
+        [HttpDelete("Documents/DeleteEmployeePaper")]
+        public async Task<IApiResponse> DeleteEmployeePaper([FromQuery]  DeleteEmployeePaper model)
         {
             if (model.EmployeeId <= 0 || model.DetailId <= 0)
             {
