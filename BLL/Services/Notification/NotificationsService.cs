@@ -60,7 +60,7 @@ namespace BusinessLogicLayer.Services.Notification
                 { "pIsDissmissed", filter.FilterCriteria.IsDissmissed },
                 { "pPageNo", filter.FilterCriteria.PageNo },
                 { "pPageSize", filter.FilterCriteria.PageSize },
-                { "pPageTypeID", filter.FilterCriteria.PageTypeID },
+                { "pPageTypeID", 1 },
             };
 
             // Define output parameters (optional)
