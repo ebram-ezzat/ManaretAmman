@@ -1,5 +1,7 @@
 ﻿using BusinessLogicLayer.Common;
+using BusinessLogicLayer.Services.Employees;
 using BusinessLogicLayer.Services.Notification;
+using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.Notification;
 using DataAccessLayer.Models;
 using ManaretAmman.Models;
@@ -45,6 +47,19 @@ namespace ManaretAmman.Controllers.Employees
                 return ApiResponse<List<ChangeEmployeeRequestStatusResult>>.Failure(res, null);
             }
             return ApiResponse<int?>.Success(result);
+        }
+
+        [HttpPost("UpdateNotification")]
+        public async Task<IApiResponse> UpdateNotification([FromBody] UpdateNotificationModel model)
+        {
+            if (model.NotificationId <= 0)
+            {
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred you should path each parameter bigger than 0", null);
+            }
+            var result = await _notificationService.UpdateNotification(model.NotificationId);
+
+            return ApiResponse<int>.Success("data has been retrieved succussfully", result);
         }
     }
 }

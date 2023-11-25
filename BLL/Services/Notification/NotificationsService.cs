@@ -74,5 +74,32 @@ namespace BusinessLogicLayer.Services.Notification
             return PublicHelper.CreateResultPaginationObject(filter.FilterCriteria, NotificationResponse, outputValues);
 
         }
+
+        public async Task<int> UpdateNotification(int NotificationId)
+        {
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pID", NotificationId },
+                { "pCreatedBy", _userId },
+                { "pProjectID",  _projectId },
+                { "pPK",  " " },
+                { "pTypeID",  " " },
+                { "pUserID",  " " },
+                { "pFlag",  1 },
+
+            };
+
+            // Define output parameters (optional)
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+            {
+                 { "pError","int" },
+            };
+
+            // Call the ExecuteStoredProcedureAsync function
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.UpdateReminder", inputParams, outputParams);
+            //int pErrorValue = (int)outputValues["pError"];
+
+            return result;
+        }
     }
 }
