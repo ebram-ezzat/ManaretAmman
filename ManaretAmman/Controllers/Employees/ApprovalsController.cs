@@ -16,8 +16,8 @@ namespace ManaretAmman.Controllers.Employees
         public ApprovalsController(IApprovalsService approvalsServic)
         => _approvalsService = approvalsServic;
 
-        [HttpGet("GetPage")]
-        public async Task<IApiResponse> GetPage([FromQuery] PaginationFilter<GetEmployeeNotificationInput> filter)
+        [HttpGet("Vacation/GetPage")]
+        public async Task<IApiResponse> VacationGetPage([FromQuery] PaginationFilter<GetEmployeeNotificationInput> filter)
         {
             var result = await _approvalsService.GetVacationApprovalsAsync(filter);
 
