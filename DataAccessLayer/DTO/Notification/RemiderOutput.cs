@@ -8,7 +8,7 @@
         public string Notes { get; set; }
         public string ApprovalProcessID { get; set; }
         public int ApprovalStatusID { get; set; }
-        public string ApprovalStatus { get; set; }
+        //public string ApprovalStatus { get; set; }
         public int? StatusID { get; set; }
         public int PK { get; set; }
         public string StatusDesc { get; set; }
