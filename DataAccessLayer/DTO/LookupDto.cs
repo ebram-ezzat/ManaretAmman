@@ -8,6 +8,6 @@
         public string ColumnValue { get; set; }
         public string ColumnDescription { get; set; }
         public string ColumnDescriptionAr { get; set; }
-
+        public int? ApprovalPageID { get; set; }
     }
 }

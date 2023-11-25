@@ -55,6 +55,8 @@ namespace DataAccessLayer.Models
         [Column(TypeName = "decimal(18, 3)")]
         public decimal? WithoutSalaryVacationValue { get; set; }
 
+        public int? ApprovalPageID { get; set; }
+
         [ForeignKey("ProjectID")]
         [InverseProperty("LookupTables")]
         public virtual Project Project { get; set; }
