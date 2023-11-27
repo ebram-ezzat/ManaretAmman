@@ -11,5 +11,6 @@
         public int? YearId { get; set; }
         public int? ShiftID { get; set; }
         public int? LoginUserID { get; set; }
+        public int? DepartmentID { get; set; }
     }
 }

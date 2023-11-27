@@ -30,7 +30,7 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
         {
 
             var _filter = filter.FilterCriteria;
-            var result = await _payrolLogOnlyContext.GetProcedures().GetEmployeeAttendanceAsync(_filter.EmployeeID, _filter.FromDate.DateToIntValue(), _filter.ToDate.DateToIntValue(), _projectId, _filter.YearId, null, _filter.Flag, null, _filter.LanguageID, null,_filter.ShiftID, _userId);
+            var result = await _payrolLogOnlyContext.GetProcedures().GetEmployeeAttendanceAsync(_filter.EmployeeID, _filter.FromDate.DateToIntValue(), _filter.ToDate.DateToIntValue(), _projectId, _filter.YearId, null, _filter.Flag, _filter.DepartmentID, _filter.LanguageID, null,_filter.ShiftID, _userId);
 
             var totalRecords = result.Count;
 

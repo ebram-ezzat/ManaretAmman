@@ -65,7 +65,6 @@ namespace BusinessLogicLayer.Services.Approvals
 
         public async Task<int> SaveWorkEmployeeApprovals(WorkEmployeeApprovals workEmployeeApprovals)
         {
-            int projecId = _projectProvider.GetProjectId();
             Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
             { "pEmployeeID", workEmployeeApprovals.EmployeeID },
