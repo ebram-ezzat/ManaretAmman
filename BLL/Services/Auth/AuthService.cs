@@ -38,7 +38,7 @@ namespace BusinessLogicLayer.Services.Auth
             var employee = _unit.EmployeeRepository.GetFirstOrDefault(emp => emp.UserID == user.UserID);
             var employeeName = employee is not null ? employee.EmployeeName : "HR";
             var employeeId = employee is not null ? employee.EmployeeID : 0;
-            var token = GenerateJwtToken(model.Username,user.UserID,employeeName,employeeId);
+            var token = GenerateJwtToken(model.Username,user.UserID,employeeName,employeeId, user.UserTypeID.Value);
 
             return new AuthResponse { Token = token };
 
@@ -84,7 +84,7 @@ namespace BusinessLogicLayer.Services.Auth
             }
             return false;
         }
-        private string GenerateJwtToken(string username,int userId,string employeeName,int employeeId)
+        private string GenerateJwtToken(string username,int userId,string employeeName,int employeeId,int usertypeId)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
 
@@ -96,6 +96,7 @@ namespace BusinessLogicLayer.Services.Auth
                 new Claim("userId",userId.ToString()),
                 new Claim("employeeName",employeeName),
                 new Claim("employeeId",employeeId.ToString()),
+                new Claim("usertypeId",usertypeId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

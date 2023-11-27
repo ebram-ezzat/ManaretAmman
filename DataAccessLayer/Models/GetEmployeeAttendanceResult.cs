@@ -50,5 +50,8 @@ namespace DataAccessLayer.Models
         public int? EmployeeVacationID { get; set; }
         public string DayDesc { get; set; }
         public int? ISAddedManual { get; set; }
+        public string Systemtimeinminutes { get; set; }
+        public string Approvedtimeinminutes { get; set; }
+        public int? ApprovedStatusID { get; set; }
     }
 }

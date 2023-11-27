@@ -1,5 +1,6 @@
 ﻿using BusinessLogicLayer.Services.Lookups;
 using DataAccessLayer.DTO;
+using DataAccessLayer.DTO.Employees;
 using ManaretAmman.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,12 @@ namespace ManaretAmman.Controllers
         {
             var result = await _lookupsService.GetLookups(tableName, columnName);
             return ApiResponse<IList<LookupDto>>.Success("data has been retrieved succussfully",result);
+        }
+        [HttpGet("GetShifts")]
+        public async Task<IApiResponse> GetShifts()
+        {
+            var result = await _lookupsService.GetShifts();
+            return ApiResponse<IList<EmployeeShiftDTO>>.Success("data has been retrieved succussfully", result);
         }
         [HttpGet("DownloadFileAsBase64")]
         public async Task<IApiResponse> DownloadFileAsBase64(string FilePath)

@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.DTO;
+using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Http;
 
@@ -11,5 +12,6 @@ namespace BusinessLogicLayer.Services.Lookups
         Task<string> GetDescriptionAr(string tableName, string columnName, int columnValue);
         Task<object> GetFileBase64ByFtpPath(string fullPath);
         Task<IFormFile> GetFileAsFormFileByFtpPath(string fullPath);
+        Task<List<EmployeeShiftDTO>> GetShifts();
     }
 }

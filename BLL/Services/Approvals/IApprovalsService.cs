@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.Common;
+using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.Notification;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace BusinessLogicLayer.Services.Approvals
 {
     public interface IApprovalsService
     {
-        public Task<object> GetVacationApprovalsAsync(PaginationFilter<GetEmployeeNotificationInput> filter);
+        Task<object> GetVacationApprovalsAsync(PaginationFilter<GetEmployeeNotificationInput> filter);
+        Task<int> SaveWorkEmployeeApprovals(WorkEmployeeApprovals workEmployeeApprovals);
     }
 }

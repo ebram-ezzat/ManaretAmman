@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.Common;
+using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO;
+using DataAccessLayer.DTO.Employees;
+using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using System.Dynamic;
 
 namespace BusinessLogicLayer.Services.Lookups
 {
@@ -14,11 +18,15 @@ namespace BusinessLogicLayer.Services.Lookups
         private readonly IUnitOfWork _unit;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
-        public LookupsService(IUnitOfWork unit, IMapper mapper, IConfiguration configuration)
+        private readonly IProjectProvider _projectProvider;
+        private readonly PayrolLogOnlyContext _payrolLogOnlyContext;
+        public LookupsService(IUnitOfWork unit, IMapper mapper, IConfiguration configuration, IProjectProvider projectProvider, PayrolLogOnlyContext payrolLogOnlyContext)
         {
             _unit = unit;
             _mapper = mapper;
             _configuration = configuration;
+            _projectProvider = projectProvider;
+            _payrolLogOnlyContext = payrolLogOnlyContext;
         }
         public async Task<string> GetDescription(string tableName, string columnName, int columnValue)
         {
@@ -90,5 +98,17 @@ namespace BusinessLogicLayer.Services.Lookups
             return _mapper.Map<IList<LookupDto>>(lookups);
         }
 
+        public async Task<List<EmployeeShiftDTO>> GetShifts()
+        {
+            var parameters = new Dictionary<string, object>
+             {
+                { "pShiftID" , null },
+                { "pProjectID", _projectProvider.GetProjectId() },
+                { "pSearch" , null }
+             };
+            var (employeePapersResponse, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeShiftDTO>("[dbo].[GetShifts]", parameters, null);
+
+            return employeePapersResponse;
+        }
     }
 }

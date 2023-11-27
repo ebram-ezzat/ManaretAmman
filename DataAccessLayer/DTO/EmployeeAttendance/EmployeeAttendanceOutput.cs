@@ -15,7 +15,9 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public string ShiftName { get; set; }
         public string Workhours { get; set; }
         public string ShiftWithTimes { get; set; }
-
+        public string Systemtimeinminutes { get; set; }
+        public string Approvedtimeinminutes { get; set; }
+        public int? ApprovedStatusID { get; set; }
 
     }
 }

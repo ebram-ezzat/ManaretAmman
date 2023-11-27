@@ -3,6 +3,7 @@ using BusinessLogicLayer.Extensions;
 using BusinessLogicLayer.Services.Auth;
 using BusinessLogicLayer.Services.Lookups;
 using BusinessLogicLayer.Services.ProjectProvider;
+using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.Notification;
 using DataAccessLayer.Models;
 using System;
@@ -61,5 +62,35 @@ namespace BusinessLogicLayer.Services.Approvals
             return PublicHelper.CreateResultPaginationObject(filter.FilterCriteria, NotificationResponse, outputValues);
 
         }
+
+        public async Task<int> SaveWorkEmployeeApprovals(WorkEmployeeApprovals workEmployeeApprovals)
+        {
+            int projecId = _projectProvider.GetProjectId();
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pEmployeeID", workEmployeeApprovals.EmployeeID },
+            { "pTypeID", workEmployeeApprovals.TypeID },
+            { "pAttendanceDate", workEmployeeApprovals.AttendanceDate },
+            { "pSystemtimeinminutes", workEmployeeApprovals.Systemtimeinminutes },
+            { "pApprovedtimeinminutes", workEmployeeApprovals.Approvedtimeinminutes },
+            { "pCreatedBy ", _userId },
+            { "pStatusID  ", workEmployeeApprovals.StatusID },
+        };
+
+            // Define output parameters (optional)
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" }, // Assuming the output parameter "pError" is of type int
+            // Add other output parameters as needed
+
+        };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeApprovales", inputParams, outputParams);
+
+
+            int pErrorValue = (int)outputValues["pError"];
+
+            return result;
+        }
+
     }
 }

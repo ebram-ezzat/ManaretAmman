@@ -49,7 +49,10 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
                                   //StartTime = item.StartTime.ConvertFromMinutesToTimeString(),
                                   StartTime = item.CheckIn.ConvertFromMinutesToTimeString(),
                                   Workhours= (TimeSpan.FromMinutes((double)item.EndTime)- TimeSpan.FromMinutes((double)item.StartTime)).ToString(@"hh\:mm"),
-                                  ShiftWithTimes = $"{item.StartTime.ConvertFromMinutesToTimeString()} | {item.EndTime.ConvertFromMinutesToTimeString()} | {item.ShiftName}"
+                                  ShiftWithTimes = $"{item.StartTime.ConvertFromMinutesToTimeString()} | {item.EndTime.ConvertFromMinutesToTimeString()} | {item.ShiftName}",
+                                  Systemtimeinminutes = item.Systemtimeinminutes,
+                                  Approvedtimeinminutes = item.Approvedtimeinminutes,
+                                  ApprovedStatusID = item.ApprovedStatusID
                               }).ToList();
 
             return returnedData.CreatePagedReponse<EmployeeAttendanceOutput>(filter.PageIndex, filter.Offset, totalRecords);
