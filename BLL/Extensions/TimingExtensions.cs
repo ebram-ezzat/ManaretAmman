@@ -74,4 +74,13 @@ public static class TimingExtensions
 
         return timeSpan.ToString(@"hh\:mm");
     }
+
+    public static int? TimeStringToIntValue(this string Time)
+    {
+        // Parse the time string into a TimeSpan
+        TimeSpan timeSpan = TimeSpan.Parse(Time);
+
+        // Calculate the total number of minutes
+        return (int)timeSpan.TotalMinutes;
+    }
 }

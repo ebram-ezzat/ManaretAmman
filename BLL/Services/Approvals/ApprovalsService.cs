@@ -69,9 +69,9 @@ namespace BusinessLogicLayer.Services.Approvals
         {
             { "pEmployeeID", workEmployeeApprovals.EmployeeID },
             { "pTypeID", workEmployeeApprovals.TypeID },
-            { "pAttendanceDate", workEmployeeApprovals.AttendanceDate },
-            { "pSystemtimeinminutes", workEmployeeApprovals.Systemtimeinminutes },
-            { "pApprovedtimeinminutes", workEmployeeApprovals.Approvedtimeinminutes },
+            { "pAttendanceDate", workEmployeeApprovals.AttendanceDate.DateToIntValue() },
+            { "pSystemtimeinminutes", workEmployeeApprovals.Systemtimeinminutes.TimeStringToIntValue() },
+            { "pApprovedtimeinminutes", workEmployeeApprovals.Approvedtimeinminutes.TimeStringToIntValue() },
             { "pCreatedBy ", _userId },
             { "pStatusID  ", workEmployeeApprovals.StatusID },
         };
