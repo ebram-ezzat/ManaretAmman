@@ -38,6 +38,7 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
             var returnedData = result.Skip((filter.PageIndex - 1) * filter.Offset)
                               .Take(filter.Offset).Select(item => new EmployeeAttendanceOutput
                               {
+                                  EmployeeID = item.EmployeeID,
                                   EmployeeName = item.EmployeeName,
                                   AttendanceDate = item.AttendanceDate.IntToDateValue(),
                                   DayDesc = item.DayDesc,

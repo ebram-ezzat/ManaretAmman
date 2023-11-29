@@ -3,6 +3,8 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
 {
     public class EmployeeAttendanceOutput
     {
+        public int? EmployeeID { get; set; }
+
         public int? EmployeeNumber { get; set; }
         public string EmployeeName { get; set; }
 
