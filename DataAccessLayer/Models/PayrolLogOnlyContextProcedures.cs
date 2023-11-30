@@ -2383,7 +2383,7 @@ namespace DataAccessLayer.Models
             return _;
         }
 
-        public virtual async Task<List<GetEmployeeAttendanceResult>> GetEmployeeAttendanceAsync(int? pEmployeeID, int? pFromDate, int? pToDate, int? pProjectID, int? pYearID, int? pVacationTypeID, int? pFlag, int? pDepartmentID, int? pLanguageID, int? pCreatedBy,int? pShiftID,int? pLoginUserID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<GetEmployeeAttendanceResult>> GetEmployeeAttendanceAsync(int? pEmployeeID, int? pFromDate, int? pToDate, int? pProjectID, int? pYearID, int? pVacationTypeID, int? pFlag, int? pDepartmentID, int? pLanguageID, int? pCreatedBy,int? pShiftID,int? pLoginUserID, int? papprovaltypeid = null, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -2469,9 +2469,16 @@ namespace DataAccessLayer.Models
                     SqlDbType = System.Data.SqlDbType.Int,
                 }
                 ,
+                new SqlParameter
+                {
+                    ParameterName = "papprovaltypeid",
+                    Value = papprovaltypeid ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                }
+                ,
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<GetEmployeeAttendanceResult>("EXEC @returnValue = [dbo].[GetEmployeeAttendance] @pEmployeeID, @pFromDate, @pToDate, @pProjectID, @pYearID, @pVacationTypeID, @pFlag, @pDepartmentID, @pLanguageID, @pCreatedBy, @pShiftID, @pLoginUserID", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<GetEmployeeAttendanceResult>("EXEC @returnValue = [dbo].[GetEmployeeAttendance] @pEmployeeID, @pFromDate, @pToDate, @pProjectID, @pYearID, @pVacationTypeID, @pFlag, @pDepartmentID, @pLanguageID, @pCreatedBy, @pShiftID, @pLoginUserID, @papprovaltypeid", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

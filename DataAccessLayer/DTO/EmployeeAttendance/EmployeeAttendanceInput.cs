@@ -12,5 +12,6 @@
         public int? ShiftID { get; set; }
         public int? LoginUserID { get; set; }
         public int? DepartmentID { get; set; }
+        public int ? ApprovalTypeID { get; set; }
     }
 }
