@@ -15,6 +15,43 @@ public static class TimingExtensions
         return null;
     }
 
+    public static long? DateWithTimeToIntValue(this DateTime? date)
+    {
+        if (date == null)
+            return null;
+
+        var _date = date.Value;
+        string month = _date.Month.ToString().Length == 1 ? "0" + _date.Month.ToString() : _date.Month.ToString();
+        string day = _date.Day.ToString().Length == 1 ? "0" + _date.Day.ToString() : _date.Day.ToString();
+        string hour = _date.Hour.ToString().Length == 1 ? "0" + _date.Hour.ToString() : _date.Hour.ToString();
+        string minute = _date.Minute.ToString().Length == 1 ? "0" + _date.Minute.ToString() : _date.Minute.ToString();
+        string second = _date.Second.ToString().Length == 1 ? "0" + _date.Second.ToString() : _date.Second.ToString();
+
+        long result;
+        if (long.TryParse(_date.Year.ToString() + month + day + hour + minute + second, out result))
+            return result;
+        return null;
+    }
+    public static DateTime? IntToDateTimeValue(this int? intDate)
+    {
+        if (intDate == null || intDate.ToString().Length != 14)
+            return null;
+        var _date = intDate.Value.ToString();
+        string year = _date.Substring(0, 4);
+        string month = _date.Substring(4, 2);
+        string day = _date.Substring(6, 2);
+        string hour = _date.Substring(8, 2);
+        string minute = _date.Substring(10, 2);
+        string second = _date.Substring(12, 2);
+
+        if (int.TryParse(day, out int dayint) && int.TryParse(month, out int monthint) && int.TryParse(year, out int yearint) &&
+            int.TryParse(hour, out int hourint) && int.TryParse(minute, out int minuteint) && int.TryParse(second, out int secondint))
+        {
+            Console.WriteLine(new DateTime(yearint, monthint, dayint, hourint, minuteint, secondint).ToString());
+            return new DateTime(yearint, monthint, dayint, hourint, minuteint, secondint);
+        }
+        return null;
+    }
     public static DateTime? IntToDateValue(this int? intDate)
     {
         if (intDate == null || intDate.ToString().Length!=8)
