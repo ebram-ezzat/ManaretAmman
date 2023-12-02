@@ -11,7 +11,7 @@ namespace DataAccessLayer.DTO.Reports
         public int? ProjectID { get; set; }
         public int? EmployeeID { get; set; }
         public int? StatusID { get; set; }
-        public int? TypeID { get; set; }
+        public int TypeID { get; set; } = 0;
         public int? CurrentYearID { get; set; }
         public int? CurrentMonthID { get; set; }
         public int LanguageID { get; set; } = 1;

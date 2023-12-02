@@ -32,7 +32,7 @@ namespace BusinessLogicLayer.Services.Reports
             var parameters = PublicHelper.GetPropertiesWithPrefix<GetEmployeeSalaryReportRequest>(getEmployeeSalaryReportRequest, "p");
             
             var (getEmployeeSalaryReportResponse, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeSalaryReportResponse>("[dbo].[GetEmployeeSalary]", parameters, null);
-            return getEmployeeSalaryReportResponse.FirstOrDefault()?.EmailSubject;
+            return getEmployeeSalaryReportResponse.FirstOrDefault()?.EmailContent;
         }
 
         
