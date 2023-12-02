@@ -20,7 +20,7 @@ namespace ManaretAmman.Controllers.Employees
         {
             _reportService = reportService;
         }
-        [HttpGet("Reports/GetEmployeeSalaryReport")]
+        [HttpGet("GetEmployeeSalaryReport")]
         public async Task<IApiResponse> GetEmployeeSalaryReport([FromQuery] GetEmployeeSalaryReportRequest getEmployeeSalaryReport)
         {
             var result = await _reportService.GetEmployeeSalaryReport(getEmployeeSalaryReport);
