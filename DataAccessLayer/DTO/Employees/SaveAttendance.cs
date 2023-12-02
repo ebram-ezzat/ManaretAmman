@@ -8,13 +8,13 @@ namespace DataAccessLayer.DTO.Employees
 {
     public class SaveAttendance
     {
-        public int projecId { get; set; }
-        public DateTime attendanceDate { get; set; }
-        public int typeId { get; set; }
-        public int employeeId { get; set; }
+        public int? projecId { get; set; }
+        public DateTime? attendanceDate { get; set; }
+        public int? typeId { get; set; }
+        public int? employeeId { get; set; }
         public string macIp { get; set; }
         public string langtitude { get; set; }
         public string latitude { get; set; }
-        public int locationId { get; set; }
+        public int? locationId { get; set; }
     }
 }
