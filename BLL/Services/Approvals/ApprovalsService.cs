@@ -68,7 +68,8 @@ namespace BusinessLogicLayer.Services.Approvals
             Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
             { "pEmployeeID", workEmployeeApprovals.EmployeeID },
-            { "pTypeID", workEmployeeApprovals.TypeID },
+            //{ "pTypeID", workEmployeeApprovals.TypeID },
+            { "pTypeID", 0 },
             { "pAttendanceDate", workEmployeeApprovals.AttendanceDate.DateToIntValue() },
             { "pSystemtimeinminutes", workEmployeeApprovals.Systemtimeinminutes.TimeStringToIntValue() },
             { "pApprovedtimeinminutes", workEmployeeApprovals.Approvedtimeinminutes.TimeStringToIntValue() },
