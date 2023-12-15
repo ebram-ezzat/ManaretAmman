@@ -12,5 +12,6 @@ namespace DataAccessLayer.DTO.Notification
         public int Id { get; set; }
         public int PrevilageType { get; set; }
         public int SendToLog { get; set; } = 0;
+        public int? Pk { get; set; }
     }
 }
