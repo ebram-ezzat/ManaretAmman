@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.DTO.Employees;
+using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services.Employees;
 
@@ -10,5 +11,5 @@ public interface IEmployeeService
     Task<object> GetEmployeePaperProc(GetEmployeePaperRequest getEmployeePaperRequest);
     Task<int> DeleteEmployeePaperProc(int EmployeeId, int DetailId);
     Task<int> SaveEmployeePaperProc(SaveEmployeePaper saveEmployeePaper);
-
+    
 }

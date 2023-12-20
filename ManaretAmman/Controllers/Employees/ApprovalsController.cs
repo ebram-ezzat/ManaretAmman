@@ -64,5 +64,25 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<int>.Success("data has been retrieved succussfully", result);
         }
+        [HttpPost("Work/SaveOverTimeWorkEmployee")]
+        public async Task<IApiResponse> SaveOverTimeWorkEmployee(SaveOverTimeWorkEmployee model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _approvalsService.SaveOverTimeWorkEmployee(model);
+            if (result.Item1 == 1)            
+                // Success
+                return ApiResponse<object>.Success("data has been inserted succussfully",result.Item2); // Output parameters
+            
+           
+            return ApiResponse.Failure("Failed to insert overtime work");
+            
+           
+        }
     }
 }

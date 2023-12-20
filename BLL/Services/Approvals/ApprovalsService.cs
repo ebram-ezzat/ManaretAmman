@@ -8,6 +8,7 @@ using DataAccessLayer.DTO.Notification;
 using DataAccessLayer.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -96,6 +97,33 @@ namespace BusinessLogicLayer.Services.Approvals
 
             return result;
         }
+        public async Task<(int, Dictionary<string, object>)> SaveOverTimeWorkEmployee(SaveOverTimeWorkEmployee saveOverTimeWorkEmployee)
+        {
+            var parameters = new Dictionary<string, object>
+        {
+            { "pEmployeeID", saveOverTimeWorkEmployee.EmployeeID },
+            { "pTypeID", saveOverTimeWorkEmployee.TypeID },
+            { "pAttendanceDate", saveOverTimeWorkEmployee.AttendanceDate.DateToIntValue() },
+            { "pSystemtimeinminutes", saveOverTimeWorkEmployee.SystemTimeInMinutes.TimeStringToIntValue() },
+            { "pApprovedtimeinminutes", saveOverTimeWorkEmployee.ApprovedTimeInMinutes.TimeStringToIntValue() },
+            { "pCreatedBy", _userId },
+            { "pStatusID", saveOverTimeWorkEmployee.StatusID },
+            { "pFromTime", saveOverTimeWorkEmployee.FromTime.ConvertFromTimeStringToMinutes() },
+            { "pToTime", saveOverTimeWorkEmployee.ToTime.ConvertFromTimeStringToMinutes() },
+            { "pNotes", saveOverTimeWorkEmployee.Notes },
+
+        };
+
+            var outputParameters = new Dictionary<string, object>
+        {
+            { "pError", SqlDbType.Int },
+            { "pEmployeeApprovalID", SqlDbType.Int }
+            // Add other output parameters based on your stored procedure
+        };
+
+            return await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("InsertEmployeeApprovales", parameters, outputParameters);
+        }
+
 
     }
 }
