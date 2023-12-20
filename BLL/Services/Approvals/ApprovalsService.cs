@@ -75,6 +75,11 @@ namespace BusinessLogicLayer.Services.Approvals
             { "pApprovedtimeinminutes", workEmployeeApprovals.Approvedtimeinminutes.TimeStringToIntValue() },
             { "pCreatedBy ", _userId },
             { "pStatusID  ", workEmployeeApprovals.StatusID },
+            {"pToTIME","" },
+            {"pActionTypeID","" },
+            {"pEmployeeApprovalID","" },
+            {"pnotes","" },
+            {"pFromTime","" },
         };
 
             // Define output parameters (optional)
@@ -84,7 +89,7 @@ namespace BusinessLogicLayer.Services.Approvals
             // Add other output parameters as needed
 
         };
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeApprovales", inputParams, outputParams);
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.UpdateEmployeeApprovales", inputParams, outputParams);
 
 
             int pErrorValue = (int)outputValues["pError"];
