@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services.Approvals
@@ -100,30 +101,78 @@ namespace BusinessLogicLayer.Services.Approvals
         public async Task<(int, Dictionary<string, object>)> SaveOverTimeWorkEmployee(SaveOverTimeWorkEmployee saveOverTimeWorkEmployee)
         {
             var parameters = new Dictionary<string, object>
-        {
-            { "pEmployeeID", saveOverTimeWorkEmployee.EmployeeID },
-            { "pTypeID", saveOverTimeWorkEmployee.TypeID },
-            { "pAttendanceDate", saveOverTimeWorkEmployee.AttendanceDate.DateToIntValue() },
-            { "pSystemtimeinminutes", saveOverTimeWorkEmployee.SystemTimeInMinutes.TimeStringToIntValue() },
-            { "pApprovedtimeinminutes", saveOverTimeWorkEmployee.ApprovedTimeInMinutes.TimeStringToIntValue() },
-            { "pCreatedBy", _userId },
-            { "pStatusID", saveOverTimeWorkEmployee.StatusID },
-            { "pFromTime", saveOverTimeWorkEmployee.FromTime.ConvertFromTimeStringToMinutes() },
-            { "pToTime", saveOverTimeWorkEmployee.ToTime.ConvertFromTimeStringToMinutes() },
-            { "pNotes", saveOverTimeWorkEmployee.Notes },
+            {
+                { "pEmployeeID", saveOverTimeWorkEmployee.EmployeeID },
+                { "pTypeID", saveOverTimeWorkEmployee.TypeID },
+                { "pAttendanceDate", saveOverTimeWorkEmployee.AttendanceDate.DateToIntValue() },
+                { "pSystemtimeinminutes", saveOverTimeWorkEmployee.SystemTimeInMinutes.TimeStringToIntValue() },
+                { "pApprovedtimeinminutes", saveOverTimeWorkEmployee.ApprovedTimeInMinutes.TimeStringToIntValue() },
+                { "pCreatedBy", 1 },
+                { "pStatusID", saveOverTimeWorkEmployee.StatusID },
+                { "pFromTime", saveOverTimeWorkEmployee.FromTime.ConvertFromTimeStringToMinutes() },
+                { "pToTime", saveOverTimeWorkEmployee.ToTime.ConvertFromTimeStringToMinutes() },
+                { "pNotes", saveOverTimeWorkEmployee.Notes??string.Empty },
 
-        };
+            };
 
             var outputParameters = new Dictionary<string, object>
-        {
-            { "pError", SqlDbType.Int },
-            { "pEmployeeApprovalID", SqlDbType.Int }
-            // Add other output parameters based on your stored procedure
-        };
+            {
+                { "pError", SqlDbType.Int },
+                { "pEmployeeApprovalID", SqlDbType.Int }
+                // Add other output parameters based on your stored procedure
+            };
 
-            return await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("InsertEmployeeApprovales", parameters, outputParameters);
+            return await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeApprovales", parameters, outputParameters);
         }
 
+        public async Task<int> DeleteOverTimeWorkEmployee(DeleteOverTimeWorkEmployee deleteOverTimeWorkEmployee)
+        {
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+          {
+            { "pEmployeeApprovalID", deleteOverTimeWorkEmployee.EmployeeApprovalID },
+            { "pProjectID", _projectId }           
 
+          };
+
+           
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" }, // Assuming the output parameter "pError" is of type int
+            
+        };
+
+            // Call the ExecuteStoredProcedureAsync function
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeeApprovales", inputParams, outputParams);
+            int pErrorValue = (int)outputValues["pError"];
+
+            
+            return pErrorValue;
+        }
+
+        public async Task<object> GetOverTimeWorkEmployee(GetOverTimeWorkEmployeeInputModel inputModel)
+        {
+            var inputParameters = new Dictionary<string, object>
+            {
+                { "pEmployeeID", inputModel.EmployeeID },
+                { "pTypeID", inputModel.TypeID },
+                { "pFromDate", inputModel.FromDate },
+                { "pToDate", inputModel.ToDate },
+                { "pProjectID", _projectId },
+                { "pPageNo", inputModel.PageNo },
+                { "pPageSize", inputModel.PageSize },
+                { "pLoginUserID", _userId },
+                { "pLanguageID", inputModel.LanguageID==0?1:inputModel.LanguageID}
+        
+            };
+
+            var outputParameters = new Dictionary<string, object>
+            {
+                { "pRowCount", SqlDbType.Int }
+               
+            };
+            var (ResponseOverTime, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetOverTimeWorkEmployeeOutputModel>("dbo.GetEmployeeApprovales", inputParameters, outputParameters);
+
+            return PublicHelper.CreateResultPaginationObject(inputModel, ResponseOverTime, outputValues);
+        }
     }
 }

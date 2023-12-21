@@ -84,5 +84,38 @@ namespace ManaretAmman.Controllers.Employees
             
            
         }
+        [HttpDelete("Work/DeleteOverTimeWorkEmployee")]
+        public async Task<IApiResponse> DeleteOverTimeWorkEmployee([FromQuery] DeleteOverTimeWorkEmployee model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _approvalsService.DeleteOverTimeWorkEmployee(model);
+            if (result == 1)//there is no error, pError=1
+                // Success
+                return ApiResponse<int>.Success("data has been deleted succussfully", model.EmployeeApprovalID); // Output parameters
+
+
+            return ApiResponse.Failure("Failed to delete overtime work");
+
+
+        }
+        [HttpGet("Work/GetOverTimeWorkEmployee")]
+        public async Task<IApiResponse> GetOverTimeWorkEmployee([FromQuery] GetOverTimeWorkEmployeeInputModel model)
+        {
+           
+            var result = await _approvalsService.GetOverTimeWorkEmployee(model);
+            if (result == null)
+                return ApiResponse.Failure("No data", null);
+
+
+            return ApiResponse<object>.Success("data has been retrieved succussfully", result);
+
+
+        }
     }
 }

@@ -139,6 +139,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<RemiderOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<EmployeeShiftDTO>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeSalaryReportResponse>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GetOverTimeWorkEmployeeOutputModel>().HasNoKey().ToView(null);
         }
     }
 

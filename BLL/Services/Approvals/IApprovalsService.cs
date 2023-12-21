@@ -14,5 +14,7 @@ namespace BusinessLogicLayer.Services.Approvals
         Task<object> GetVacationApprovalsAsync(PaginationFilter<GetEmployeeNotificationInput> filter);
         Task<int> SaveWorkEmployeeApprovals(WorkEmployeeApprovals workEmployeeApprovals);
         Task<(int, Dictionary<string, object>)> SaveOverTimeWorkEmployee(SaveOverTimeWorkEmployee saveOverTimeWorkEmployee);
+        Task<int> DeleteOverTimeWorkEmployee(DeleteOverTimeWorkEmployee deleteOverTimeWorkEmployee);
+        Task<object> GetOverTimeWorkEmployee(GetOverTimeWorkEmployeeInputModel  inputModel);
     }
 }
