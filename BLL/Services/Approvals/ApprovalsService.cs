@@ -107,7 +107,7 @@ namespace BusinessLogicLayer.Services.Approvals
                 { "pAttendanceDate", saveOverTimeWorkEmployee.AttendanceDate.DateToIntValue() },
                 { "pSystemtimeinminutes", saveOverTimeWorkEmployee.SystemTimeInMinutes==null?string.Empty:saveOverTimeWorkEmployee.SystemTimeInMinutes.TimeStringToIntValue() },
                 { "pApprovedtimeinminutes", saveOverTimeWorkEmployee.ApprovedTimeInMinutes==null?string.Empty:saveOverTimeWorkEmployee.ApprovedTimeInMinutes.TimeStringToIntValue() },
-                { "pCreatedBy", _userId },
+                { "pCreatedBy", null },
                 { "pStatusID", saveOverTimeWorkEmployee.StatusID??2 },
                 { "pFromTime", saveOverTimeWorkEmployee.FromTime.ConvertFromTimeStringToMinutes() },
                 { "pToTime", saveOverTimeWorkEmployee.ToTime.ConvertFromTimeStringToMinutes() },
@@ -117,8 +117,8 @@ namespace BusinessLogicLayer.Services.Approvals
 
             var outputParameters = new Dictionary<string, object>
             {
-                { "pError", SqlDbType.Int },
-                { "pEmployeeApprovalID", SqlDbType.Int }
+                { "pError", "int" },
+                { "pEmployeeApprovalID", "int" }
                 // Add other output parameters based on your stored procedure
             };
 
@@ -155,8 +155,8 @@ namespace BusinessLogicLayer.Services.Approvals
             {
                 { "pEmployeeID", inputModel.EmployeeID },
                 { "pTypeID", inputModel.TypeID },
-                { "pFromDate", inputModel.FromDate.DateToIntValue() },
-                { "pToDate", inputModel.ToDate.DateToIntValue() },
+                { "pFromDate", inputModel.FromDate==null?string.Empty:inputModel.FromDate.DateToIntValue() },
+                { "pToDate", inputModel.ToDate==null?string.Empty:inputModel.ToDate.DateToIntValue() },
                 { "pProjectID", _projectId },
                 { "pPageNo", inputModel.PageNo },
                 { "pPageSize", inputModel.PageSize },
@@ -167,7 +167,7 @@ namespace BusinessLogicLayer.Services.Approvals
 
             var outputParameters = new Dictionary<string, object>
             {
-                { "pRowCount", SqlDbType.Int }
+                { "pRowCount", "int" }
                
             };
             var (ResponseOverTime, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetOverTimeWorkEmployeeOutputModel>("dbo.GetEmployeeApprovales", inputParameters, outputParameters);
