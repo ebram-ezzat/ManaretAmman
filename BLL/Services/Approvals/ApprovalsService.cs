@@ -154,7 +154,7 @@ namespace BusinessLogicLayer.Services.Approvals
             var inputParameters = new Dictionary<string, object>
             {
                 { "pEmployeeID", inputModel.EmployeeID },
-                { "pTypeID", inputModel.TypeID },
+                { "pTypeID", inputModel.TypeID??0 },
                 { "pFromDate", inputModel.FromDate==null?string.Empty:inputModel.FromDate.DateToIntValue() },
                 { "pToDate", inputModel.ToDate==null?string.Empty:inputModel.ToDate.DateToIntValue() },
                 { "pProjectID", _projectId },
@@ -167,7 +167,7 @@ namespace BusinessLogicLayer.Services.Approvals
 
             var outputParameters = new Dictionary<string, object>
             {
-                { "pRowCount", "int" }
+                { "prowcount", "int" }
                
             };
             var (ResponseOverTime, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetOverTimeWorkEmployeeOutputModel>("dbo.GetEmployeeApprovales", inputParameters, outputParameters);

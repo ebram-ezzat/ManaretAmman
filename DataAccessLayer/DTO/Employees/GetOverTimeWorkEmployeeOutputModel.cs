@@ -8,25 +8,25 @@ namespace DataAccessLayer.DTO.Employees
 {
     public class GetOverTimeWorkEmployeeOutputModel
     {
-        public int EmployeeID { get; set; }
-        public int TypeID { get; set; }
-        public DateTime AttendanceDate { get; set; }
-        public int SystemTimeInMinutes { get; set; }
-        public int ApprovedTimeInMinutes { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime CreationDate { get; set; }
-        public string ModifiedBy { get; set; }
-        public DateTime ModificationDate { get; set; }
-        public int StatusID { get; set; }
-        public DateTime ToTime { get; set; }
-        public int ActionTypeID { get; set; }
-        public int EmployeeApprovalID { get; set; }
+        public int? EmployeeID { get; set; }
+        public int? TypeID { get; set; }
+        public int? AttendanceDate { get; set; }
+        public int? SystemTimeInMinutes { get; set; }
+        public int? ApprovedTimeInMinutes { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? CreationDate { get; set; }
+        public int? ModifiedBy { get; set; }
+        public DateTime? ModificationDate { get; set; }
+        public int? StatusID { get; set; }
+        public int? ToTime { get; set; }
+        public int? ActionTypeID { get; set; }
+        public int? EmployeeApprovalID { get; set; }
         public string Notes { get; set; }
-        public DateTime FromTime { get; set; }
+        public int? FromTime { get; set; }
         public string EmployeeName { get; set; }
-        public DateTime CheckIn { get; set; }
-        public DateTime CheckOut { get; set; }
+        public int? CheckIn { get; set; }
+        public int? CheckOut { get; set; }
         public string StatusDesc { get; set; }
-        public string EmployeeNumber { get; set; }
+        public int? EmployeeNumber { get; set; }
     }
 }
