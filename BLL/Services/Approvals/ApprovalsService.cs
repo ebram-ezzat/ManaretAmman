@@ -107,7 +107,7 @@ namespace BusinessLogicLayer.Services.Approvals
                 { "pAttendanceDate", saveOverTimeWorkEmployee.AttendanceDate.DateToIntValue() },
                 { "pSystemtimeinminutes", saveOverTimeWorkEmployee.SystemTimeInMinutes==null?string.Empty:saveOverTimeWorkEmployee.SystemTimeInMinutes.TimeStringToIntValue() },
                 { "pApprovedtimeinminutes", saveOverTimeWorkEmployee.ApprovedTimeInMinutes==null?string.Empty:saveOverTimeWorkEmployee.ApprovedTimeInMinutes.TimeStringToIntValue() },
-                { "pCreatedBy", null },
+                { "pCreatedBy", _userId },
                 { "pStatusID", saveOverTimeWorkEmployee.StatusID??2 },
                 { "pFromTime", saveOverTimeWorkEmployee.FromTime.ConvertFromTimeStringToMinutes() },
                 { "pToTime", saveOverTimeWorkEmployee.ToTime.ConvertFromTimeStringToMinutes() },
