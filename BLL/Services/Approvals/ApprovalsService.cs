@@ -103,12 +103,12 @@ namespace BusinessLogicLayer.Services.Approvals
             var parameters = new Dictionary<string, object>
             {
                 { "pEmployeeID", saveOverTimeWorkEmployee.EmployeeID },
-                { "pTypeID", saveOverTimeWorkEmployee.TypeID },
+                { "pTypeID", saveOverTimeWorkEmployee.TypeID??0 },
                 { "pAttendanceDate", saveOverTimeWorkEmployee.AttendanceDate.DateToIntValue() },
-                { "pSystemtimeinminutes", saveOverTimeWorkEmployee.SystemTimeInMinutes.TimeStringToIntValue() },
-                { "pApprovedtimeinminutes", saveOverTimeWorkEmployee.ApprovedTimeInMinutes.TimeStringToIntValue() },
-                { "pCreatedBy", 1 },
-                { "pStatusID", saveOverTimeWorkEmployee.StatusID },
+                { "pSystemtimeinminutes", saveOverTimeWorkEmployee.SystemTimeInMinutes==null?string.Empty:saveOverTimeWorkEmployee.SystemTimeInMinutes.TimeStringToIntValue() },
+                { "pApprovedtimeinminutes", saveOverTimeWorkEmployee.ApprovedTimeInMinutes==null?string.Empty:saveOverTimeWorkEmployee.ApprovedTimeInMinutes.TimeStringToIntValue() },
+                { "pCreatedBy", _userId },
+                { "pStatusID", saveOverTimeWorkEmployee.StatusID??2 },
                 { "pFromTime", saveOverTimeWorkEmployee.FromTime.ConvertFromTimeStringToMinutes() },
                 { "pToTime", saveOverTimeWorkEmployee.ToTime.ConvertFromTimeStringToMinutes() },
                 { "pNotes", saveOverTimeWorkEmployee.Notes??string.Empty },
@@ -155,8 +155,8 @@ namespace BusinessLogicLayer.Services.Approvals
             {
                 { "pEmployeeID", inputModel.EmployeeID },
                 { "pTypeID", inputModel.TypeID },
-                { "pFromDate", inputModel.FromDate },
-                { "pToDate", inputModel.ToDate },
+                { "pFromDate", inputModel.FromDate.DateToIntValue() },
+                { "pToDate", inputModel.ToDate.DateToIntValue() },
                 { "pProjectID", _projectId },
                 { "pPageNo", inputModel.PageNo },
                 { "pPageSize", inputModel.PageSize },
