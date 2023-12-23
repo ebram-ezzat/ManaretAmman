@@ -117,5 +117,26 @@ namespace ManaretAmman.Controllers.Employees
 
 
         }
+
+        [HttpPost("Work/UpdateOverTimeWorkEmployee")]
+        public async Task<IApiResponse> UpdateOverTimeWorkEmployee(UpdateOverTimeWorkEmployee model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _approvalsService.UpdateOverTimeWorkEmployee(model);
+            if (result.Item1 == 1)
+                // Success
+                return ApiResponse<object>.Success("data has been updated succussfully"); // Output parameters
+
+
+            return ApiResponse.Failure("Failed to update overtime work");
+
+
+        }
     }
 }

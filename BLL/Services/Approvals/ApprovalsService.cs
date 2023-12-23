@@ -198,5 +198,36 @@ namespace BusinessLogicLayer.Services.Approvals
             }).ToList();
             return PublicHelper.CreateResultPaginationObject(inputModel, getOverTimeWorkEmployeeReturnModel, outputValues);
         }
+
+        public async Task<(int, Dictionary<string, object>)> UpdateOverTimeWorkEmployee(UpdateOverTimeWorkEmployee updateOverTimeWorkEmployee)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+               { "pEmployeeID", updateOverTimeWorkEmployee.EmployeeID },
+                { "pTypeID", updateOverTimeWorkEmployee.TypeID??0 },
+                { "pAttendanceDate", updateOverTimeWorkEmployee.AttendanceDate.DateToIntValue() },
+                { "pSystemtimeinminutes", updateOverTimeWorkEmployee.SystemTimeInMinutes==null?string.Empty:updateOverTimeWorkEmployee.SystemTimeInMinutes.TimeStringToIntValue() },
+
+                { "pApprovedtimeinminutes", updateOverTimeWorkEmployee.ApprovedTimeInMinutes==null?string.Empty:updateOverTimeWorkEmployee.ApprovedTimeInMinutes.TimeStringToIntValue() },
+
+                { "pCreatedBy", _userId },
+                { "pStatusID", updateOverTimeWorkEmployee.StatusID??0 },
+                { "pToTime", updateOverTimeWorkEmployee.ToTime.ConvertFromTimeStringToMinutes() },
+                { "pActionTypeID", updateOverTimeWorkEmployee.ActionTypeID},
+                { "pEmployeeApprovalID", updateOverTimeWorkEmployee.EmployeeApprovalID},
+                { "pNotes", updateOverTimeWorkEmployee.Notes??string.Empty },
+                { "pFromTime", updateOverTimeWorkEmployee.FromTime.ConvertFromTimeStringToMinutes() }
+
+            };
+           
+            var outputParameters = new Dictionary<string, object>
+            {
+                { "pError", "int" },
+               
+                // Add other output parameters based on your stored procedure
+            };
+
+            return await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.UpdateEmployeeApprovales", parameters, outputParameters);
+        }
     }
 }
