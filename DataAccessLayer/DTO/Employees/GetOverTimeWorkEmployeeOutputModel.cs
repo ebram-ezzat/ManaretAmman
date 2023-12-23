@@ -29,4 +29,30 @@ namespace DataAccessLayer.DTO.Employees
         public string StatusDesc { get; set; }
         public int? EmployeeNumber { get; set; }
     }
+    public class GetOverTimeWorkEmployeeReturnModel
+    {
+        public int? EmployeeID { get; set; }
+        public int? TypeID { get; set; }
+        public DateTime? AttendanceDate { get; set; }
+        public int? SystemTimeInMinutes { get; set; }
+        public int? ApprovedTimeInMinutes { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? CreationDate { get; set; }
+        public int? ModifiedBy { get; set; }
+        public DateTime? ModificationDate { get; set; }
+        public int? StatusID { get; set; }
+        public string ToTime { get; set; }
+        public int? ActionTypeID { get; set; }
+        public int? EmployeeApprovalID { get; set; }
+        public string Notes { get; set; }
+        public string FromTime { get; set; }
+        public string EmployeeName { get; set; }
+        public string CheckIn { get; set; }
+        public string CheckOut { get; set; }
+        public string StatusDesc { get; set; }
+        public int? EmployeeNumber { get; set; }
+        public string DayDesc { get; set; }
+        public string WorkingHours { get; set; }
+    }
+
 }

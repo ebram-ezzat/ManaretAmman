@@ -171,8 +171,32 @@ namespace BusinessLogicLayer.Services.Approvals
                
             };
             var (ResponseOverTime, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetOverTimeWorkEmployeeOutputModel>("dbo.GetEmployeeApprovales", inputParameters, outputParameters);
-
-            return PublicHelper.CreateResultPaginationObject(inputModel, ResponseOverTime, outputValues);
+            var getOverTimeWorkEmployeeReturnModel = ResponseOverTime.Select(x => new GetOverTimeWorkEmployeeReturnModel
+            {
+                EmployeeID=x.EmployeeID,
+                EmployeeName=x.EmployeeName,
+                EmployeeNumber=x.EmployeeNumber,
+                EmployeeApprovalID=x.EmployeeApprovalID,
+                AttendanceDate=x.AttendanceDate.IntToDateValue(),
+                WorkingHours=(TimeSpan.FromMinutes((double)x.ToTime) - TimeSpan.FromMinutes((double)x.FromTime)).ToString(@"hh\:mm"),
+                DayDesc= x.AttendanceDate.IntToDateValue().Value.DayOfWeek.ToString(),
+                CheckIn= x.CheckIn.ConvertFromMinutesToTimeString(),
+                CheckOut=x.CheckOut.ConvertFromMinutesToTimeString(),
+                FromTime=x.FromTime.ConvertFromMinutesToTimeString(),
+                ToTime=x.ToTime.ConvertFromMinutesToTimeString(),
+                Notes=x.Notes,
+                StatusID=x.StatusID,
+                StatusDesc=x.StatusDesc,
+                SystemTimeInMinutes=x.SystemTimeInMinutes,
+                ApprovedTimeInMinutes=x.ApprovedTimeInMinutes,
+                TypeID=x.TypeID,
+                ActionTypeID=x.ActionTypeID,
+                CreatedBy=x.CreatedBy,
+                CreationDate=x.CreationDate,
+                ModifiedBy=x.ModifiedBy,
+                ModificationDate=x.ModificationDate
+            }).ToList();
+            return PublicHelper.CreateResultPaginationObject(inputModel, getOverTimeWorkEmployeeReturnModel, outputValues);
         }
     }
 }
