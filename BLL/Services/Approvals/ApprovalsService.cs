@@ -9,6 +9,7 @@ using DataAccessLayer.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -66,7 +67,7 @@ namespace BusinessLogicLayer.Services.Approvals
         }
 
         public async Task<int> SaveWorkEmployeeApprovals(WorkEmployeeApprovals workEmployeeApprovals)
-        {
+       {
             Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
             { "pEmployeeID", workEmployeeApprovals.EmployeeID },
@@ -103,12 +104,12 @@ namespace BusinessLogicLayer.Services.Approvals
             var parameters = new Dictionary<string, object>
             {
                 { "pEmployeeID", saveOverTimeWorkEmployee.EmployeeID },
-                { "pTypeID", saveOverTimeWorkEmployee.TypeID??0 },
+                { "pTypeID", 0/*saveOverTimeWorkEmployee.TypeID??0*/ },
                 { "pAttendanceDate", saveOverTimeWorkEmployee.AttendanceDate.DateToIntValue() },
                 { "pSystemtimeinminutes", saveOverTimeWorkEmployee.SystemTimeInMinutes==null?string.Empty:saveOverTimeWorkEmployee.SystemTimeInMinutes.TimeStringToIntValue() },
-                { "pApprovedtimeinminutes", saveOverTimeWorkEmployee.ApprovedTimeInMinutes==null?string.Empty:saveOverTimeWorkEmployee.ApprovedTimeInMinutes.TimeStringToIntValue() },
+                { "pApprovedtimeinminutes",saveOverTimeWorkEmployee.ApprovedTimeInMinutes==null?string.Empty:saveOverTimeWorkEmployee.ApprovedTimeInMinutes.TimeStringToIntValue() },
                 { "pCreatedBy", _userId },
-                { "pStatusID", saveOverTimeWorkEmployee.StatusID??2 },
+                { "pStatusID", 0/*saveOverTimeWorkEmployee.StatusID??2*/ },
                 { "pFromTime", saveOverTimeWorkEmployee.FromTime.ConvertFromTimeStringToMinutes() },
                 { "pToTime", saveOverTimeWorkEmployee.ToTime.ConvertFromTimeStringToMinutes() },
                 { "pNotes", saveOverTimeWorkEmployee.Notes??string.Empty },
@@ -155,13 +156,14 @@ namespace BusinessLogicLayer.Services.Approvals
             {
                 { "pEmployeeID", inputModel.EmployeeID },
                 { "pTypeID", inputModel.TypeID??0 },
-                { "pFromDate", inputModel.FromDate==null?string.Empty:inputModel.FromDate.DateToIntValue() },
-                { "pToDate", inputModel.ToDate==null?string.Empty:inputModel.ToDate.DateToIntValue() },
+                { "pFromDate", inputModel.FromDate==null?null:inputModel.FromDate.DateToIntValue() },
+                { "pToDate", inputModel.ToDate==null?null:inputModel.ToDate.DateToIntValue() },
                 { "pProjectID", _projectId },
                 { "pPageNo", inputModel.PageNo },
                 { "pPageSize", inputModel.PageSize },
                 { "pLoginUserID", _userId },
-                { "pLanguageID", inputModel.LanguageID==0?1:inputModel.LanguageID}
+                { "pLanguageID", inputModel.LanguageID==0?1:inputModel.LanguageID},
+                { "pemployeeapprovalid" ,inputModel.ApprovalID }
         
             };
 
@@ -179,7 +181,8 @@ namespace BusinessLogicLayer.Services.Approvals
                 EmployeeApprovalID=x.EmployeeApprovalID,
                 AttendanceDate=x.AttendanceDate.IntToDateValue(),
                 WorkingHours=(TimeSpan.FromMinutes((double)x.ToTime) - TimeSpan.FromMinutes((double)x.FromTime)).ToString(@"hh\:mm"),
-                DayDesc= x.AttendanceDate.IntToDateValue().Value.DayOfWeek.ToString(),
+                DayDesc= inputModel.LanguageID ==1 ? x.AttendanceDate.IntToDateValue().Value.ToString("dddd", new CultureInfo("ar-SA")) :
+                    x.AttendanceDate.IntToDateValue().Value.DayOfWeek.ToString(),
                 CheckIn= x.CheckIn.ConvertFromMinutesToTimeString(),
                 CheckOut=x.CheckOut.ConvertFromMinutesToTimeString(),
                 FromTime=x.FromTime.ConvertFromMinutesToTimeString(),

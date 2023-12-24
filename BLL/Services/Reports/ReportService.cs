@@ -29,6 +29,7 @@ namespace BusinessLogicLayer.Services.Reports
        public async Task<object> GetEmployeeSalaryReport(GetEmployeeSalaryReportRequest getEmployeeSalaryReportRequest)
         {
             getEmployeeSalaryReportRequest.ProjectID = _projectProvider.GetProjectId();
+            getEmployeeSalaryReportRequest.loginuserid = _projectProvider.UserId();
             var parameters = PublicHelper.GetPropertiesWithPrefix<GetEmployeeSalaryReportRequest>(getEmployeeSalaryReportRequest, "p");
             
             var (getEmployeeSalaryReportResponse, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeSalaryReportResponse>("[dbo].[GetEmployeeSalary]", parameters, null);

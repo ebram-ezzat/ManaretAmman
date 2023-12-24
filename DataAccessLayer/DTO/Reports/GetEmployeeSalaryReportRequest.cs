@@ -17,6 +17,7 @@ namespace DataAccessLayer.DTO.Reports
         public int LanguageID { get; set; } = 1;
         public int? DepartmentID { get; set; }
         public int? DailyWork { get; set; }
+        public int? loginuserid { get; set; }
     }
     public class GetEmployeeSalaryReportResponse
     {
