@@ -75,9 +75,9 @@ namespace ManaretAmman.Controllers.Employees
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
             var result = await _approvalsService.SaveOverTimeWorkEmployee(model);
-            if (result.Item1 == 1)            
+            if (result == 1)            
                 // Success
-                return ApiResponse<object>.Success("data has been inserted succussfully",result.Item2); // Output parameters
+                return ApiResponse<object>.Success("data has been inserted succussfully",result); // Output parameters
             
            
             return ApiResponse.Failure("Failed to insert overtime work");
@@ -129,7 +129,7 @@ namespace ManaretAmman.Controllers.Employees
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
             var result = await _approvalsService.UpdateOverTimeWorkEmployee(model);
-            if (result.Item1 == 1)
+            if (result == 1)
                 // Success
                 return ApiResponse<object>.Success("data has been updated succussfully"); // Output parameters
 
