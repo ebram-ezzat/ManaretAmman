@@ -99,7 +99,7 @@ namespace BusinessLogicLayer.Services.Approvals
 
             return result;
         }
-        public async Task<(int, Dictionary<string, object>)> SaveOverTimeWorkEmployee(SaveOverTimeWorkEmployee saveOverTimeWorkEmployee)
+        public async Task<int> SaveOverTimeWorkEmployee(SaveOverTimeWorkEmployee saveOverTimeWorkEmployee)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -123,7 +123,17 @@ namespace BusinessLogicLayer.Services.Approvals
                 // Add other output parameters based on your stored procedure
             };
 
-            return await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeApprovales", parameters, outputParameters);
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeApprovales", parameters, outputParameters);
+
+            //check the Over Time if Already Exists
+            if (outputValues.TryGetValue("pError", out var value))
+            {
+                if (Convert.ToInt32(value) == -3)
+                {
+                    throw new UnauthorizedAccessException("AlreadyExists");
+                }
+            }
+            return result;
         }
 
         public async Task<int> DeleteOverTimeWorkEmployee(DeleteOverTimeWorkEmployee deleteOverTimeWorkEmployee)
@@ -202,7 +212,7 @@ namespace BusinessLogicLayer.Services.Approvals
             return PublicHelper.CreateResultPaginationObject(inputModel, getOverTimeWorkEmployeeReturnModel, outputValues);
         }
 
-        public async Task<(int, Dictionary<string, object>)> UpdateOverTimeWorkEmployee(UpdateOverTimeWorkEmployee updateOverTimeWorkEmployee)
+        public async Task<int> UpdateOverTimeWorkEmployee(UpdateOverTimeWorkEmployee updateOverTimeWorkEmployee)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -230,7 +240,16 @@ namespace BusinessLogicLayer.Services.Approvals
                 // Add other output parameters based on your stored procedure
             };
 
-            return await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.UpdateEmployeeApprovales", parameters, outputParameters);
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.UpdateEmployeeApprovales", parameters, outputParameters);
+            //check the Over Time if Already Exists
+            if (outputValues.TryGetValue("pError", out var value))
+            {
+                if (Convert.ToInt32(value) == -3)
+                {
+                    throw new UnauthorizedAccessException("AlreadyExists");
+                }
+            }
+            return result;
         }
     }
 }
