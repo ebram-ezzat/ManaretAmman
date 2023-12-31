@@ -167,7 +167,9 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
                         ProjectID = el.ProjectID,
                         LeaveDate = el.LeaveDate,
                         FromTime = el.FromTime,
-                        ToTime = el.ToTime
+                        ToTime = el.ToTime,
+                        statusid=el.statusid
+
                     };
 
        var rquery = filter.FilterCriteria!=null?   ApplyFilters(query, filter.FilterCriteria): query;
@@ -194,7 +196,8 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
             LeaveDate = item.LeaveDate.IntToDateValue(),
             FromTime = item.FromTime.ConvertFromMinutesToTimeString(),
             ToTime = item.ToTime.ConvertFromMinutesToTimeString(),
-            ApprovalStatus = approvals.FirstOrDefault(e => e.ColumnValue == item.approvalstatusid.ToString())?.ColumnDescriptionAr
+            ApprovalStatus = approvals.FirstOrDefault(e => e.ColumnValue == item.approvalstatusid.ToString())?.ColumnDescriptionAr,
+            statusid=item.statusid
         }).ToList();
 
         return result.CreatePagedReponse(filter.PageIndex, filter.Offset, totalRecords);

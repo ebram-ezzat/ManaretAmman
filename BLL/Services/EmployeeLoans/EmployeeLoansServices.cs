@@ -87,6 +87,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                             LoanDate = el.LoanDate,
                             LoanAmount=el.LoanAmount,
                             Notes= el.Notes,
+                            StatusID=el.StatusID
 
                         };
 
@@ -114,7 +115,8 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 loantypeAr = item.loantypeid is not null? Constants.GetEmployeeLoanDictionary[item.loantypeid.Value].NameAr:null,
                 loantypeEn = item.loantypeid is not null ? Constants.GetEmployeeLoanDictionary[item.loantypeid.Value].NameEn : null,
                 ApprovalStatus = approvals.FirstOrDefault(e => e.ColumnValue == item.ApprovalStatusID.ToString())?.ColumnDescriptionAr,
-                Notes=item.Notes
+                Notes=item.Notes,
+                StatusID=item.StatusID
             }).ToList();
 
             return result.CreatePagedReponse(filter.PageIndex, filter.Offset, totalRecords);

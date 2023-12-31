@@ -88,7 +88,8 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
                             FromDate = ev.FromDate,
                             ToDate = ev.ToDate,
                             DayCount=ev.DayCount,
-                            Notes=ev.Notes
+                            Notes=ev.Notes,
+                            StatusID=ev.StatusID
                         };
             //var query = _unitOfWork.EmployeeVacationRepository.PQuery(include: e => e.Employee);   
 
@@ -117,7 +118,8 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
                 ToDate          = item.ToDate.IntToDateValue() ,
                 DayCount        = item.DayCount,
                 Notes           = item.Notes,
-                ApprovalStatus  = approvals.FirstOrDefault(e => e.ColumnValue == item.ApprovalStatusID.ToString())?.ColumnDescriptionAr
+                ApprovalStatus  = approvals.FirstOrDefault(e => e.ColumnValue == item.ApprovalStatusID.ToString())?.ColumnDescriptionAr,
+                StatusID=item.StatusID,
             }).ToList();
 
             return result.CreatePagedReponse(filter.PageIndex, filter.Offset, totalRecords);
