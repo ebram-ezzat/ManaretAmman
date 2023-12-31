@@ -3,6 +3,7 @@ using AutoMapper.Execution;
 using BusinessLogicLayer.Common;
 using BusinessLogicLayer.Exceptions;
 using BusinessLogicLayer.Services.Auth;
+using BusinessLogicLayer.Services.Lookups;
 using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.Employees;
@@ -24,7 +25,9 @@ internal class EmployeeService : IEmployeeService
     IAuthService _authService;
     private readonly IConfiguration _configuration;
     private readonly PayrolLogOnlyContext _payrolLogOnlyContext;
-    public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, IProjectProvider projectProvider, IAuthService authService, PayrolLogOnlyContext payrolLogOnlyContext, IConfiguration configuration)
+    private readonly ILookupsService _lookupsService;
+    public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, IProjectProvider projectProvider, IAuthService authService, PayrolLogOnlyContext payrolLogOnlyContext
+        , IConfiguration configuration, ILookupsService lookupsService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -32,6 +35,7 @@ internal class EmployeeService : IEmployeeService
         _authService = authService;
         _payrolLogOnlyContext = payrolLogOnlyContext;
         _configuration = configuration;
+        _lookupsService = lookupsService;
     }
     public async Task<List<EmployeeLookup>> GetEmployeesProc()
     {
@@ -188,8 +192,9 @@ internal class EmployeeService : IEmployeeService
             int detailId = (int)outputValues["pDetailID"];
             outputParams["pDetailID"] = detailId;
 
-            var (settingResult, outputSetting) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetSettingsResult>("dbo.GetSettings", new Dictionary<string, object> { { "pProjectID", projecId } }, null);
-            var projectPath = settingResult.FirstOrDefault().AttachementPath;
+            var settingResult =await _lookupsService.GetSettings();
+            //var (settingResult, outputSetting) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetSettingsResult>("dbo.GetSettings", new Dictionary<string, object> { { "pProjectID", projecId } }, null);
+            var projectPath = settingResult.AttachementPath;
             var fileName = "01" + saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0') + detailId.ToString().PadLeft(6, '0') + fileExtension;
             var filePath = projectPath + "01" + saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0') + detailId.ToString().PadLeft(6, '0') + fileExtension;
 
@@ -203,8 +208,8 @@ internal class EmployeeService : IEmployeeService
             {
                 string ftpUrl = projectPath + fileName;
                 //await UploadFileAsync(projectPath, fileStream, "file", "image/jpeg", fileName);
-                string userName = _configuration["UploadServerCredentials:UserName"];
-                string password = _configuration["UploadServerCredentials:Password"];
+                string userName = settingResult.WindowsUserName; //_configuration["UploadServerCredentials:UserName"];
+                string password = settingResult.WindowsUserPassword;// _configuration["UploadServerCredentials:Password"];
                 bool IsComplete = PublicHelper.UploadFileToFtp(ftpUrl, userName, password, fileStream, fileName);
             }
 

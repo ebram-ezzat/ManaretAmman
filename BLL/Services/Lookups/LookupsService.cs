@@ -52,16 +52,18 @@ namespace BusinessLogicLayer.Services.Lookups
 
         public async Task<IFormFile> GetFileAsFormFileByFtpPath(string fullPath)
         {
-            string userName = _configuration["UploadServerCredentials:UserName"];
-            string password = _configuration["UploadServerCredentials:Password"];
-            return await PublicHelper.GetFileAsFormFileByFtpPath(fullPath, userName, password);
+            var settings =await GetSettings();
+            //string userName = _configuration["UploadServerCredentials:UserName"];
+            //string password = _configuration["UploadServerCredentials:Password"];
+            return await PublicHelper.GetFileAsFormFileByFtpPath(fullPath, settings?.WindowsUserName, settings?.WindowsUserPassword);
         }
 
         public async Task<object> GetFileBase64ByFtpPath(string fullPath)
         {
-            string userName = _configuration["UploadServerCredentials:UserName"];
-            string password = _configuration["UploadServerCredentials:Password"];
-            return await PublicHelper.GetFileBase64ByFtpPath(fullPath, userName, password);
+            var settings = await GetSettings();
+            //string userName = _configuration["UploadServerCredentials:UserName"];
+            //string password = _configuration["UploadServerCredentials:Password"];
+            return await PublicHelper.GetFileBase64ByFtpPath(fullPath, settings?.WindowsUserName, settings?.WindowsUserPassword);
             
         }
 
@@ -98,6 +100,18 @@ namespace BusinessLogicLayer.Services.Lookups
             return _mapper.Map<IList<LookupDto>>(lookups);
         }
 
+        public async Task<GetSettingsResult> GetSettings(int Falg = 1)
+        {
+            var parameters = new Dictionary<string, object>
+             {                
+                { "pProjectID", _projectProvider.GetProjectId() },
+                { "pFlag" , Falg }
+             };
+            var (settingsResponse, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetSettingsResult>("dbo.GetSettings", parameters, null);
+
+            return settingsResponse.FirstOrDefault();
+        }
+
         public async Task<List<EmployeeShiftDTO>> GetShifts()
         {
             var parameters = new Dictionary<string, object>
@@ -110,5 +124,7 @@ namespace BusinessLogicLayer.Services.Lookups
 
             return employeePapersResponse;
         }
+
+        
     }
 }

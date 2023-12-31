@@ -13,5 +13,6 @@ namespace BusinessLogicLayer.Services.Lookups
         Task<object> GetFileBase64ByFtpPath(string fullPath);
         Task<IFormFile> GetFileAsFormFileByFtpPath(string fullPath);
         Task<List<EmployeeShiftDTO>> GetShifts();
+        Task<GetSettingsResult> GetSettings(int Falg = 1);
     }
 }
