@@ -13,7 +13,7 @@ namespace DataAccessLayer.DTO.Locations
         public decimal? Distance { get; set; }
         public decimal? Longitude { get; set; }
         public decimal? Latitude { get; set; } 
-        public int? CreatedBy { get; set; }
+       
        
     }
     public class UpdateLocation: InsertLocation

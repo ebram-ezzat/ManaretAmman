@@ -81,8 +81,8 @@ namespace ManaretAmman.Controllers.Employees
         #endregion
         /* Company Locations */
         #region
-        [HttpPost("SaveCompanyLocation")]
-        public async Task<IApiResponse> SaveCompanyLocation(InsertLocation insertLocation)
+        [HttpPost("SaveLocation")]
+        public async Task<IApiResponse> SaveLocation(InsertLocation insertLocation)
         {
 
             if (!ModelState.IsValid)
@@ -100,8 +100,8 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<int>.Success("data has been Saved succussfully", result);
         }
-        [HttpDelete("DeleteCompanyLocation")]
-        public async Task<IApiResponse> DeleteCompanyLocation([FromQuery] int LocationID)
+        [HttpDelete("DeleteLocation")]
+        public async Task<IApiResponse> DeleteLocation([FromQuery] int LocationID)
         {
 
             if (LocationID<=0)
@@ -116,8 +116,8 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<int>.Success("data has been Deleted succussfully", result);
         }
-        [HttpPost("UpdateCompanyLocation")]
-        public async Task<IApiResponse> UpdateCompanyLocation(UpdateLocation updateLocation)
+        [HttpPut("UpdateLocation")]
+        public async Task<IApiResponse> UpdateLocation(UpdateLocation updateLocation)
         {
 
             if (!ModelState.IsValid)
@@ -134,6 +134,23 @@ namespace ManaretAmman.Controllers.Employees
             if(result<0)// perror -1
                 return ApiResponse.Failure(" An unexpected error on Update occurred");
             return ApiResponse<int>.Success("data has been update succussfully", result);
+        }
+        [HttpGet("GetLocations")]
+        public async Task<IApiResponse> GetLocations(GetLocationsInput getLocationsInput)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _locationService.GetCompanyLocation(getLocationsInput);
+          
+            return ApiResponse<object>.Success("data has been retrieved succussfully", result);
         }
         #endregion
     }

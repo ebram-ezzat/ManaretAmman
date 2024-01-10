@@ -16,6 +16,7 @@ namespace BusinessLogicLayer.Services.Location
         Task<int> SaveCompanyLocationProc(InsertLocation saveEmployeeLocation);
         Task<int> UpdateCompanyLocationProc(UpdateLocation saveEmployeeLocation);
         Task<int> DeleteCompanyLocationProc(int LocationID);
+        Task<object> GetCompanyLocation(GetLocationsInput getLocationsInput);
 
     }
 }

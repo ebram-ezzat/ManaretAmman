@@ -148,6 +148,29 @@ namespace BusinessLogicLayer.Services.Location
 
             return result;
         }
+
+        public async Task<object> GetCompanyLocation(GetLocationsInput getLocationsInput)
+        {
+
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {               
+                {"pProjectID", _projectProvider.GetProjectId() },
+                {"pPageNo",getLocationsInput.PageNo },
+                {"pPageSize",getLocationsInput.PageSize}
+            };
+
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+             {
+
+                { "prowcount","int" },
+
+            };
+
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetLocationsResponse>("dbo.GetLocations", inputParams, outputParams);
+            return PublicHelper.CreateResultPaginationObject(getLocationsInput, result, outputValues);
+
+          
+        }
         #endregion
     }
 }
