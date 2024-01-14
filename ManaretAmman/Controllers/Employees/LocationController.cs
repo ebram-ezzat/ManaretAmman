@@ -136,7 +136,7 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<int>.Success("data has been update succussfully", result);
         }
         [HttpGet("GetLocations")]
-        public async Task<IApiResponse> GetLocations(GetLocationsInput getLocationsInput)
+        public async Task<IApiResponse> GetLocations([FromQuery]GetLocationsInput getLocationsInput)
         {
 
             if (!ModelState.IsValid)
