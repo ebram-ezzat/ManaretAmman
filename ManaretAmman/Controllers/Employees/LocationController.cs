@@ -36,7 +36,7 @@ namespace ManaretAmman.Controllers.Employees
 
 
 
-            return ApiResponse<List<GetEmployeeLocationResponse>>.Success("data has been retrieved succussfully", result);
+            return ApiResponse<object>.Success("data has been retrieved succussfully", result);
         }
 
         [HttpPost("SaveEmployeeLocation")]
