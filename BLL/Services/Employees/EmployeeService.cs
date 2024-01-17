@@ -230,4 +230,22 @@ internal class EmployeeService : IEmployeeService
         return result;
     }
 
+    public async Task<List<EmployeeLookup>> EmployeeProfile(int EmployeeId)
+    {
+        int projecId = _projectProvider.GetProjectId();
+
+        var parameters = new Dictionary<string, object>
+                        {
+                            { "pProjectID", projecId } ,
+                            {"pEmployeeID",EmployeeId}
+
+                        };
+
+        var employees = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.GetEmployeeReport", parameters, null);
+        var result = _mapper.Map<List<EmployeeLookup>>(employees.Item1);
+
+        return result;
+
+    }
+
 }

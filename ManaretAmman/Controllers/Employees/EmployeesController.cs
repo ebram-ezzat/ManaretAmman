@@ -1,5 +1,6 @@
 ﻿using BusinessLogicLayer.Services.Employees;
 using DataAccessLayer.DTO.Employees;
+using DataAccessLayer.Models;
 using ManaretAmman.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Policy;
@@ -82,6 +83,14 @@ namespace ManaretAmman.Controllers.Employees
 
 
             return ApiResponse<int>.Success("data has been retrieved succussfully", result);
+        }
+
+        [HttpGet("EmployeeProfile")]
+        public async Task<IApiResponse> EmployeeProfile(int EmployeeId)
+        {
+            var result = await _employeeService.EmployeeProfile(EmployeeId);
+
+            return ApiResponse<List<EmployeeLookup>>.Success("data has been retrieved succussfully", result);
         }
 
     }
