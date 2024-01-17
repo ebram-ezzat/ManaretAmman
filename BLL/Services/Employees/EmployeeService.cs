@@ -236,9 +236,14 @@ internal class EmployeeService : IEmployeeService
 
         var parameters = new Dictionary<string, object>
                         {
-                            { "pProjectID", projecId } ,
-                            {"pEmployeeID",EmployeeId}
-
+                            {"pProjectID", projecId } ,
+                            {"pEmployeeID",EmployeeId},
+                            {"pFlag",1 },
+                            {"pLanguageID", 1 } ,
+                            {"pCreatedBy", _projectProvider.UserId() } ,
+                            {"pFromDate",""},
+                            {"pToDate", "" } ,
+                            {"pDepartmentID" , "" }
                         };
 
         var employees = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.GetEmployeeReport", parameters, null);

@@ -10,7 +10,7 @@ namespace BusinessLogicLayer.Services.Location
     public interface ILocationService
     {
         Task<int> SaveEmployeeLocationProc(InsertEmployeeLocation saveEmployeeLocation);
-        Task<List<GetEmployeeLocationResponse>> GetEmployeeLocation(GetEmployeeLocationInput getEmployeeLocationInput);
+        Task<object> GetEmployeeLocation(GetEmployeeLocationInput getEmployeeLocationInput);
         Task<int> DeleteEmployeeLocationProc(DeleteEmployeeLocation deleteEmployeeLocation);
 
         Task<int> SaveCompanyLocationProc(InsertLocation saveEmployeeLocation);

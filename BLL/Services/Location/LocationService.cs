@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.Common;
+using BusinessLogicLayer.Extensions;
 using BusinessLogicLayer.Services.ProjectProvider;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.Locations;
@@ -63,18 +64,24 @@ namespace BusinessLogicLayer.Services.Location
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeLocations", inputParams, outputParams);
             return (int)result;
         }
-        public async Task<List<GetEmployeeLocationResponse>> GetEmployeeLocation(GetEmployeeLocationInput getEmployeeLocationInput)
+        public async Task<object> GetEmployeeLocation(GetEmployeeLocationInput getEmployeeLocationInput)
         {
             Dictionary<string, object> inputParams = new Dictionary<string, object>
             {
                 { "pEmployeeID", getEmployeeLocationInput.EmployeeID},
                 { "pLocationID", getEmployeeLocationInput.LocationID },
                 { "pProjectID", _projectProvider.GetProjectId() },
-
+                {"pFromDate",getEmployeeLocationInput.FromDate !=null? getEmployeeLocationInput.FromDate.DateToIntValue():null },
+                {"pToDate",getEmployeeLocationInput.ToDate !=null? getEmployeeLocationInput.ToDate.DateToIntValue():null },
+                {"pPageNo" ,getEmployeeLocationInput.PageNo},
+                {"pPageSize",getEmployeeLocationInput.PageSize}
             };
-           
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeLocationResponse>("dbo.GetEmployeeLocations", inputParams, null);
-            return result;
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+            {
+                { "prowcount","int"}
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeLocationResponse>("dbo.GetEmployeeLocations", inputParams, outputParams);
+            return PublicHelper.CreateResultPaginationObject(getEmployeeLocationInput, result, outputValues);
         }
         #endregion
         #region CompanyLocation
@@ -151,23 +158,31 @@ namespace BusinessLogicLayer.Services.Location
 
         public async Task<object> GetCompanyLocation(GetLocationsInput getLocationsInput)
         {
-
-            Dictionary<string, object> inputParams = new Dictionary<string, object>
-            {               
+            try
+            {
+                Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
                 {"pProjectID", _projectProvider.GetProjectId() },
                 {"pPageNo",getLocationsInput.PageNo },
                 {"pPageSize",getLocationsInput.PageSize}
             };
 
-            Dictionary<string, object> outputParams = new Dictionary<string, object>
+                Dictionary<string, object> outputParams = new Dictionary<string, object>
              {
 
                 { "prowcount","int" },
 
             };
 
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetLocationsResponse>("dbo.GetLocations", inputParams, outputParams);
-            return PublicHelper.CreateResultPaginationObject(getLocationsInput, result, outputValues);
+                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetLocationsResponse>("dbo.GetLocations", inputParams, outputParams);
+                return PublicHelper.CreateResultPaginationObject(getLocationsInput, result, outputValues);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+          
 
           
         }
