@@ -230,27 +230,34 @@ internal class EmployeeService : IEmployeeService
         return result;
     }
 
-    public async Task<List<EmployeeLookup>> EmployeeProfile(int EmployeeId)
+    public async Task<List<EmployeeProfile>> EmployeeProfile(int EmployeeId)
     {
-        int projecId = _projectProvider.GetProjectId();
+        try
+        {
+            int projecId = _projectProvider.GetProjectId();
 
-        var parameters = new Dictionary<string, object>
+            var parameters = new Dictionary<string, object>
                         {
                             {"pProjectID", projecId } ,
                             {"pEmployeeID",EmployeeId},
                             {"pFlag",1 },
                             {"pLanguageID", 1 } ,
-                            {"pCreatedBy", _projectProvider.UserId() } ,
-                            {"pFromDate",""},
-                            {"pToDate", "" } ,
-                            {"pDepartmentID" , "" }
+                            //{"pCreatedBy", "" } ,
+                            //{"pFromDate",""},
+                            //{"pToDate", "" } ,
+                            //{"pDepartmentID" , "" }
                         };
 
-        var employees = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.GetEmployeeReport", parameters, null);
-        var result = _mapper.Map<List<EmployeeLookup>>(employees.Item1);
+            var employees = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeProfile>("dbo.GetEmployeeReport", parameters, null);
+            var result = _mapper.Map<List<EmployeeProfile>>(employees.Item1);
 
-        return result;
+            return result;
+        }
+        catch (Exception ex)
+        {
 
+            throw;
+        }
     }
 
 }
