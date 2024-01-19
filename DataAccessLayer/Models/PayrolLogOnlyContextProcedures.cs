@@ -143,6 +143,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<GetOverTimeWorkEmployeeOutputModel>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeLocationResponse>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetLocationsResponse>().HasNoKey().ToView(null);
+            modelBuilder.Entity<EmployeeProfile>().HasNoKey().ToView(null);
         }
     }
 
