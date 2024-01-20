@@ -8,11 +8,13 @@ using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Dynamic;
 using System.Net;
+using System.Reflection;
 using UnauthorizedAccessException = BusinessLogicLayer.Exceptions.UnauthorizedAccessException;
 
 namespace BusinessLogicLayer.Services.Employees;
@@ -26,8 +28,9 @@ internal class EmployeeService : IEmployeeService
     private readonly IConfiguration _configuration;
     private readonly PayrolLogOnlyContext _payrolLogOnlyContext;
     private readonly ILookupsService _lookupsService;
+    private readonly IHostingEnvironment _hostingEnvironment;
     public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, IProjectProvider projectProvider, IAuthService authService, PayrolLogOnlyContext payrolLogOnlyContext
-        , IConfiguration configuration, ILookupsService lookupsService)
+        , IConfiguration configuration, ILookupsService lookupsService,IHostingEnvironment hostingEnvironment)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -36,6 +39,7 @@ internal class EmployeeService : IEmployeeService
         _payrolLogOnlyContext = payrolLogOnlyContext;
         _configuration = configuration;
         _lookupsService = lookupsService;
+        _hostingEnvironment = hostingEnvironment;
     }
     public async Task<List<EmployeeLookup>> GetEmployeesProc()
     {
@@ -232,8 +236,7 @@ internal class EmployeeService : IEmployeeService
 
     public async Task<List<EmployeeProfile>> EmployeeProfile(int EmployeeId)
     {
-        try
-        {
+       
             int projecId = _projectProvider.GetProjectId();
 
             var parameters = new Dictionary<string, object>
@@ -249,15 +252,14 @@ internal class EmployeeService : IEmployeeService
                         };
 
             var employees = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeProfile>("dbo.GetEmployeeReport", parameters, null);
+
             var result = _mapper.Map<List<EmployeeProfile>>(employees.Item1);
-
+       
+        //string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\EmployeesReport.rdl");
+        //var base64 =PublicHelper.BuildRdlcReportWithDataSourc(result, reportPath, "DsMain");
             return result;
-        }
-        catch (Exception ex)
-        {
-
-            throw;
-        }
+       
     }
 
+   
 }

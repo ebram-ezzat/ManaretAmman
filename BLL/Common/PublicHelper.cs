@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
+
 using System.Dynamic;
-using System.Linq;
+
 using System.Net;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+
 using DataAccessLayer.DTO;
+
+
+using Microsoft.Reporting.NETCore;
 
 namespace BusinessLogicLayer.Common
 {
@@ -193,6 +192,76 @@ namespace BusinessLogicLayer.Common
             }
 
             return obj;
+        }
+        public static object BuildRdlcReportWithDataSourc<T>(List<T> DataSource,string PathRdlc,string DSName)
+        {
+            try
+            {
+                if (Directory.Exists(Path.GetDirectoryName(PathRdlc)))
+                {
+                    Console.WriteLine("Directory exists.");
+
+                    // Check if the file exists
+                    if (File.Exists(PathRdlc))
+                    {
+                        Console.WriteLine("File exists and is correct.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("File does not exist.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Directory does not exist.");
+                }
+            
+                LocalReport rpt = new LocalReport();
+                rpt.ReportPath = Path.GetFullPath(PathRdlc);
+                //var ds = new ReportDataSource();
+                //ds.Name = DSName;
+                //ds.Value = DataSource;
+                //rpt.DataSources.Add(ds);
+
+
+                rpt.DataSources.Add(new ReportDataSource("DummyDataSource", new List<object>()));
+
+                var reportParameter = new List<ReportParameter>()
+                            {
+                    new ReportParameter("StartDate", DateTime.Now.Date.ToString()),
+                    new ReportParameter("EndDate", DateTime.Now.Date.ToString())
+                };
+                rpt.SetParameters(reportParameter);
+
+                byte[] Bytes = rpt.Render(format: "PDF", deviceInfo: "");
+                // var exportPath = Path.Combine(_hostEnvironment.ContentRootPath, "Export");
+                //if (!Directory.Exists(exportPath))
+                //    Directory.CreateDirectory(exportPath);
+                //exportPath = Path.Combine(exportPath, "Reports");
+                //if (!Directory.Exists(exportPath))
+                //    Directory.CreateDirectory(exportPath);
+                //exportPath = Path.Combine(exportPath, $"Work Situation By governorates According Education With Gender.pdf");
+                //using (FileStream stream = new FileStream(PdfPath, FileMode.Create))
+                //{
+                //    stream.Write(Bytes, 0, Bytes.Length);
+                //}
+                rpt.Dispose();
+                var PdfByte = File.ReadAllBytes(PathRdlc);
+
+                var Base64 = Convert.ToBase64String(Bytes);
+                //var exportPathasd = Path.Combine(_hostEnvironment.ContentRootPath, "Export");
+                //Directory.Delete(PdfPath, true);
+
+                return Base64;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+           
+           
+            
         }
     }
 }

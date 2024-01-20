@@ -19,8 +19,8 @@ namespace ManaretAmman.MiddleWare
         {
 
             try
-            {
-                await _next(httpContext);
+            {                
+                await _next(httpContext);                
             }
             catch (Exception ex)
             {
