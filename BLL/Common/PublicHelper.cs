@@ -7,7 +7,6 @@ using System.Net;
 using System.Reflection;
 
 using DataAccessLayer.DTO;
-
 using Microsoft.Reporting.NETCore;
 
 namespace BusinessLogicLayer.Common
@@ -261,33 +260,6 @@ namespace BusinessLogicLayer.Common
            
            
             
-        }
-
-        public static byte[] GenerateReport<T>(string reportPath, List<T> dataSource)
-        {
-            try
-            {
-                // Create a new LocalReport instance
-                LocalReport localReport = new LocalReport();
-
-                // Load the report definition from the specified path
-                Stream reportDefinition = File.OpenRead(reportPath);
-                localReport.LoadReportDefinition(reportDefinition);
-
-                // Add the data source to the report
-                //localReport.DataSources.Add(new ReportDataSource("source", null));
-
-                // Render the report to a PDF
-                byte[] pdf = localReport.Render("PDF");
-
-                return pdf;
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-           
         }
     }
 }

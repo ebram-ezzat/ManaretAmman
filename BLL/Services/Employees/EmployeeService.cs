@@ -254,11 +254,10 @@ internal class EmployeeService : IEmployeeService
             var employees = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeProfile>("dbo.GetEmployeeReport", parameters, null);
 
             var result = _mapper.Map<List<EmployeeProfile>>(employees.Item1);
-       
-        string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\UserExtendedReport.rdlc");
-        //var base64 =PublicHelper.BuildRdlcReportWithDataSourc(result, reportPath, "DsMain");
-       
-            return result;
+
+        //string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\EmployeesReport.rdlc");
+        //var base64 = PublicHelper.BuildRdlcReportWithDataSourc(result, reportPath, "DsMain");
+        return result;
        
     }
 
