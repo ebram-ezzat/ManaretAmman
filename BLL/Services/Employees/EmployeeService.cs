@@ -255,8 +255,9 @@ internal class EmployeeService : IEmployeeService
 
             var result = _mapper.Map<List<EmployeeProfile>>(employees.Item1);
        
-        //string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\EmployeesReport.rdl");
+        string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\UserExtendedReport.rdlc");
         //var base64 =PublicHelper.BuildRdlcReportWithDataSourc(result, reportPath, "DsMain");
+       
             return result;
        
     }

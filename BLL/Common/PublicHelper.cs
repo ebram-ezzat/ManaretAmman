@@ -8,7 +8,6 @@ using System.Reflection;
 
 using DataAccessLayer.DTO;
 
-
 using Microsoft.Reporting.NETCore;
 
 namespace BusinessLogicLayer.Common
@@ -224,14 +223,14 @@ namespace BusinessLogicLayer.Common
                 //rpt.DataSources.Add(ds);
 
 
-                rpt.DataSources.Add(new ReportDataSource("DummyDataSource", new List<object>()));
+                rpt.DataSources.Add(new ReportDataSource("UsersDataSet", new List<object>()));
 
-                var reportParameter = new List<ReportParameter>()
-                            {
-                    new ReportParameter("StartDate", DateTime.Now.Date.ToString()),
-                    new ReportParameter("EndDate", DateTime.Now.Date.ToString())
-                };
-                rpt.SetParameters(reportParameter);
+                //var reportParameter = new List<ReportParameter>()
+                //            {
+                //    new ReportParameter("StartDate", DateTime.Now.Date.ToString()),
+                //    new ReportParameter("EndDate", DateTime.Now.Date.ToString())
+                //};
+                //rpt.SetParameters(reportParameter);
 
                 byte[] Bytes = rpt.Render(format: "PDF", deviceInfo: "");
                 // var exportPath = Path.Combine(_hostEnvironment.ContentRootPath, "Export");
@@ -262,6 +261,33 @@ namespace BusinessLogicLayer.Common
            
            
             
+        }
+
+        public static byte[] GenerateReport<T>(string reportPath, List<T> dataSource)
+        {
+            try
+            {
+                // Create a new LocalReport instance
+                LocalReport localReport = new LocalReport();
+
+                // Load the report definition from the specified path
+                Stream reportDefinition = File.OpenRead(reportPath);
+                localReport.LoadReportDefinition(reportDefinition);
+
+                // Add the data source to the report
+                //localReport.DataSources.Add(new ReportDataSource("source", null));
+
+                // Render the report to a PDF
+                byte[] pdf = localReport.Render("PDF");
+
+                return pdf;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+           
         }
     }
 }
