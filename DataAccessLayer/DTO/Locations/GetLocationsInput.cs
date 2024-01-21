@@ -8,6 +8,7 @@ namespace DataAccessLayer.DTO.Locations
 {
     public class GetLocationsInput:PageModel
     {
+        public string Alias { get; set; }     
     }
     public class GetLocationsResponse 
     {

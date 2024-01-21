@@ -164,7 +164,8 @@ namespace BusinessLogicLayer.Services.Location
             {
                 {"pProjectID", _projectProvider.GetProjectId() },
                 {"pPageNo",getLocationsInput.PageNo },
-                {"pPageSize",getLocationsInput.PageSize}
+                {"pPageSize",getLocationsInput.PageSize},
+                {"palias",getLocationsInput.Alias }
             };
 
                 Dictionary<string, object> outputParams = new Dictionary<string, object>

@@ -7,8 +7,6 @@ using System.Net;
 using System.Reflection;
 
 using DataAccessLayer.DTO;
-
-
 using Microsoft.Reporting.NETCore;
 
 namespace BusinessLogicLayer.Common
@@ -224,14 +222,14 @@ namespace BusinessLogicLayer.Common
                 //rpt.DataSources.Add(ds);
 
 
-                rpt.DataSources.Add(new ReportDataSource("DummyDataSource", new List<object>()));
+                rpt.DataSources.Add(new ReportDataSource("DSName", DataSource));
 
-                var reportParameter = new List<ReportParameter>()
-                            {
-                    new ReportParameter("StartDate", DateTime.Now.Date.ToString()),
-                    new ReportParameter("EndDate", DateTime.Now.Date.ToString())
-                };
-                rpt.SetParameters(reportParameter);
+                //var reportParameter = new List<ReportParameter>()
+                //            {
+                //    new ReportParameter("StartDate", DateTime.Now.Date.ToString()),
+                //    new ReportParameter("EndDate", DateTime.Now.Date.ToString())
+                //};
+                //rpt.SetParameters(reportParameter);
 
                 byte[] Bytes = rpt.Render(format: "PDF", deviceInfo: "");
                 // var exportPath = Path.Combine(_hostEnvironment.ContentRootPath, "Export");
