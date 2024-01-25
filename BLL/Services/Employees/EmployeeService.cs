@@ -259,11 +259,11 @@ internal class EmployeeService : IEmployeeService
             var setting =await _lookupsService.GetSettings();
             foreach(var item in result)
             {
-                if (item.imagepath != null)
+                if (item.EmployeeImage != null)
                 {
-                    var fullPath = item.imagepath.ToLower().Contains("ftp") ? item.imagepath : setting?.AttachementPath + item.imagepath;
-                    var base64 = await PublicHelper.GetFileBase64ByFtpPath(fullPath, setting.WindowsUserName, setting.WindowsUserPassword);
-                    item.ImgBase64 = base64;
+                    var fullPath = item.imagepath.ToLower().Contains("ftp") ? item.EmployeeImage : setting?.AttachementPath + item.EmployeeImage;
+                    dynamic base64  = await PublicHelper.GetFileBase64ByFtpPath(fullPath, setting.WindowsUserName, setting.WindowsUserPassword);
+                    item.ImgBase64 = base64?.Base64Content;
                 }
             }
         

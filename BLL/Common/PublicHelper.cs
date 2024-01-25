@@ -74,7 +74,7 @@ namespace BusinessLogicLayer.Common
                 }
             }
         }
-        public async static Task <object> GetFileBase64ByFtpPath(string fullPath,string ftpUsername, string ftpPassword)
+        public async static Task <dynamic> GetFileBase64ByFtpPath(string fullPath,string ftpUsername, string ftpPassword)
         {
             // FTP server details
 
