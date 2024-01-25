@@ -221,8 +221,8 @@ namespace BusinessLogicLayer.Common
                 //ds.Value = DataSource;
                 //rpt.DataSources.Add(ds);
 
+
                 rpt.DataSources.Add(new ReportDataSource("UsersDataSet", new List<object>()));
-                // rpt.DataSources.Add(new ReportDataSource("DSName", DataSource));
 
                 //var reportParameter = new List<ReportParameter>()
                 //            {
