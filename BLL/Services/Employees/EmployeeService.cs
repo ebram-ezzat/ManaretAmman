@@ -261,7 +261,7 @@ internal class EmployeeService : IEmployeeService
             {
                 if (item.EmployeeImage != null)
                 {
-                    var fullPath = item.imagepath.ToLower().Contains("ftp") ? item.EmployeeImage : setting?.AttachementPath + item.EmployeeImage;
+                    var fullPath = item.EmployeeImage.ToLower().Contains("ftp") ? item.EmployeeImage : setting?.AttachementPath + item.EmployeeImage;
                     dynamic base64  = await PublicHelper.GetFileBase64ByFtpPath(fullPath, setting.WindowsUserName, setting.WindowsUserPassword);
                     item.ImgBase64 = base64?.Base64Content;
                 }
