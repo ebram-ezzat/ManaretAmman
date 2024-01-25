@@ -16,6 +16,7 @@ namespace BusinessLogicLayer.Mapper
             #region Employee
 
             CreateMap<Employee, EmployeeLookup>();
+            CreateMap<EmployeeProfile, EmplyeeProfileVModel>();
 
             #endregion
 

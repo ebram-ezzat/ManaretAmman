@@ -11,7 +11,7 @@ public interface IEmployeeService
     Task<object> GetEmployeePaperProc(GetEmployeePaperRequest getEmployeePaperRequest);
     Task<int> DeleteEmployeePaperProc(int EmployeeId, int DetailId);
     Task<int> SaveEmployeePaperProc(SaveEmployeePaper saveEmployeePaper);
-    Task<List<EmployeeProfile>> EmployeeProfile(int EmployeeId);
+    Task<List<EmplyeeProfileVModel>> EmployeeProfile(int EmployeeId);
 
 
 }

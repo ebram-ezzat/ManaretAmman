@@ -90,7 +90,7 @@ namespace ManaretAmman.Controllers.Employees
         {
             var result = await _employeeService.EmployeeProfile(EmployeeId);
 
-            return ApiResponse<List<EmployeeProfile>>.Success("data has been retrieved succussfully", result);
+            return ApiResponse<List<EmplyeeProfileVModel>>.Success("data has been retrieved succussfully", result);
         }
 
     }

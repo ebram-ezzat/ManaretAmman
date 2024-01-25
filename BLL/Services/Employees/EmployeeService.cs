@@ -11,6 +11,7 @@ using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.ReportingServices.Interfaces;
 using System.Data;
 using System.Dynamic;
 using System.Net;
@@ -234,7 +235,7 @@ internal class EmployeeService : IEmployeeService
         return result;
     }
 
-    public async Task<List<EmployeeProfile>> EmployeeProfile(int EmployeeId)
+    public async Task<List<EmplyeeProfileVModel>> EmployeeProfile(int EmployeeId)
     {
        
             int projecId = _projectProvider.GetProjectId();
@@ -253,8 +254,21 @@ internal class EmployeeService : IEmployeeService
 
             var employees = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeProfile>("dbo.GetEmployeeReport", parameters, null);
 
-            var result = _mapper.Map<List<EmployeeProfile>>(employees.Item1);
+            var result = _mapper.Map<List<EmplyeeProfileVModel>>(employees.Item1);
 
+            var setting =await _lookupsService.GetSettings();
+            foreach(var item in result)
+            {
+                if (item.imagepath != null)
+                {
+                    var fullPath = item.imagepath.ToLower().Contains("ftp") ? item.imagepath : setting?.AttachementPath + item.imagepath;
+                    var base64 = await PublicHelper.GetFileBase64ByFtpPath(fullPath, setting.WindowsUserName, setting.WindowsUserPassword);
+                    item.ImgBase64 = base64;
+                }
+            }
+        
+
+        //    );
         //string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\EmployeesReport.rdlc");
         //var base64 = PublicHelper.BuildRdlcReportWithDataSourc(result, reportPath, "DsMain");
         return result;

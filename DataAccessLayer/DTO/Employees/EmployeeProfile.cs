@@ -59,6 +59,10 @@ namespace DataAccessLayer.DTO.Employees
         public string companynationalid { get; set; }
         public string todayDate { get; set; }
         public string EmployeeImage { get; set; }
-        public decimal? Evaluation { get; set; }
+        public decimal? Evaluation { get; set; }        
+    }
+    public class EmplyeeProfileVModel: EmployeeProfile
+    {
+        public object ImgBase64 { get; set; }
     }
 }
