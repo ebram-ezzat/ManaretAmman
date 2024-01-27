@@ -57,7 +57,7 @@ namespace DataAccessLayer.DTO.Employees
         public string MainBankName { get; set; }
         public string CurrentDate { get; set; }
         public string companynationalid { get; set; }
-        public string todayDate { get; set; }
+        //public string todayDate { get; set; }
         public string EmployeeImage { get; set; }
         public decimal? Evaluation { get; set; }        
     }
