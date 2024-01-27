@@ -41,7 +41,7 @@ public class VacationsController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IApiResponse> Update(EmployeeVacationsUpdate employee)
+    public async Task<IApiResponse> Update([FromForm] EmployeeVacationsUpdate employee)
     {
         await _employeeService.Update(employee);
 

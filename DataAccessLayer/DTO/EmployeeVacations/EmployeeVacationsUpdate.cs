@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -16,5 +17,6 @@ namespace DataAccessLayer.DTO.EmployeeVacations
         public DateTime? ToDate { get; set; }
         [StringLength(1000)]
         public string? Notes { get; set; }
+        public IFormFile File { get; set; }
     }
 }

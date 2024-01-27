@@ -205,7 +205,7 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
             //if (await canAdd > 0)
             //    throw new BadRequestException("يوجد اجازة فى هذه الفترة");
             
-            dynamic checkValidation = checkValidationOfVacation(model);//validation confilct vacations 
+            string checkValidation =await checkValidationOfVacation(model);//validation confilct vacations 
             if (!string.IsNullOrEmpty(checkValidation))
             {
                 throw new BadRequestException(checkValidation);
@@ -253,7 +253,7 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
             }
             await sendToNotification(employeeVacation.EmployeeID, insertedPKValue);
         }
-        private async Task< dynamic> checkValidationOfVacation(EmployeeVacationInput model)
+        private async Task<string> checkValidationOfVacation(dynamic model)
         {
             dynamic obj = new ExpandoObject();
             var inputParams = new Dictionary<string, object>
@@ -277,12 +277,12 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
             {
                 if (Convert.ToInt32(value) == -5)
                 {
-                    obj = "لا يمكن اضافة اجازة في سنة مغلقة ";
+                    return "لا يمكن اضافة اجازة في سنة مغلقة ";
                     
                 }
                 if (Convert.ToInt32(value) == -3 || Convert.ToInt32(value) == -6)
                 {
-                    obj = "هناك تعارض مع اجازة اخرى ";
+                    return "هناك تعارض مع اجازة اخرى ";
 
                 }
                 
@@ -316,9 +316,15 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
             if (employeeVacation.FromDate.DateToIntValue() > employeeVacation.ToDate.DateToIntValue())
                 throw new BadRequestException("تاريخ بداية الاجازة لابد ان يكون اصغر من تاريخ نهايةالاجازة ");
             
-            var canAdd = _unitOfWork.EmployeeVacationRepository.Query(v => v.ProjectID == _projecId && v.EmployeeID == employeeVacation.EmployeeID && employeeVacation.ToDate.DateToIntValue() <= v.ToDate && employeeVacation.FromDate.DateToIntValue() >= v.FromDate && v.EmployeeVacationID != employeeVacation.ID).CountAsync();
-            if (await canAdd > 0)
-                throw new BadRequestException("يوجد اجازة فى هذه الفترة");
+            //var canAdd = _unitOfWork.EmployeeVacationRepository.Query(v => v.ProjectID == _projecId && v.EmployeeID == employeeVacation.EmployeeID && employeeVacation.ToDate.DateToIntValue() <= v.ToDate && employeeVacation.FromDate.DateToIntValue() >= v.FromDate && v.EmployeeVacationID != employeeVacation.ID).CountAsync();
+            //if (await canAdd > 0)
+            //    throw new BadRequestException("يوجد اجازة فى هذه الفترة");
+
+            string checkValidation =await checkValidationOfVacation(employeeVacation);//validation confilct vacations 
+            if (!string.IsNullOrEmpty(checkValidation))
+            {
+                throw new BadRequestException(checkValidation);
+            }
 
             DateTime startDate        = (DateTime)employeeVacation.FromDate;
             DateTime endDate          = (DateTime)employeeVacation.ToDate;
@@ -331,13 +337,33 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
             vacation.ToDate           = employeeVacation.ToDate.DateToIntValue();
             vacation.VacationTypeID = employeeVacation.VacationTypeID;
             vacation.Notes = employeeVacation.Notes;
+            //update img path 
+            if (employeeVacation.File is not null)
+            {
+                var fileExtension = Path.GetExtension(employeeVacation.File.FileName);
+                var settingResult = await _lookupsService.GetSettings();
+                var projectPath = settingResult.AttachementPath;
+                var fileName = "01" + employeeVacation.EmployeeID.ToString().PadLeft(6, '0') + employeeVacation.ID.ToString().PadLeft(6, '0') + fileExtension;
+                var filePath = projectPath + fileName;
+                //save img path to database
+                vacation.imagepath = filePath;
+                
+                using (var fileStream = employeeVacation.File.OpenReadStream())
+                {
+                    string ftpUrl = filePath;
+                    string userName = settingResult.WindowsUserName;
+                    string password = settingResult.WindowsUserPassword;
+                    bool IsComplete = PublicHelper.UploadFileToFtp(ftpUrl, userName, password, fileStream, fileName);
+                }
+            }
+
 
             await _unitOfWork.EmployeeVacationRepository.UpdateAsync(vacation);
 
             await _unitOfWork.SaveAsync();
 
         }
-
+    
         public async Task Delete( int employeeVacationId)
         {
             if (_userId == -1) throw new UnauthorizedAccessException("Incorrect userId");
