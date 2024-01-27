@@ -275,7 +275,7 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
 
                 {"pError","int" }
             };
-                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeePaper", inputParams, outParams);
+                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.CheckEmployeeVacation", inputParams, outParams);
 
                 //check if user not HR return -3 you have no permission
                 if (outputValues.TryGetValue("pError", out var value))
