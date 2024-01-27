@@ -8,10 +8,14 @@ using BusinessLogicLayer.Services.Notification;
 using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO;
+using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeVacations;
 using DataAccessLayer.DTO.Notification;
+using DataAccessLayer.Identity;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Reporting.Map.WebForms.BingMaps;
+using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection.Metadata;
@@ -28,9 +32,11 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
         readonly IProjectProvider _projectProvider;
         readonly IAuthService _authService;
         readonly INotificationsService _iNotificationsService;
+        private readonly DataAccessLayer.Models.PayrolLogOnlyContext _payrolLogOnlyContext;
         readonly int _userId;
         readonly int _projecId;
-        public EmployeeVacationService(IUnitOfWork unityOfWork, ILookupsService lookupsService, IMapper mapper, IProjectProvider projectProvider, IAuthService authService, INotificationsService iNotificationsService)
+        public EmployeeVacationService(IUnitOfWork unityOfWork, ILookupsService lookupsService, IMapper mapper, IProjectProvider projectProvider, IAuthService authService
+            , INotificationsService iNotificationsService, DataAccessLayer.Models.PayrolLogOnlyContext payrolLogOnlyContext)
         {
             _unitOfWork     = unityOfWork;
             _lookupsService = lookupsService;
@@ -40,6 +46,7 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
             _iNotificationsService = iNotificationsService;
             _userId = _projectProvider.UserId();
             _projecId = _projectProvider.GetProjectId();
+            _payrolLogOnlyContext = payrolLogOnlyContext;
         }
         public async Task<EmployeeVacationOutput> Get(int id)
         {
@@ -89,7 +96,9 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
                             ToDate = ev.ToDate,
                             DayCount=ev.DayCount,
                             Notes=ev.Notes,
-                            StatusID=ev.StatusID
+                            StatusID=ev.StatusID,
+                            imagepath= ev.imagepath
+
                         };
             //var query = _unitOfWork.EmployeeVacationRepository.PQuery(include: e => e.Employee);   
 
@@ -192,9 +201,16 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
                 throw new NotFoundException("recieved data is missed");
             if (model.FromDate.DateToIntValue() > model.ToDate.DateToIntValue())
                 throw new BadRequestException("تاريخ بداية الاجازة لابد ان يكون اصغر من تاريخ نهايةالاجازة ");
-            var canAdd = _unitOfWork.EmployeeVacationRepository.Query(v=>v.ProjectID==_projecId && v.EmployeeID==model.EmployeeID  && model.ToDate.DateToIntValue()<= v.ToDate && model.FromDate.DateToIntValue()>= v.FromDate ).CountAsync();
-            if (await canAdd > 0)
-                throw new BadRequestException("يوجد اجازة فى هذه الفترة");
+            //var canAdd = _unitOfWork.EmployeeVacationRepository.Query(v=>v.ProjectID==_projecId && v.EmployeeID==model.EmployeeID  && model.ToDate.DateToIntValue()<= v.ToDate && model.FromDate.DateToIntValue()>= v.FromDate ).CountAsync();
+            //if (await canAdd > 0)
+            //    throw new BadRequestException("يوجد اجازة فى هذه الفترة");
+            
+            dynamic checkValidation = checkValidationOfVacation(model);//validation confilct vacations 
+            if (!string.IsNullOrEmpty(checkValidation))
+            {
+                throw new BadRequestException(checkValidation);
+            }
+
             DateTime? startDate = (DateTime)model.FromDate;
             DateTime? endDate   = (DateTime)model.ToDate;
             TimeSpan dayCount  = endDate.Value.Subtract(startDate.Value);
@@ -215,7 +231,63 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
 
              await _unitOfWork.SaveAsync();
             var insertedPKValue = employeeVacation.EmployeeVacationID;
+            //update img path 
+            if(model.File is not null)
+            {
+                var fileExtension = Path.GetExtension(model.File.FileName);
+                var settingResult = await _lookupsService.GetSettings();
+                var projectPath = settingResult.AttachementPath;
+                var fileName = "01" + model.EmployeeID.ToString().PadLeft(6, '0') + insertedPKValue.ToString().PadLeft(6, '0') + fileExtension;
+                var filePath = projectPath + fileName;
+                //save img path to database
+                employeeVacation.imagepath = filePath;
+                await _unitOfWork.EmployeeVacationRepository.PUpdateAsync(employeeVacation);
+
+                using (var fileStream = model.File.OpenReadStream())
+                {
+                    string ftpUrl = filePath;                   
+                    string userName = settingResult.WindowsUserName; 
+                    string password = settingResult.WindowsUserPassword;
+                    bool IsComplete = PublicHelper.UploadFileToFtp(ftpUrl, userName, password, fileStream, fileName);
+                }
+            }
             await sendToNotification(employeeVacation.EmployeeID, insertedPKValue);
+        }
+        private async Task< dynamic> checkValidationOfVacation(EmployeeVacationInput model)
+        {
+            dynamic obj = new ExpandoObject();
+            var inputParams = new Dictionary<string, object>
+            {
+                {"pEmployeeVacationID", model.ID==0 ? null:model.ID},
+                {"pEmployeeID", model.EmployeeID==0 ? null:model.EmployeeID},
+                {"pVacationTypeID", model.VacationTypeID},
+                {"pFromDate", model.FromDate==null?null: model.FromDate.DateToIntValue()},
+                {"pToDate", model.ToDate==null?null: model.ToDate.DateToIntValue()},
+                {"pProjectId",_projectProvider.GetProjectId() }
+            };
+            var outParams = new Dictionary<string, object>
+            {
+
+                {"pError","int" }
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeePaper", inputParams, outParams);
+
+            //check if user not HR return -3 you have no permission
+            if (outputValues.TryGetValue("pError", out var value))
+            {
+                if (Convert.ToInt32(value) == -5)
+                {
+                    obj = "لا يمكن اضافة اجازة في سنة مغلقة ";
+                    
+                }
+                if (Convert.ToInt32(value) == -3 || Convert.ToInt32(value) == -6)
+                {
+                    obj = "هناك تعارض مع اجازة اخرى ";
+
+                }
+                
+            }
+            return null;
         }
         async Task sendToNotification(int employeeId, int PKID)
         {

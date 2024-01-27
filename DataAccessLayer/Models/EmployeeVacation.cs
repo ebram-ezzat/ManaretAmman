@@ -36,7 +36,7 @@ namespace DataAccessLayer.Models
         public int ProjectID { get; set; }
         public int? StatusID { get; set; }
         public int? ApprovalStatusID { get; set; }
-
+        public string imagepath { get; set; }
         [ForeignKey("EmployeeID")]
         [InverseProperty("EmployeeVacations")]
         public virtual Employee Employee { get; set; }

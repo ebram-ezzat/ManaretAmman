@@ -33,7 +33,7 @@ public class VacationsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IApiResponse> Create(EmployeeVacationInput employee)
+    public async Task<IApiResponse> Create([FromForm]EmployeeVacationInput employee)
     {
         await _employeeService.Create(employee);
 
