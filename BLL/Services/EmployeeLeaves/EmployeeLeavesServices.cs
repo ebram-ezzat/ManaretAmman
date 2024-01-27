@@ -10,10 +10,12 @@ using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO;
 using DataAccessLayer.DTO.EmployeeLeaves;
 using DataAccessLayer.DTO.Notification;
+using DataAccessLayer.Identity;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq.Expressions;
 using UnauthorizedAccessException = BusinessLogicLayer.Exceptions.UnauthorizedAccessException;
 
@@ -28,9 +30,11 @@ internal class EmployeeLeavesService : IEmployeeLeavesService
     readonly IProjectProvider _projectProvider;
     readonly IAuthService _authService;
     readonly INotificationsService _iNotificationsService;
+    readonly DataAccessLayer.Models.PayrolLogOnlyContext _payrolLogOnlyContext;
     readonly int _userId;
     readonly int _projecId;
-    public EmployeeLeavesService(IUnitOfWork unityOfWork, ILookupsService lookupsService, IMapper mapper, IProjectProvider projectProvider, IAuthService authService,INotificationsService iNotificationsService)
+    public EmployeeLeavesService(IUnitOfWork unityOfWork, ILookupsService lookupsService, IMapper mapper, IProjectProvider projectProvider
+        , IAuthService authService,INotificationsService iNotificationsService, DataAccessLayer.Models.PayrolLogOnlyContext payrolLogOnlyContext)
     {
         _unitOfWork     = unityOfWork;
         _lookupsService = lookupsService;
@@ -40,6 +44,7 @@ internal class EmployeeLeavesService : IEmployeeLeavesService
         _iNotificationsService = iNotificationsService;
         _userId = _projectProvider.UserId();
         _projecId = _projectProvider.GetProjectId();
+        _payrolLogOnlyContext = payrolLogOnlyContext;
     }
     public async Task<EmployeeLeavesOutput> Get(int id)
     {
@@ -62,9 +67,10 @@ internal class EmployeeLeavesService : IEmployeeLeavesService
                                  && e.ID == leave.LeaveTypeID)?.ColumnDescription,
                 LeaveDate       = leave.LeaveDate.IntToDateValue(),
                 FromTime        = leave.FromTime.ConvertFromMinutesToTimeString(),
-                ToTime          = leave.ToTime.ConvertFromMinutesToTimeString()
-                
-            };
+                ToTime          = leave.ToTime.ConvertFromMinutesToTimeString(),
+                imagepath       =leave.imagepath
+
+};
 
         return result;
     }
@@ -168,8 +174,8 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
                         LeaveDate = el.LeaveDate,
                         FromTime = el.FromTime,
                         ToTime = el.ToTime,
-                        statusid=el.statusid
-
+                        statusid=el.statusid,
+                        imagepath=el.imagepath
                     };
 
        var rquery = filter.FilterCriteria!=null?   ApplyFilters(query, filter.FilterCriteria): query;
@@ -197,7 +203,8 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
             FromTime = item.FromTime.ConvertFromMinutesToTimeString(),
             ToTime = item.ToTime.ConvertFromMinutesToTimeString(),
             ApprovalStatus = approvals.FirstOrDefault(e => e.ColumnValue == item.approvalstatusid.ToString())?.ColumnDescriptionAr,
-            statusid=item.statusid
+            statusid=item.statusid,
+            imagepath=item.imagepath
         }).ToList();
 
         return result.CreatePagedReponse(filter.PageIndex, filter.Offset, totalRecords);
@@ -214,6 +221,12 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
         var timing = GetLeaveTimingInputs(model);
         if (timing.FromTime > timing.ToTime)
             throw new BadRequestException("وقت بدايةالمغادرة لابد ان يكون اصغر من وقت نهاية المغادرة");
+
+        string checkValidation = await checkValidationOfLeave(model);//validation confilct Leave 
+        if (!string.IsNullOrEmpty(checkValidation))
+        {
+            throw new BadRequestException(checkValidation);
+        }
         var LeaveDate = model.LeaveDate;
         model.LeaveDate = null;
         model.FromTime = null;
@@ -229,7 +242,27 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
 
         await _unitOfWork.SaveAsync();
         var insertedPKValue = employeeLeave.EmployeeLeaveID;
-       await sendToNotification(employeeLeave.EmployeeID, insertedPKValue);
+        //update img path 
+        if (model.File is not null)
+        {
+            var fileExtension = Path.GetExtension(model.File.FileName);
+            var settingResult = await _lookupsService.GetSettings();
+            var projectPath = settingResult.AttachementPath;
+            var fileName = "01" + model.EmployeeID.ToString().PadLeft(6, '0') + insertedPKValue.ToString().PadLeft(6, '0') + fileExtension;
+            var filePath = projectPath + fileName;
+            //save img path to database
+            employeeLeave.imagepath = filePath;
+            await _unitOfWork.EmployeeLeaveRepository.PUpdateAsync(employeeLeave);
+
+            using (var fileStream = model.File.OpenReadStream())
+            {
+                string ftpUrl = filePath;
+                string userName = settingResult.WindowsUserName;
+                string password = settingResult.WindowsUserPassword;
+                bool IsComplete = PublicHelper.UploadFileToFtp(ftpUrl, userName, password, fileStream, fileName);
+            }
+        }
+        await sendToNotification(employeeLeave.EmployeeID, insertedPKValue);
     }
    async Task sendToNotification(int employeeId,int PKID)
     {
@@ -245,6 +278,50 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
         };
        await _iNotificationsService.AcceptOrRejectNotificationsAsync(model);
     }
+    private async Task<string> checkValidationOfLeave(dynamic model)
+    {      
+           
+            DateTime? FromDate = model.LeaveDate;
+            string FromTime = model.FromTime;
+            string ToTime = model.ToTime;
+            var inputParams = new Dictionary<string, object>
+            {
+                {"pEmployeeLeaveID", model.ID},
+                {"pEmployeeID", model.EmployeeID==0 ? null:model.EmployeeID},
+                {"pLeaveTypeID", model.LeaveTypeID},
+                {"pLeaveDate", FromDate==null?null: FromDate.DateToIntValue()},
+                {"pFromTime", FromTime==null?null:FromTime.ConvertFromTimeStringToMinutes()},
+                {"pToTime", ToTime==null?null:ToTime.ConvertFromTimeStringToMinutes()},
+                {"pProjectId",_projectProvider.GetProjectId() }
+            };
+            var outParams = new Dictionary<string, object>
+            {
+
+                {"pError","int" }
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.CheckEmployeeLeaves", inputParams, outParams);
+
+            //check if user not HR return -3 you have no permission
+            if (outputValues.TryGetValue("pError", out var value))
+            {
+                if (Convert.ToInt32(value) == -5)
+                {
+                    return "لا يمكن اضافة مغادرة في سنة مغلقة ";
+
+                }
+                if (Convert.ToInt32(value) == -3 || Convert.ToInt32(value) == -6)
+                {
+                    return "هناك تعارض مع  مغادرة اخرى ";
+
+                }
+
+            }
+            return null;
+        }
+        
+
+    
+
     public async Task Update(EmployeeLeavesUpdate employeeLeave)
     {
         if (_userId == -1) throw new UnauthorizedAccessException("Incorrect userId");
@@ -255,6 +332,12 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
 
         if (leave is null)
             throw new NotFoundException("Data Not Found");
+
+        string checkValidation = await checkValidationOfLeave(employeeLeave);//validation confilct Leave 
+        if (!string.IsNullOrEmpty(checkValidation))
+        {
+            throw new BadRequestException(checkValidation);
+        }
 
         var timing = GetLeaveTimingInputs(employeeLeave);
 
@@ -269,6 +352,27 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
         leave.ToTime = timing.ToTime;
         leave.LeaveDate = employeeLeave.LeaveDate.DateToIntValue();
         leave.LeaveTypeID = employeeLeave.LeaveTypeID;
+
+
+        //update img path 
+        if (employeeLeave.File is not null)
+        {
+            var fileExtension = Path.GetExtension(employeeLeave.File.FileName);
+            var settingResult = await _lookupsService.GetSettings();
+            var projectPath = settingResult.AttachementPath;
+            var fileName = "01" + employeeLeave.EmployeeID.ToString().PadLeft(6, '0') + employeeLeave.ID.ToString().PadLeft(6, '0') + fileExtension;
+            var filePath = projectPath + fileName;
+            //save img path to database
+            leave.imagepath = filePath;
+
+            using (var fileStream = employeeLeave.File.OpenReadStream())
+            {
+                string ftpUrl = filePath;
+                string userName = settingResult.WindowsUserName;
+                string password = settingResult.WindowsUserPassword;
+                bool IsComplete = PublicHelper.UploadFileToFtp(ftpUrl, userName, password, fileStream, fileName);
+            }
+        }
 
 
 

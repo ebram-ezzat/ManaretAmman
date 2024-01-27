@@ -37,5 +37,6 @@ namespace DataAccessLayer.Models
         [ForeignKey("ProjectID")]
         [InverseProperty("EmployeeLeaves")]
         public virtual Project Project { get; set; }
+        public string imagepath { get; set; }
     }
 }

@@ -13,4 +13,5 @@ public class EmployeeLeaveFilter
     public string FromTime { get; set; } = string.Empty;
 
     public string ToTime { get; set; } = string.Empty;
+    public string imagepath { get; set; }
 }

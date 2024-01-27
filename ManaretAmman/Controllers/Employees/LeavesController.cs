@@ -34,7 +34,7 @@ public class LeavesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IApiResponse> Create(EmployeeLeavesInput employee)
+    public async Task<IApiResponse> Create([FromForm]EmployeeLeavesInput employee)
     {
         await _employeeService.Create(employee);
 
@@ -42,7 +42,7 @@ public class LeavesController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IApiResponse> Update(EmployeeLeavesUpdate employee)
+    public async Task<IApiResponse> Update([FromForm]EmployeeLeavesUpdate employee)
     {
         await _employeeService.Update(employee);
 

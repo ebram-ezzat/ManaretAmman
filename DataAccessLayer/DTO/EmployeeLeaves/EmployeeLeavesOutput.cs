@@ -21,5 +21,6 @@
         public string ApprovalStatus { get; set; }
         public int? statusid { get; set; }
         //public int? approvalstatusid { get; set; }
+        public string imagepath { get; set; }
     }
 }

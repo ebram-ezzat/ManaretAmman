@@ -255,10 +255,8 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
             await sendToNotification(employeeVacation.EmployeeID, insertedPKValue);
         }
         private async Task<string> checkValidationOfVacation(dynamic model)
-        {
-            try
-            {
-                dynamic obj = new ExpandoObject();
+        {            
+               
                 DateTime? FromDate = model.FromDate;
                 DateTime? ToDate = model.ToDate;
                 var inputParams = new Dictionary<string, object>
@@ -275,31 +273,25 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
 
                 {"pError","int" }
             };
-                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.CheckEmployeeVacation", inputParams, outParams);
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.CheckEmployeeVacation", inputParams, outParams);
 
-                //check if user not HR return -3 you have no permission
-                if (outputValues.TryGetValue("pError", out var value))
+            //check if user not HR return -3 you have no permission
+            if (outputValues.TryGetValue("pError", out var value))
+            {
+                if (Convert.ToInt32(value) == -5)
                 {
-                    if (Convert.ToInt32(value) == -5)
-                    {
-                        return "لا يمكن اضافة اجازة في سنة مغلقة ";
-
-                    }
-                    if (Convert.ToInt32(value) == -3 || Convert.ToInt32(value) == -6)
-                    {
-                        return "هناك تعارض مع اجازة اخرى ";
-
-                    }
+                    return "لا يمكن اضافة اجازة في سنة مغلقة ";
 
                 }
-                return null;
-            }
-            catch (Exception e)
-            {
+                if (Convert.ToInt32(value) == -3 || Convert.ToInt32(value) == -6)
+                {
+                    return "هناك تعارض مع اجازة اخرى ";
 
-                throw;
+                }
             }
-          
+
+            return null;
+
         }
         async Task sendToNotification(int employeeId, int PKID)
         {

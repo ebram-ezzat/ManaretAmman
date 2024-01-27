@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataAccessLayer.DTO
 {
@@ -18,5 +19,6 @@ namespace DataAccessLayer.DTO
         public int? ModifiedBy { get; set; }
         public DateTime? ModificationDate { get; set; }
         public int ProjectID { get; set; }
+        public IFormFile File { get; set; }
     }
 }
