@@ -256,39 +256,50 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
         }
         private async Task<string> checkValidationOfVacation(dynamic model)
         {
-            dynamic obj = new ExpandoObject();
-            var inputParams = new Dictionary<string, object>
+            try
             {
-                {"pEmployeeVacationID", model.ID==0 ? null:model.ID},
+                dynamic obj = new ExpandoObject();
+                DateTime? FromDate = model.FromDate;
+                DateTime? ToDate = model.ToDate;
+                var inputParams = new Dictionary<string, object>
+            {
+                {"pEmployeeVacationID", model.ID},
                 {"pEmployeeID", model.EmployeeID==0 ? null:model.EmployeeID},
                 {"pVacationTypeID", model.VacationTypeID},
-                {"pFromDate", model.FromDate==null?null: model.FromDate.DateToIntValue()},
-                {"pToDate", model.ToDate==null?null: model.ToDate.DateToIntValue()},
+                {"pFromDate", FromDate==null?null: FromDate.DateToIntValue()},
+                {"pToDate", ToDate==null?null:ToDate.DateToIntValue()},
                 {"pProjectId",_projectProvider.GetProjectId() }
             };
-            var outParams = new Dictionary<string, object>
+                var outParams = new Dictionary<string, object>
             {
 
                 {"pError","int" }
             };
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeePaper", inputParams, outParams);
+                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeePaper", inputParams, outParams);
 
-            //check if user not HR return -3 you have no permission
-            if (outputValues.TryGetValue("pError", out var value))
-            {
-                if (Convert.ToInt32(value) == -5)
+                //check if user not HR return -3 you have no permission
+                if (outputValues.TryGetValue("pError", out var value))
                 {
-                    return "لا يمكن اضافة اجازة في سنة مغلقة ";
-                    
-                }
-                if (Convert.ToInt32(value) == -3 || Convert.ToInt32(value) == -6)
-                {
-                    return "هناك تعارض مع اجازة اخرى ";
+                    if (Convert.ToInt32(value) == -5)
+                    {
+                        return "لا يمكن اضافة اجازة في سنة مغلقة ";
+
+                    }
+                    if (Convert.ToInt32(value) == -3 || Convert.ToInt32(value) == -6)
+                    {
+                        return "هناك تعارض مع اجازة اخرى ";
+
+                    }
 
                 }
-                
+                return null;
             }
-            return null;
+            catch (Exception e)
+            {
+
+                throw;
+            }
+          
         }
         async Task sendToNotification(int employeeId, int PKID)
         {
