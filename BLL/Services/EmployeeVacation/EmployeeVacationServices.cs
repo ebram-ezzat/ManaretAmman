@@ -68,7 +68,8 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
                 VacationType = lookups.FirstOrDefault(e => Vacation.VacationTypeID is not null
                                  && e.ID == Vacation.VacationTypeID)?.ColumnDescription,
                 FromDate = Vacation.FromDate.IntToDateValue(),
-                ToDate = Vacation.ToDate.IntToDateValue()
+                ToDate = Vacation.ToDate.IntToDateValue(),
+                imagepath=Vacation.imagepath
             };
             return result;
         }
