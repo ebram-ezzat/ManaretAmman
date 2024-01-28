@@ -280,13 +280,15 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
             {
                 if (Convert.ToInt32(value) == -5)
                 {
-                    return "لا يمكن اضافة اجازة في سنة مغلقة ";
-
+                    throw new UnauthorizedAccessException("CannotAddVacationInClosedYear");
                 }
-                if (Convert.ToInt32(value) == -3 || Convert.ToInt32(value) == -6)
+                if (Convert.ToInt32(value) == -3)
                 {
-                    return "هناك تعارض مع اجازة اخرى ";
-
+                    throw new UnauthorizedAccessException("ThereIsConflictWithAnotherLeave");
+                }
+                if (Convert.ToInt32(value) == -6)
+                {
+                    throw new UnauthorizedAccessException("ThereIsConflictWithAnotherVacation");
                 }
             }
 

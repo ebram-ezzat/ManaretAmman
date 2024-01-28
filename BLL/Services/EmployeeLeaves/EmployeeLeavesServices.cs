@@ -34,11 +34,11 @@ internal class EmployeeLeavesService : IEmployeeLeavesService
     readonly int _userId;
     readonly int _projecId;
     public EmployeeLeavesService(IUnitOfWork unityOfWork, ILookupsService lookupsService, IMapper mapper, IProjectProvider projectProvider
-        , IAuthService authService,INotificationsService iNotificationsService, DataAccessLayer.Models.PayrolLogOnlyContext payrolLogOnlyContext)
+        , IAuthService authService, INotificationsService iNotificationsService, DataAccessLayer.Models.PayrolLogOnlyContext payrolLogOnlyContext)
     {
-        _unitOfWork     = unityOfWork;
+        _unitOfWork = unityOfWork;
         _lookupsService = lookupsService;
-        _mapper         = mapper;
+        _mapper = mapper;
         _projectProvider = projectProvider;
         _authService = authService;
         _iNotificationsService = iNotificationsService;
@@ -57,52 +57,52 @@ internal class EmployeeLeavesService : IEmployeeLeavesService
 
         var lookups = await _lookupsService.GetLookups(Constants.EmployeeLeaves, Constants.LeaveTypeID);
 
-            var result = new EmployeeLeavesOutput
-            {
-                ID              = leave.EmployeeLeaveID,
-                EmployeeID      = leave.EmployeeID,
-                EmployeeName    = leave.Employee.EmployeeName,
-                LeaveTypeID     = leave.LeaveTypeID,
-                LeaveType       = lookups.FirstOrDefault(e => leave.LeaveTypeID is not null
-                                 && e.ID == leave.LeaveTypeID)?.ColumnDescription,
-                LeaveDate       = leave.LeaveDate.IntToDateValue(),
-                FromTime        = leave.FromTime.ConvertFromMinutesToTimeString(),
-                ToTime          = leave.ToTime.ConvertFromMinutesToTimeString(),
-                imagepath       =leave.imagepath
+        var result = new EmployeeLeavesOutput
+        {
+            ID = leave.EmployeeLeaveID,
+            EmployeeID = leave.EmployeeID,
+            EmployeeName = leave.Employee.EmployeeName,
+            LeaveTypeID = leave.LeaveTypeID,
+            LeaveType = lookups.FirstOrDefault(e => leave.LeaveTypeID is not null
+                             && e.ID == leave.LeaveTypeID)?.ColumnDescription,
+            LeaveDate = leave.LeaveDate.IntToDateValue(),
+            FromTime = leave.FromTime.ConvertFromMinutesToTimeString(),
+            ToTime = leave.ToTime.ConvertFromMinutesToTimeString(),
+            imagepath = leave.imagepath
 
-};
+        };
 
         return result;
     }
 
-    private static  IQueryable<EmployeeLeaf> ApplyFilters(IQueryable<EmployeeLeaf> query, EmployeeLeaveFilter criteria)
+    private static IQueryable<EmployeeLeaf> ApplyFilters(IQueryable<EmployeeLeaf> query, EmployeeLeaveFilter criteria)
     {
-            if (criteria == null)
-                return query;
+        if (criteria == null)
+            return query;
 
-            var parameter = Expression.Parameter(typeof(EmployeeLeaf), "e");
-            Expression combinedExpression = null;
+        var parameter = Expression.Parameter(typeof(EmployeeLeaf), "e");
+        Expression combinedExpression = null;
 
-            if (criteria.EmployeeID != null)
-            {
-                var employeeIdExpression = Expression.Equal(
-                    Expression.Property(parameter, "EmployeeID"),
-                    Expression.Constant(criteria.EmployeeID)
-                );
-                combinedExpression = employeeIdExpression;
-            }
+        if (criteria.EmployeeID != null)
+        {
+            var employeeIdExpression = Expression.Equal(
+                Expression.Property(parameter, "EmployeeID"),
+                Expression.Constant(criteria.EmployeeID)
+            );
+            combinedExpression = employeeIdExpression;
+        }
 
-            if (criteria.LeaveTypeID != null)
-            {
-                var leaveTypeIdExpression = Expression.Equal(
-                    Expression.Property(parameter, "LeaveTypeID"),
-                    Expression.Constant(criteria.LeaveTypeID, typeof(int?))
-                );
-                combinedExpression = combinedExpression == null
-                    ? leaveTypeIdExpression
-                    : Expression.AndAlso(combinedExpression, leaveTypeIdExpression);
-            }
-        if (!string.IsNullOrEmpty(criteria.FromTime ))
+        if (criteria.LeaveTypeID != null)
+        {
+            var leaveTypeIdExpression = Expression.Equal(
+                Expression.Property(parameter, "LeaveTypeID"),
+                Expression.Constant(criteria.LeaveTypeID, typeof(int?))
+            );
+            combinedExpression = combinedExpression == null
+                ? leaveTypeIdExpression
+                : Expression.AndAlso(combinedExpression, leaveTypeIdExpression);
+        }
+        if (!string.IsNullOrEmpty(criteria.FromTime))
         {
             var FromTimeExpression = Expression.Equal(
                 Expression.Property(parameter, "FromTime"),
@@ -112,7 +112,7 @@ internal class EmployeeLeavesService : IEmployeeLeavesService
                 ? FromTimeExpression
                 : Expression.AndAlso(combinedExpression, FromTimeExpression);
         }
-        if (!string.IsNullOrEmpty( criteria.ToTime))
+        if (!string.IsNullOrEmpty(criteria.ToTime))
         {
             var ToExpression = Expression.Equal(
                 Expression.Property(parameter, "ToTime"),
@@ -141,17 +141,17 @@ internal class EmployeeLeavesService : IEmployeeLeavesService
 
 
         if (combinedExpression != null)
-            {
-                var lambda = Expression.Lambda<Func<EmployeeLeaf, bool>>(combinedExpression, parameter);
-                query = query.Where(lambda);
-            }
+        {
+            var lambda = Expression.Lambda<Func<EmployeeLeaf, bool>>(combinedExpression, parameter);
+            query = query.Where(lambda);
+        }
 
-            return query;
-    
+        return query;
 
-}
 
-public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<EmployeeLeaveFilter> filter)
+    }
+
+    public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<EmployeeLeaveFilter> filter)
     {
 
         if (_userId == -1) throw new UnauthorizedAccessException("Incorrect userId from header");
@@ -162,27 +162,27 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
                     join lt in _unitOfWork.LookupsRepository.PQuery() on e.DepartmentID equals lt.ID into ltGroup
                     from lt in ltGroup.DefaultIfEmpty()
                     join el in _unitOfWork.EmployeeLeaveRepository.PQuery() on e.EmployeeID equals el.EmployeeID
-                    where (lt.TableName== "Department" && lt.ColumnName== "DepartmentID") &&e.ProjectID == _projecId && lt.ProjectID==_projecId && el.ProjectID == _projecId && (e.EmployeeID == employeeId || lt.EmployeeID == employeeId || employeeId==null)
+                    where (lt.TableName == "Department" && lt.ColumnName == "DepartmentID") && e.ProjectID == _projecId && lt.ProjectID == _projecId && el.ProjectID == _projecId && (e.EmployeeID == employeeId || lt.EmployeeID == employeeId || employeeId == null)
                     select new EmployeeLeaf
                     {
-                        Employee=e,
-                        EmployeeID=e.EmployeeID,
-                        approvalstatusid=el.approvalstatusid,
+                        Employee = e,
+                        EmployeeID = e.EmployeeID,
+                        approvalstatusid = el.approvalstatusid,
                         EmployeeLeaveID = el.EmployeeLeaveID,
                         LeaveTypeID = el.LeaveTypeID,
                         ProjectID = el.ProjectID,
                         LeaveDate = el.LeaveDate,
                         FromTime = el.FromTime,
                         ToTime = el.ToTime,
-                        statusid=el.statusid,
-                        imagepath=el.imagepath
+                        statusid = el.statusid,
+                        imagepath = el.imagepath
                     };
 
-       var rquery = filter.FilterCriteria!=null?   ApplyFilters(query, filter.FilterCriteria): query;
-       
+        var rquery = filter.FilterCriteria != null ? ApplyFilters(query, filter.FilterCriteria) : query;
+
         var totalRecords = await rquery.CountAsync();
-        
-        
+
+
         var leaves = await rquery.Skip((filter.PageIndex - 1) * filter.Offset)
                     .Take(filter.Offset).ToListAsync();
 
@@ -203,8 +203,8 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
             FromTime = item.FromTime.ConvertFromMinutesToTimeString(),
             ToTime = item.ToTime.ConvertFromMinutesToTimeString(),
             ApprovalStatus = approvals.FirstOrDefault(e => e.ColumnValue == item.approvalstatusid.ToString())?.ColumnDescriptionAr,
-            statusid=item.statusid,
-            imagepath=item.imagepath
+            statusid = item.statusid,
+            imagepath = item.imagepath
         }).ToList();
 
         return result.CreatePagedReponse(filter.PageIndex, filter.Offset, totalRecords);
@@ -212,7 +212,7 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
 
     public async Task Create(EmployeeLeavesInput model)
     {
-        
+
         if (_userId == -1) throw new UnauthorizedAccessException("Incorrect userId");
         if (!_authService.IsValidUser(_userId)) throw new UnauthorizedAccessException("Incorrect userId");
         if (model == null)
@@ -264,27 +264,28 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
         }
         await sendToNotification(employeeLeave.EmployeeID, insertedPKValue);
     }
-   async Task sendToNotification(int employeeId,int PKID)
+    async Task sendToNotification(int employeeId, int PKID)
     {
-        AcceptOrRejectNotifcationInput model = new AcceptOrRejectNotifcationInput() { 
-        ProjectID=_projecId,
-        CreatedBy=_userId,
-        EmployeeId=employeeId,
-        ApprovalStatusId=0,
-        SendToLog=0,
-        Id=PKID,
-        ApprovalPageID=2,
-        PrevilageType = _authService.GetUserType(_userId, employeeId)
+        AcceptOrRejectNotifcationInput model = new AcceptOrRejectNotifcationInput()
+        {
+            ProjectID = _projecId,
+            CreatedBy = _userId,
+            EmployeeId = employeeId,
+            ApprovalStatusId = 0,
+            SendToLog = 0,
+            Id = PKID,
+            ApprovalPageID = 2,
+            PrevilageType = _authService.GetUserType(_userId, employeeId)
         };
-       await _iNotificationsService.AcceptOrRejectNotificationsAsync(model);
+        await _iNotificationsService.AcceptOrRejectNotificationsAsync(model);
     }
     private async Task<string> checkValidationOfLeave(dynamic model)
-    {      
-           
-            DateTime? FromDate = model.LeaveDate;
-            string FromTime = model.FromTime;
-            string ToTime = model.ToTime;
-            var inputParams = new Dictionary<string, object>
+    {
+
+        DateTime? FromDate = model.LeaveDate;
+        string FromTime = model.FromTime;
+        string ToTime = model.ToTime;
+        var inputParams = new Dictionary<string, object>
             {
                 {"pEmployeeLeaveID", model.ID},
                 {"pEmployeeID", model.EmployeeID==0 ? null:model.EmployeeID},
@@ -294,33 +295,35 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
                 {"pToTime", ToTime==null?null:ToTime.ConvertFromTimeStringToMinutes()},
                 {"pProjectId",_projectProvider.GetProjectId() }
             };
-            var outParams = new Dictionary<string, object>
+        var outParams = new Dictionary<string, object>
             {
 
                 {"pError","int" }
             };
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.CheckEmployeeLeaves", inputParams, outParams);
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.CheckEmployeeLeaves", inputParams, outParams);
 
-            //check if user not HR return -3 you have no permission
-            if (outputValues.TryGetValue("pError", out var value))
-            {
-                if (Convert.ToInt32(value) == -5)
-                {
-                    return "لا يمكن اضافة مغادرة في سنة مغلقة ";
-
-                }
-                if (Convert.ToInt32(value) == -3 || Convert.ToInt32(value) == -6)
-                {
-                    return "هناك تعارض مع  مغادرة اخرى ";
-
-                }
-
-            }
-            return null;
-        }
         
+        if (outputValues.TryGetValue("pError", out var value))
+        {
+            if (Convert.ToInt32(value) == -5)
+            {
+                throw new UnauthorizedAccessException("CannotAddLeaveInClosedYear");
+            }
+            if (Convert.ToInt32(value) == -3)
+            {
+                throw new UnauthorizedAccessException("ThereIsConflictWithAnotherLeave");
+            }
+            if (Convert.ToInt32(value) == -6)
+            {
+                throw new UnauthorizedAccessException("ThereIsConflictWithAnotherVacation");
+            }
 
-    
+        }
+        return null;
+    }
+
+
+
 
     public async Task Update(EmployeeLeavesUpdate employeeLeave)
     {
@@ -341,11 +344,11 @@ public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<
 
         var timing = GetLeaveTimingInputs(employeeLeave);
 
-            leave.LeaveDate =employeeLeave.LeaveDate.DateToIntValue();// timing.LeaveDate;//
-            leave.FromTime = timing.FromTime;
-            leave.ToTime = timing.ToTime;
-            leave.ModificationDate = DateTime.Now;
-            leave.LeaveTypeID= employeeLeave.LeaveTypeID;
+        leave.LeaveDate = employeeLeave.LeaveDate.DateToIntValue();// timing.LeaveDate;//
+        leave.FromTime = timing.FromTime;
+        leave.ToTime = timing.ToTime;
+        leave.ModificationDate = DateTime.Now;
+        leave.LeaveTypeID = employeeLeave.LeaveTypeID;
 
         leave.LeaveDate = employeeLeave.LeaveDate.DateToIntValue();// timing.LeaveDate;//
         leave.FromTime = timing.FromTime;
