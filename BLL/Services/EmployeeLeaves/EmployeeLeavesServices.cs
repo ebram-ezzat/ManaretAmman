@@ -253,7 +253,7 @@ internal class EmployeeLeavesService : IEmployeeLeavesService
             //save img path to database
             employeeLeave.imagepath = filePath;
             await _unitOfWork.EmployeeLeaveRepository.PUpdateAsync(employeeLeave);
-
+            await _unitOfWork.SaveAsync();
             using (var fileStream = model.File.OpenReadStream())
             {
                 string ftpUrl = filePath;

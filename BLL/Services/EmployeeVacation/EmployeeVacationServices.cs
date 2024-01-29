@@ -130,6 +130,7 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
                 Notes           = item.Notes,
                 ApprovalStatus  = approvals.FirstOrDefault(e => e.ColumnValue == item.ApprovalStatusID.ToString())?.ColumnDescriptionAr,
                 StatusID=item.StatusID,
+                imagepath=item.imagepath
             }).ToList();
 
             return result.CreatePagedReponse(filter.PageIndex, filter.Offset, totalRecords);
@@ -243,7 +244,7 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
                 //save img path to database
                 employeeVacation.imagepath = filePath;
                 await _unitOfWork.EmployeeVacationRepository.PUpdateAsync(employeeVacation);
-
+                await _unitOfWork.SaveAsync();
                 using (var fileStream = model.File.OpenReadStream())
                 {
                     string ftpUrl = filePath;                   
