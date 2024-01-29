@@ -32,6 +32,8 @@ namespace DataAccessLayer.DTO.Locations
         public int? EmployeeNumber { get; set; }
         public string Alias { get; set; }
         public int? AnyWhere { get; set; }
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set; }
 
     }
 }
