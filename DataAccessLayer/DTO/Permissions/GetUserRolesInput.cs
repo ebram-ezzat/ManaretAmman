@@ -21,7 +21,7 @@ namespace DataAccessLayer.DTO.Permissions
         public int UserId { get; set; }
         public int IsChecked { get; set; }
         public int UserTypeId { get; set; }
-
+        public string UsertypeDesc { get; set; }
     }
 
     public class InsertUserRolesInput
