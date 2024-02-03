@@ -2,6 +2,7 @@
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.Locations;
 using DataAccessLayer.DTO.Notification;
+using DataAccessLayer.DTO.Permissions;
 using DataAccessLayer.DTO.Reports;
 using DataAccessLayer.Models;
 using Microsoft.Data.SqlClient;
@@ -144,6 +145,9 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<GetEmployeeLocationResponse>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetLocationsResponse>().HasNoKey().ToView(null);
             modelBuilder.Entity<EmployeeProfile>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GetUserRolesOutput>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GetUserTypeRolesOutput>().HasNoKey().ToView(null);
+
         }
     }
 

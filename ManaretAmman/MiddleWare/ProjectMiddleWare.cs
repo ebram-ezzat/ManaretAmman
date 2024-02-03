@@ -18,8 +18,9 @@ namespace ManaretAmman.MiddleWare
             //{
             //    await Console.Out.WriteLineAsync(userAgent);
             //}
-            ///api/Auth/Login
-            if (context.Request.Path == "/api/Configration/GetProjectUrl" && context.Request.Method == "GET")
+            //api/Auth/Login
+            
+            if ((context.Request.Path == "/api/Configration/GetProjectUrl" && context.Request.Method == "GET") || (context.Request.Path.HasValue && context.Request.Path.Value.Contains("swagger")))
             {
                 await _next(context);
                 return;

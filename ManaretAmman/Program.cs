@@ -93,8 +93,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(config =>
-{  
+{
     config.OperationFilter<HeaderFilter>();
+    //Set the comments path for the Swagger JSON and UI.
+
+   var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    config.IncludeXmlComments(xmlPath);
+
 });
 
 
@@ -107,7 +113,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment()|| app.Environment.IsProduction())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+       // c.RoutePrefix = string.Empty; // Sets Swagger UI at the app's root
+    });
 }
 
 app.UseMiddleware(typeof(GlobalExceptionHandler));
