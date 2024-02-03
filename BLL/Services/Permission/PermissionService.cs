@@ -24,25 +24,7 @@ namespace BusinessLogicLayer.Services.Permission
             _projectProvider= projectProvider;
             _lookupsService= lookupsService;
         }
-
-        public async Task<List<GetUserRolesOutput>> GetUserRoles(GetUserRolesInput getUserRolesInput)
-        {
-            var parameters = PublicHelper.GetPropertiesWithPrefix<GetUserRolesInput>(getUserRolesInput, "p");
-           
-            var (userRoles, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetUserRolesOutput>("dbo.Getuserroles", parameters, null);
-            return userRoles;
-
-        }
-
-        public Task<int> GetUserRoles(InsertUserRolesInput insertUserRolesInput)
-        {
-            return null;
-            //var parameters = PublicHelper.GetPropertiesWithPrefix<GetUserRolesInput>(insertUserRolesInput, "p");
-
-            //var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.Getuserroles", parameters, null);
-            //return userRoles;
-        }
-
+        #region صلاحيات نوع المستخدم
         public async Task<List<GetUserTypeRolesOutput>> GetUserTypeRoles(GetUserTypeRolesInput getUserTypeRolesInput)
         {
             var inputParams = new Dictionary<string, object>()
@@ -55,7 +37,6 @@ namespace BusinessLogicLayer.Services.Permission
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetUserTypeRolesOutput>("dbo.Getusertyperoles", inputParams, null);
             return result;
         }
-
         public async Task<int> InsertUserTypeRoles(InsertUserTypeRoles insertUserTypeRoles)
         {
             var inputParams = new Dictionary<string, object>()
@@ -66,12 +47,100 @@ namespace BusinessLogicLayer.Services.Permission
                 {"pcreatedby",_projectProvider.UserId() }
             };
             Dictionary<string, object> outputParams = new Dictionary<string, object>
-            {                
+            {
                 { "pError","int" },
             };
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.Insertusertyperoles", inputParams, outputParams);
             int pErrorValue = (int)outputValues["pError"];
             return pErrorValue;
         }
+
+        #endregion
+
+        #region المستخدمين
+        public async Task<int> DeleteUsers(DeleteUser deleteUser)
+        {
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"pUserID",deleteUser.UserId},
+                {"pProjectID",_projectProvider.GetProjectId() }
+            };
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+            {
+                { "pError","int" },
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteUsers", inputParams, outputParams);
+            int pErrorValue = (int)outputValues["pError"];
+            return pErrorValue;
+        }
+
+        public async Task<int> InsertUsers(InsertUser insertUser)
+        {
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"pUserName",insertUser.UserName},
+                {"pUserPassword",insertUser.UserPassword},
+                {"pProjectID",_projectProvider.GetProjectId()},
+                {"pFromOtherProcedure",insertUser.FromOtherProcedure},
+                {"pStatusID",insertUser.StatusID },
+                {"pUserTypeID", insertUser.UserTypeID},
+                {"pcreatedby",_projectProvider.UserId()}
+            };
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+            {
+                {"pUserID",insertUser.UserId.HasValue?insertUser.UserId.Value:"int"},//Input output direction
+                { "pError","int" }
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertUsers", inputParams, outputParams);
+            int pErrorValue = (int)outputValues["pError"];
+            return pErrorValue;
+        }
+
+        public async Task<List<GetUsersResult>> GetUsers(GetUsersInput getUsersInput)
+        {
+            var res = await _payrolLogOnlyContext.GetProcedures().GetUsersAsync(getUsersInput.UserId, _projectProvider.GetProjectId()
+                , getUsersInput.UserName, getUsersInput.UserPassword, getUsersInput.UserTypeId, getUsersInput.BiosID, getUsersInput.Flag);
+            return res;
+        }
+        #endregion
+
+        #region صلاحيات المستخدم
+        public async Task<List<GetUserRolesOutput>> GetUserRoles(GetUserRolesInput getUserRolesInput)
+        {
+            var inputParams = new Dictionary<string, object>()
+            {
+                { "pusertypeid",getUserRolesInput.UserId},
+                {"pprojectid",_projectProvider.GetProjectId() },
+                {"pflag",getUserRolesInput.Flag },
+                {"ploginuserid",_projectProvider.UserId() }
+            };
+
+            var (userRoles, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetUserRolesOutput>("dbo.Getuserroles", inputParams, null);
+            return userRoles;
+
+        }
+
+        public async Task<int> InsertUserRoles(InsertUserRolesInput insertUserRolesInput)
+        {
+
+            var inputParams = new Dictionary<string, object>()
+            {
+                { "puserid",insertUserRolesInput.UserId},
+                {"pprojectid",_projectProvider.GetProjectId() },
+                {"pusertypeid",insertUserRolesInput.UserTypeId },
+                {"pcreatedby",_projectProvider.UserId() }
+            };
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+            {
+                { "pError","int" },
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.Insertuserroles", inputParams, outputParams);
+            int pErrorValue = (int)outputValues["pError"];
+            return pErrorValue;
+        }
+
+        #endregion
+
+
     }
 }

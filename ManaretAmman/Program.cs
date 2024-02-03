@@ -8,6 +8,7 @@ using BusinessLogicLayer.Services.ProjectProvider;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using DataAccessLayer.DTO.Permissions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -97,9 +98,19 @@ builder.Services.AddSwaggerGen(config =>
     config.OperationFilter<HeaderFilter>();
     //Set the comments path for the Swagger JSON and UI.
 
-   var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    config.IncludeXmlComments(xmlPath);
+    config.IncludeXmlComments(xmlPath);   
+
+    //foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+    //{
+    //    var xmlFile = $"{assembly.GetName().Name}.xml";
+    //    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    //    if (File.Exists(xmlPath))
+    //    {
+    //        config.IncludeXmlComments(xmlPath);
+    //    }
+    //}
 
 });
 
@@ -111,14 +122,15 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 if (app.Environment.IsDevelopment()|| app.Environment.IsProduction())
-{
+{    
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-       // c.RoutePrefix = string.Empty; // Sets Swagger UI at the app's root
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");       
+        // c.RoutePrefix = string.Empty; // Sets Swagger UI at the app's root
     });
 }
+
 
 app.UseMiddleware(typeof(GlobalExceptionHandler));
 

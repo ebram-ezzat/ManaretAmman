@@ -20,7 +20,7 @@ namespace ManaretAmman.MiddleWare
             //}
             //api/Auth/Login
             
-            if ((context.Request.Path == "/api/Configration/GetProjectUrl" && context.Request.Method == "GET") || (context.Request.Path.HasValue && context.Request.Path.Value.Contains("swagger")))
+            if ((context.Request.Path == "/api/Configration/GetProjectUrl" && context.Request.Method == "GET") || (context.Request.Path.HasValue && context.Request.Path.Value.ToLower().Contains("swagger")))
             {
                 await _next(context);
                 return;
