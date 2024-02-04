@@ -195,7 +195,7 @@ namespace ManaretAmman.Controllers.Employees
             }
             var result = await _permissionService.InsertUserRoles(insertUserRolesInput);
             
-            return ApiResponse<int>.Success("data has been retrieved succussfully", result);
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
         }
         #endregion
 
