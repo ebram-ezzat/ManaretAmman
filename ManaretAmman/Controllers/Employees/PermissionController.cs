@@ -53,7 +53,7 @@ namespace ManaretAmman.Controllers.Employees
         /// حفظ شاشة صلاحيات نوع المستخدم .
         /// </summary>
         /// <param name="insertUserTypeRoles">you should send Logedin userId on the header,
-        /// RoleId is the string of ids sperated by comma","
+        /// RoleId and AllowEdit and AllowDelete and AllowAdd fields is the string of ids sperated by comma";"
         /// </param>
         /// <returns>A return Status of save </returns>
 

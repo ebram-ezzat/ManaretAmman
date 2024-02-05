@@ -21,6 +21,9 @@ namespace DataAccessLayer.DTO.Permissions
         public int? RoleId { get; set; }
         public int? IsChecked { get; set; }// 0=>Not Checked 1 =>Checked
         public string PageName { get; set; }
+        public int? AllowEdit { get; set; }
+        public int? AllowDelete { get; set; }
+        public int? AllowAdd { get; set; }
 
     }
 }

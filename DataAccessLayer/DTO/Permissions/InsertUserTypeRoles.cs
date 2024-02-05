@@ -9,6 +9,9 @@ namespace DataAccessLayer.DTO.Permissions
     public class InsertUserTypeRoles
     {
         public int UserTypeId { get; set; }
-        public string RoleId { get; set; } //string with separted with ", "
+        public string RoleId { get; set; } //string with separted with "; "
+        public string AllowEdit { get; set; }//string with separted with "; "
+        public string AllowDelete {  get; set; }//string with separted with ";"
+        public string AllowAdd { get; set; }//string with separted with ";"
     }
 }

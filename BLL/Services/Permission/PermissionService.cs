@@ -44,7 +44,10 @@ namespace BusinessLogicLayer.Services.Permission
                 { "pusertypeid",insertUserTypeRoles.UserTypeId},
                 {"pprojectid",_projectProvider.GetProjectId() },
                  {"proleid",insertUserTypeRoles.RoleId },
-                {"pcreatedby",_projectProvider.UserId() }
+                {"pcreatedby",_projectProvider.UserId() },
+                 {"pAllowEdit",insertUserTypeRoles.AllowEdit },
+                 {"pAllowDelete",insertUserTypeRoles.AllowDelete},
+                 {"pAllowAdd",insertUserTypeRoles.AllowAdd}
             };
             Dictionary<string, object> outputParams = new Dictionary<string, object>
             {
