@@ -86,7 +86,7 @@ namespace BusinessLogicLayer.Services.Permission
                 {"pProjectID",_projectProvider.GetProjectId()},
                 {"pFromOtherProcedure",insertUser.FromOtherProcedure},
                 {"pStatusID",insertUser.StatusID },
-                {"pUserTypeID", insertUser.UserTypeID},
+                {"pUserTypeID", null},
                 {"pcreatedby",_projectProvider.UserId()}
             };
             Dictionary<string, object> outputParams = new Dictionary<string, object>

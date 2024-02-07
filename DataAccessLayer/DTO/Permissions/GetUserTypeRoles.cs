@@ -12,7 +12,7 @@ namespace DataAccessLayer.DTO.Permissions
         [Required(ErrorMessage ="UserTypeId is Required")]
         [Range(1, int.MaxValue, ErrorMessage = "The UserTypeId must be bigger than 0")]
         public int? UserTypeId { get; set; }
-        public int Falg { get; set; } = 1;//default 1
+        public int Flag { get; set; } = 1;//default 1
 
     }
     public class GetUserTypeRolesOutput

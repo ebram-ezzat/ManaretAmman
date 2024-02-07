@@ -13,6 +13,6 @@ namespace DataAccessLayer.DTO.Permissions
       public string UserPassword { get; set; }
       public int? FromOtherProcedure { get; set; }
       public int? StatusID { get; set; }
-      public int? UserTypeID { get; set; }
+      //public int? UserTypeID { get; set; }//not needed here 
     }
 }
