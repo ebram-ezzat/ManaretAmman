@@ -31,7 +31,7 @@ namespace BusinessLogicLayer.Services.Permission
             {
                 { "pusertypeid",getUserTypeRolesInput.UserTypeId},
                 {"pprojectid",_projectProvider.GetProjectId() },
-                 {"pflag",getUserTypeRolesInput.Falg },
+                 {"pflag",getUserTypeRolesInput.Flag },
                 {"ploginuserid",_projectProvider.UserId() }
             };
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetUserTypeRolesOutput>("dbo.Getusertyperoles", inputParams, null);
