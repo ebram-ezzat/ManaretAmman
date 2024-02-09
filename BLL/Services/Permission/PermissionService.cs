@@ -101,6 +101,7 @@ namespace BusinessLogicLayer.Services.Permission
 
         public async Task<List<GetUsersResult>> GetUsers(GetUsersInput getUsersInput)
         {
+         
             var res = await _payrolLogOnlyContext.GetProcedures().GetUsersAsync(getUsersInput.UserId, _projectProvider.GetProjectId()
                 , getUsersInput.UserName, getUsersInput.UserPassword, getUsersInput.UserTypeId, getUsersInput.BiosID, getUsersInput.Flag);
             return res;

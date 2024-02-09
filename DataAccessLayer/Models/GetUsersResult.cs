@@ -5,13 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccessLayer.Models
 {
-    public partial class GetUsersResult
+    public class GetUsersResult
     {
-        public int UserID { get; set; }
+        public int? UserID{ get; set; }
         public string UserName { get; set; }
         public string UserPassword { get; set; }
         public int? ProjectID { get; set; }
-        public int? Test { get; set; }
+         public int? Test { get; set; }
         public int? UserTypeID { get; set; }
+        public int? EmployeeID { get; set; }
+       // public DateTime? validateperiodto { get; set; }
     }
 }

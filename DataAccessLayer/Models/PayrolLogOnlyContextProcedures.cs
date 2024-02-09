@@ -5649,7 +5649,20 @@ namespace DataAccessLayer.Models
 
             return _;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pUserID"></param>
+        /// <param name="pProjectID"></param>
+        /// <param name="pUserName"></param>
+        /// <param name="pUserPassword"></param>
+        /// <param name="pUserTypeID"></param>
+        /// <param name="pBiosID">should be null</param>
+        /// <param name="pFlag">should be 2</param>
+        /// <param name="returnValue"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        //this function only work for Flag 2 and not used Bios =Null
         public virtual async Task<List<GetUsersResult>> GetUsersAsync(int? pUserID, int? pProjectID, string pUserName, string pUserPassword, int? pUserTypeID, string pBiosID, int? pFlag, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
