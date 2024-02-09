@@ -143,8 +143,30 @@ namespace BusinessLogicLayer.Services.Permission
             return pErrorValue;
         }
 
+
+
         #endregion
 
-
+        #region صلاحيات المستخدم عند تسجيل دخوله 
+        /// <summary>
+        /// Retrieves the permissions for a logged-in user based on the provided input.
+        /// </summary>
+        /// <param name="getLogedInPermissionInput">An object containing the user ID and flag to retrieve permissions for.</param>
+        /// <returns>
+        /// A list of permission outputs containing role ID, edit, delete, add, and default value permissions for the logged-in user.
+        /// </returns>
+        public async Task<List<GetLogedInPermissionOutput>> GetLogedInPermissions(GetLogedInPermissionInput getLogedInPermissionInput)
+        {
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"puserid",_projectProvider.UserId()},
+                {"pprojectid",_projectProvider.GetProjectId()},
+                {"pflag",getLogedInPermissionInput.Flag },
+                {"ploginuserid",null }//here he used the userid as a logedinuser on the stored procedure so i don't send it twice
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetLogedInPermissionOutput>("dbo.Getuserroles", inputParams, null);
+            return result;
+        }
+        #endregion
     }
 }

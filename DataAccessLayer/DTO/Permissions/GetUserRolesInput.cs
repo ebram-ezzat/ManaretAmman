@@ -18,9 +18,9 @@ namespace DataAccessLayer.DTO.Permissions
     }
     public class GetUserRolesOutput
     {
-        public int UserId { get; set; }
-        public int IsChecked { get; set; }
-        public int UserTypeId { get; set; }
+        public int? UserId { get; set; }
+        public int? IsChecked { get; set; }
+        public int? UserTypeId { get; set; }
         public string UsertypeDesc { get; set; }
     }
 

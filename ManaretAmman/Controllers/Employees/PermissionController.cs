@@ -159,7 +159,7 @@ namespace ManaretAmman.Controllers.Employees
         /// There is no pagination here      
         /// </summary>
         /// <remarks>you can send LogedInUserId from the header,
-        /// {Flag} default valus is 1 you can don't send it if you want the default
+        /// {Flag} value here it should be 2        
         /// </remarks>           
         /// <param name="getUserRolesInput"></param>
         /// <returns>List Of User Roles </returns>
@@ -197,6 +197,30 @@ namespace ManaretAmman.Controllers.Employees
             var result = await _permissionService.InsertUserRoles(insertUserRolesInput);
             
             return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
+        #endregion
+        #region صلاحيات المستخدم عند تسجيل دخوله 
+        /// <summary>
+        /// {Flag} Value here should be 3,
+        /// {UserId} Value get from HttpRequestHeader LoggedInUserId and it is Required,
+        ///   There is no pagination here 
+        /// </summary>
+        /// <returns>List of GetLogedInPermissionOutput</returns>
+        [HttpGet("GetLogedInPermission")]
+        public async Task<IApiResponse> GetLogedInPermission([FromQuery]GetLogedInPermissionInput GetLogedInPermissionInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _permissionService.GetLogedInPermissions(GetLogedInPermissionInput);
+
+            return ApiResponse<List<GetLogedInPermissionOutput>>.Success("data has been reterived succussfully", result);
         }
         #endregion
 
