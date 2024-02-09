@@ -10,7 +10,7 @@ namespace DataAccessLayer.Models
         public int UserID { get; set; }
         public string UserName { get; set; }
         public string UserPassword { get; set; }
-        public int ProjectID { get; set; }
+        public int? ProjectID { get; set; }
         public int? Test { get; set; }
         public int? UserTypeID { get; set; }
     }
