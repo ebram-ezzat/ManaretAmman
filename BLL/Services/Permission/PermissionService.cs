@@ -174,7 +174,7 @@ namespace BusinessLogicLayer.Services.Permission
                 {"puserid",_projectProvider.UserId()},
                 {"pprojectid",_projectProvider.GetProjectId()},
                 {"pflag",getLogedInPermissionInput.Flag },
-                {"ploginuserid",null }//here he used the userid as a logedinuser on the stored procedure so i don't send it twice
+                {"ploginuserid",Convert.DBNull }//here he used the userid as a logedinuser on the stored procedure so i don't send it twice
             };
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetLogedInPermissionOutput>("dbo.Getuserroles", inputParams, null);
             return result;

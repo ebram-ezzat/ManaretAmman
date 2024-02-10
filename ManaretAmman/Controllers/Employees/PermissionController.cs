@@ -127,9 +127,9 @@ namespace ManaretAmman.Controllers.Employees
         }
 
         /// <summary>
-        /// there is no pagination response
+        /// {Flag}=4 , {Bios}=null
         /// </summary>
-        /// <remarks>{flag}=2 , {Bios}=null</remarks>
+        /// <remarks></remarks>
         /// <param name = "getUsersInput" >
         /// </param>
         /// <returns>List of Users </returns>
