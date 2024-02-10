@@ -86,12 +86,12 @@ namespace BusinessLogicLayer.Services.Permission
                 {"pProjectID",_projectProvider.GetProjectId()},
                 {"pFromOtherProcedure",insertUser.FromOtherProcedure},
                 {"pStatusID",insertUser.StatusID },
-                {"pUserTypeID", null},
+                {"pUserTypeID", 0},
                 {"pcreatedby",_projectProvider.UserId()}
             };
             Dictionary<string, object> outputParams = new Dictionary<string, object>
             {
-                {"pUserID",insertUser.UserId.HasValue?insertUser.UserId.Value:"int"},//Input output direction
+                {"pUserID",insertUser.UserId.HasValue && insertUser.UserId>0?insertUser.UserId.Value:"int"},//Input output direction
                 { "pError","int" }
             };
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertUsers", inputParams, outputParams);
