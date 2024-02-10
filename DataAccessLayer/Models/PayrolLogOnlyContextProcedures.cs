@@ -5664,15 +5664,20 @@ namespace DataAccessLayer.Models
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         //this function only work for Flag 2 and not used Bios =Null
-        public virtual async Task<List<GetUsersResult>> GetUsersAsync(int? pUserID, int? pProjectID, string pUserName, string pUserPassword, int? pUserTypeID, string pBiosID, int? pFlag, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<GetUsersResult>> GetUsersAsync(int? pUserID, int? pProjectID, string pUserName, string pUserPassword, int? pUserTypeID, string pBiosID, int? pFlag, int pPageNo = 1, int pPageSize = 1000, OutputParameter<int> returnValue = null,OutputParameter<int> rowCount=null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
-                ParameterName = "returnValue",
+                ParameterName = "returnValue",                
                 Direction = System.Data.ParameterDirection.Output,
                 SqlDbType = System.Data.SqlDbType.Int,
             };
-
+            var paramRowCount= new SqlParameter
+            {
+                ParameterName = "prowcount",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
             var sqlParameters = new []
             {
                 new SqlParameter
@@ -5720,12 +5725,38 @@ namespace DataAccessLayer.Models
                     Value = pFlag ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.Int,
                 },
+                new SqlParameter
+                {
+                    ParameterName="@pUserloginID",
+                    Value=Convert.DBNull,
+                    SqlDbType=System.Data.SqlDbType.Int
+                }
+                ,
+                 new SqlParameter
+                {
+                    ParameterName = "pPageNo",
+                    Value = pPageNo,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                 new SqlParameter
+                {
+                    ParameterName = "pPageSize",
+                    Value = pPageSize,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                } ,
+                  new SqlParameter
+                {
+                    ParameterName = "pEmployeeName",
+                    Value = DBNull.Value,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                } ,
+                 paramRowCount,
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<GetUsersResult>("EXEC @returnValue = [dbo].[GetUsers] @pUserID, @pProjectID, @pUserName, @pUserPassword, @pUserTypeID, @pBiosID, @pFlag", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<GetUsersResult>("EXEC @returnValue = [dbo].[GetUsers] @pUserID, @pProjectID, @pUserName, @pUserPassword, @pUserTypeID, @pBiosID, @pFlag,@pUserloginID,@pPageNo,@pPageSize,@pEmployeeName,@prowcount output", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
-
+            rowCount?.SetValue(paramRowCount.Value);
             return _;
         }
 

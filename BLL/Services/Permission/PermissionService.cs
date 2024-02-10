@@ -1,4 +1,5 @@
-﻿using BusinessLogicLayer.Common;
+﻿using Azure.Core;
+using BusinessLogicLayer.Common;
 using BusinessLogicLayer.Services.Lookups;
 using BusinessLogicLayer.Services.ProjectProvider;
 using DataAccessLayer.DTO.Employees;
@@ -7,6 +8,7 @@ using DataAccessLayer.Models;
 using Microsoft.ReportingServices.ReportProcessing.ReportObjectModel;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -84,9 +86,9 @@ namespace BusinessLogicLayer.Services.Permission
                 {"pUserName",insertUser.UserName},
                 {"pUserPassword",insertUser.UserPassword},
                 {"pProjectID",_projectProvider.GetProjectId()},
-                {"pFromOtherProcedure", ""},
+                {"pFromOtherProcedure", Convert.DBNull},
                 {"pStatusID",insertUser.StatusID },
-                {"pUserTypeID", ""},
+                {"pUserTypeID", Convert.DBNull},
                 {"pcreatedby",_projectProvider.UserId()}
             };
             Dictionary<string, object> outputParams = new Dictionary<string, object>
@@ -99,12 +101,22 @@ namespace BusinessLogicLayer.Services.Permission
             return pErrorValue;
         }
 
-        public async Task<List<GetUsersResult>> GetUsers(GetUsersInput getUsersInput)
+        public async Task<dynamic> GetUsers(GetUsersInput getUsersInput)
         {
-         
+            var returnValue = new OutputParameter<int>();
+            var rowCount = new OutputParameter<int>();
             var res = await _payrolLogOnlyContext.GetProcedures().GetUsersAsync(getUsersInput.UserId, _projectProvider.GetProjectId()
-                , getUsersInput.UserName, getUsersInput.UserPassword, getUsersInput.UserTypeId, getUsersInput.BiosID, getUsersInput.Flag);
-            return res;
+                , getUsersInput.UserName, getUsersInput.UserPassword, getUsersInput.UserTypeId, getUsersInput.BiosID, getUsersInput.Flag,getUsersInput.PageNo,getUsersInput.PageSize, returnValue, rowCount);
+
+            dynamic obj = new ExpandoObject();
+            var totalPages = ((double)rowCount.Value / (double)getUsersInput.PageSize);
+            int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
+
+            obj.totalPages = roundedTotalPages;
+            obj.result = res;
+            obj.pageIndex = getUsersInput.PageNo;
+            obj.offset = getUsersInput.PageSize;
+            return obj;
         }
         #endregion
 

@@ -150,7 +150,7 @@ namespace ManaretAmman.Controllers.Employees
 
 
 
-            return ApiResponse<List<GetUsersResult>>.Success("data has been retrieved succussfully", result);
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
         }
         #endregion
 
