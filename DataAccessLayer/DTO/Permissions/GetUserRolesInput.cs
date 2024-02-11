@@ -30,7 +30,7 @@ namespace DataAccessLayer.DTO.Permissions
         [Range(1, int.MaxValue, ErrorMessage = "The UserId must be bigger than 0")]
         public int UserId { get; set;}
         [Required(ErrorMessage = "The UserTypeId is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "The UserTypeId must be bigger than 0")]
-        public int UserTypeId { get; set; }
+        //[Range(1, int.MaxValue, ErrorMessage = "The UserTypeId must be bigger than 0")]
+        public string UserTypeId { get; set; }
     }
 }
