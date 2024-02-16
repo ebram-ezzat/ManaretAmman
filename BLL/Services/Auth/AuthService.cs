@@ -38,7 +38,7 @@ namespace BusinessLogicLayer.Services.Auth
             var employee = _unit.EmployeeRepository.GetFirstOrDefault(emp => emp.UserID == user.UserID);
             var employeeName = employee is not null ? employee.EmployeeName : "HR";
             var employeeId = employee is not null ? employee.EmployeeID : 0;
-            var token = GenerateJwtToken(model.Username,user.UserID,employeeName,employeeId, user.UserTypeID.Value);
+            var token = GenerateJwtToken(model.Username,user.UserID,employeeName,employeeId, user.UserTypeID != null ? user.UserTypeID.Value : 0);
 
             return new AuthResponse { Token = token };
 
