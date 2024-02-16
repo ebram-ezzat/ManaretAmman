@@ -27,7 +27,8 @@ namespace DataAccessLayer.DTO.Permissions
         public int? AllowEdit { get; set; }
         public int? AllowDelete { get; set; }
         public int? AllowAdd { get; set; }
-        public int? DefaultValue { get; set; }
+        public string DefaultValue { get; set; }
+        public string PageCode { get; set; }
 
 
     }
