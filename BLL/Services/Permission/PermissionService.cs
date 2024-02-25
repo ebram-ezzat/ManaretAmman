@@ -32,9 +32,10 @@ namespace BusinessLogicLayer.Services.Permission
             var inputParams = new Dictionary<string, object>()
             {
                 { "pusertypeid",getUserTypeRolesInput.UserTypeId},
-                {"pprojectid",_projectProvider.GetProjectId() },
-                 {"pflag",getUserTypeRolesInput.Flag },
-                {"ploginuserid",_projectProvider.UserId() }
+                {"pprojectid",_projectProvider.GetProjectId()},
+                 {"pflag",getUserTypeRolesInput.Flag},
+                {"ploginuserid",_projectProvider.UserId()},
+                {"pCurrentProjectID",getUserTypeRolesInput.CurrentProjectID??Convert.DBNull}
             };
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetUserTypeRolesOutput>("dbo.Getusertyperoles", inputParams, null);
             return result;
@@ -60,6 +61,18 @@ namespace BusinessLogicLayer.Services.Permission
             return pErrorValue;
         }
 
+
+        public async Task<List<GetProjectsOutPutOfFlag2>> GetProjectsByFlag2(GetProjectsInput getProjectsInput)
+        {
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"pProjectID",_projectProvider.GetProjectId()},
+                {"pflag",getProjectsInput.Flag},                
+                {"pSearch",getProjectsInput.Search?? Convert.DBNull}
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetProjectsOutPutOfFlag2>("dbo.GetProjects", inputParams, null);
+            return result;
+        }
         #endregion
 
         #region المستخدمين
@@ -179,6 +192,8 @@ namespace BusinessLogicLayer.Services.Permission
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetLogedInPermissionOutput>("dbo.Getuserroles", inputParams, null);
             return result;
         }
+
+       
         #endregion
     }
 }

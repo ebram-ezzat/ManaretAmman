@@ -13,6 +13,7 @@ namespace DataAccessLayer.DTO.Permissions
         [Range(1, int.MaxValue, ErrorMessage = "The UserTypeId must be bigger than 0")]
         public int? UserTypeId { get; set; }
         public int Flag { get; set; } = 1;//default 1
+        public int? CurrentProjectID { get; set; }
 
     }
     public class GetUserTypeRolesOutput
