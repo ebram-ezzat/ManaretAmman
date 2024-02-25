@@ -66,7 +66,7 @@ namespace BusinessLogicLayer.Services.Permission
         {
             var inputParams = new Dictionary<string, object>()
             {
-                {"pProjectID",_projectProvider.GetProjectId()},
+                {"pProjectID",Convert.DBNull},//here not needed 
                 {"pflag",getProjectsInput.Flag},                
                 {"pSearch",getProjectsInput.Search?? Convert.DBNull}
             };
