@@ -76,7 +76,7 @@ namespace ManaretAmman.Controllers.Employees
         }
 
         /// <summary>
-        /// {Flag} must be 2 
+        /// {Flag} must be 2 ,{ProjectId} on the header must be 21
         /// </summary>
         /// <param name="getProjectsInput"></param>
         /// <returns></returns>
