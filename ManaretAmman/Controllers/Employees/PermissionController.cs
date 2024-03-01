@@ -248,5 +248,56 @@ namespace ManaretAmman.Controllers.Employees
         }
         #endregion
 
+        #region صلاحيات المستخدم
+        /// <summary>
+        /// {UserId} string with separted with "; "
+        /// </summary>
+        /// <param name="insertUserRolesByUserType"></param>
+        /// <returns></returns>
+        [HttpPost("InsertUserRolesByUserType")]
+        public async Task<IApiResponse> InsertUserRolesByUserType([FromBody] InsertUserRolesByUserType insertUserRolesByUserType)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _permissionService.InsertUserRolesByUserType(insertUserRolesByUserType);
+
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
+
+        /// <summary>
+        /// There is no pagination here      
+        /// </summary>
+        /// <remarks>you can send LogedInUserId from the header,
+        /// {Flag} value here it should be 4  ,{UserTypeId} is selected from dropdown    
+        /// </remarks>           
+        /// <param name="getUserRolesByUserTypeInput"></param>
+        /// <returns>List Of User Roles </returns>
+        [HttpGet("GetUserRolesByUserType")]
+        public async Task<IApiResponse> GetUserRolesByUserType([FromQuery] GetUserRolesByUserTypeInput getUserRolesByUserTypeInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _permissionService.GetUserRolesByUserType(getUserRolesByUserTypeInput);
+
+
+
+            return ApiResponse<List<GetUserRolesByUserTypeOutput>>.Success("data has been retrieved succussfully", result);
+        }
+        #endregion
+
     }
 }

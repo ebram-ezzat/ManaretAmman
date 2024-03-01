@@ -149,6 +149,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<GetUserTypeRolesOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetLogedInPermissionOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetProjectsOutPutOfFlag2>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GetUserRolesByUserTypeOutput>().HasNoKey().ToView(null);
         }
     }
 

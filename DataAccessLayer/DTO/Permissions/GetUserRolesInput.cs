@@ -33,4 +33,6 @@ namespace DataAccessLayer.DTO.Permissions
         //[Range(1, int.MaxValue, ErrorMessage = "The UserTypeId must be bigger than 0")]
         public string UserTypeId { get; set; }
     }
+
+    
 }

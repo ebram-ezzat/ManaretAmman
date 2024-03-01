@@ -172,6 +172,10 @@ namespace BusinessLogicLayer.Services.Permission
 
         #endregion
 
+        #region صلاحيات المستخدمين
+
+        #endregion
+
         #region صلاحيات المستخدم عند تسجيل دخوله 
         /// <summary>
         /// Retrieves the permissions for a logged-in user based on the provided input.
@@ -193,7 +197,43 @@ namespace BusinessLogicLayer.Services.Permission
             return result;
         }
 
-       
+
+        #endregion
+        #region صلاحيات المستخدم
+        public async Task<int> InsertUserRolesByUserType(InsertUserRolesByUserType insertUserRolesByUserType)
+        {
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"puserid",insertUserRolesByUserType.UserId},
+                {"pprojectid",_projectProvider.GetProjectId()},
+                {"pusertypeid",insertUserRolesByUserType.UserTypeId},
+                {"pcreatedby",_projectProvider.UserId()}                
+            };
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+            {
+                { "pError","int" },
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertuserrolesByUserType", inputParams, outputParams);
+            int pErrorValue = (int)outputValues["pError"];
+            return pErrorValue;
+        }
+
+        public async Task<List<GetUserRolesByUserTypeOutput>> GetUserRolesByUserType(GetUserRolesByUserTypeInput getUserRolesByUserTypeInput)
+        {
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"puserid",Convert.DBNull},
+                {"pprojectid",_projectProvider.GetProjectId() },
+                 {"pflag",getUserRolesByUserTypeInput.Flag },
+                 {"ploginuserid",_projectProvider.UserId() },
+                {"pusertypeid",getUserRolesByUserTypeInput.UserTypeID}          
+               
+               
+            };
+
+            var (userRoles, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetUserRolesByUserTypeOutput>("dbo.Getuserroles", inputParams, null);
+            return userRoles;
+        }
         #endregion
     }
 }

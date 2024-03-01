@@ -22,5 +22,8 @@ namespace BusinessLogicLayer.Services.Permission
         public Task<int> InsertUserRoles(InsertUserRolesInput getUserRolesInput);
 
         public Task<List<GetLogedInPermissionOutput>> GetLogedInPermissions(GetLogedInPermissionInput getLogedInPermissionInput);
+
+        public Task<int> InsertUserRolesByUserType(InsertUserRolesByUserType insertUserRolesByUserType);
+        public Task<List<GetUserRolesByUserTypeOutput>> GetUserRolesByUserType(GetUserRolesByUserTypeInput getUserRolesByUserTypeInput);
     }
 }
