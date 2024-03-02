@@ -1,5 +1,6 @@
 ﻿using BusinessLogicLayer.Services.Configration;
 using DataAccessLayer.DTO;
+using ManaretAmman.MiddleWare;
 using ManaretAmman.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ namespace ManaretAmman.Controllers.Configration
         {
                 _configrationService = configrationService;
         }
+        [SkipHeaderFilterAttribute]
         [HttpGet("GetProjectUrl")]
         public async Task< IApiResponse<ConfigrationOutput>> GetProjectUrl(string projectCode)
         {

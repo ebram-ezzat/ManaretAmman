@@ -10,6 +10,9 @@ namespace DataAccessLayer.DTO.Permissions
 {
     public class InsertUserRolesByUserType
     {
+        /// <summary>
+        /// {UserId} string with separted with "; "
+        /// </summary>
         [Required]
         public string UserId { get; set; }//string with separted with "; "
         [Required]

@@ -138,12 +138,15 @@ namespace BusinessLogicLayer.Services.Permission
         {
             var inputParams = new Dictionary<string, object>()
             {
-                {"pusertypeid",getUserRolesInput.UserId},
+                {"puserid",Convert.DBNull},
                 {"pprojectid",_projectProvider.GetProjectId() },
+                {"pusertypeid",getUserRolesInput.UserId},               
                 {"pflag",getUserRolesInput.Flag },
-                {"ploginuserid",_projectProvider.UserId() }
+                {"ploginuserid",_projectProvider.UserId() },
+                { "pusertypeid",Convert.DBNull}
             };
-
+            
+             
             var (userRoles, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetUserRolesOutput>("dbo.Getuserroles", inputParams, null);
             return userRoles;
 
@@ -191,8 +194,12 @@ namespace BusinessLogicLayer.Services.Permission
                 {"puserid",_projectProvider.UserId()},
                 {"pprojectid",_projectProvider.GetProjectId()},
                 {"pflag",getLogedInPermissionInput.Flag },
-                {"ploginuserid",Convert.DBNull }//here he used the userid as a logedinuser on the stored procedure so i don't send it twice
+                {"ploginuserid",Convert.DBNull },//here he used the userid as a logedinuser on the stored procedure so i don't send it twice
+                {"pusertypeid",Convert.DBNull}
             };
+         
+
+
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetLogedInPermissionOutput>("dbo.Getuserroles", inputParams, null);
             return result;
         }
@@ -209,6 +216,9 @@ namespace BusinessLogicLayer.Services.Permission
                 {"pusertypeid",insertUserRolesByUserType.UserTypeId},
                 {"pcreatedby",_projectProvider.UserId()}                
             };
+            
+
+
             Dictionary<string, object> outputParams = new Dictionary<string, object>
             {
                 { "pError","int" },
@@ -226,8 +236,7 @@ namespace BusinessLogicLayer.Services.Permission
                 {"pprojectid",_projectProvider.GetProjectId() },
                  {"pflag",getUserRolesByUserTypeInput.Flag },
                  {"ploginuserid",_projectProvider.UserId() },
-                {"pusertypeid",getUserRolesByUserTypeInput.UserTypeID}          
-               
+                {"pusertypeid",getUserRolesByUserTypeInput.UserTypeID}            
                
             };
 

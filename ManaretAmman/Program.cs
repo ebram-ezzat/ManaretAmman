@@ -101,7 +101,17 @@ builder.Services.AddSwaggerGen(config =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     config.IncludeXmlComments(xmlPath);   
-
+   
+    #region other Assembiles
+    var dataAccessAss = Assembly.Load("DataAccessLayer");
+    var xmlFileDataAccess = $"{dataAccessAss.GetName().Name}.xml";
+    var xmlPathDataAccess = Path.Combine(AppContext.BaseDirectory, xmlFileDataAccess);
+    if(File.Exists(xmlPathDataAccess))
+    {
+        config.IncludeXmlComments(xmlPathDataAccess);
+        //config.OperationFilter<IncludeModelPropertyDescriptionsFilter>(xmlPathDataAccess); //this is if the summery of model properties doesn't appear on API 
+    }
+    #endregion
     //foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
     //{
     //    var xmlFile = $"{assembly.GetName().Name}.xml";
