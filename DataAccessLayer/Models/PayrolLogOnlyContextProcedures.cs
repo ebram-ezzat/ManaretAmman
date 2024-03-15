@@ -151,7 +151,9 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<GetLogedInPermissionOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetProjectsOutPutOfFlag2>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetUserRolesByUserTypeOutput>().HasNoKey().ToView(null);
-            modelBuilder.Entity<GetWorkFlowHeaderOutput>().HasNoKey().ToView(null); 
+            modelBuilder.Entity<GetWorkFlowHeaderOutput>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GetWorkFlowStepOutput>().HasNoKey().ToView(null);
+
         }
     }
 

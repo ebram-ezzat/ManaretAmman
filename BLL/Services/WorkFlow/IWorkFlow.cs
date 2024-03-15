@@ -12,5 +12,9 @@ namespace BusinessLogicLayer.Services.WorkFlow
         public Task<int> InsertOrUpdateWorkFlowHeader(InsertOrUpdateWorkFlowHeader insertOrUpdateWorkFlowHeader);
         public Task<int> DeleteWorkFlowHeader(DeleteWorkFlowHeader deleteWorkFlowHeader);
         public Task<List<GetWorkFlowHeaderOutput>> GetWorkFlowHeader(GetWorkFlowHeaderInput getWorkFlowHeaderInput);
+
+        public Task<int> InsertOrUpdateWorkFlowStep(InsertOrUpdateWorkFlowStep insertOrUpdateWorkFlowStep);
+        public Task<int> DeleteWorkFlowStep(DeleteWorkFlowStep deleteWorkFlowStep);
+        public Task<List<GetWorkFlowStepOutput>> GetWorkFlowStep(GetWorkFlowStepInput getWorkFlowHeaderStep);
     }
 }

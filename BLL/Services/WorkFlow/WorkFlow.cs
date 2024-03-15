@@ -22,7 +22,7 @@ namespace BusinessLogicLayer.Services.WorkFlow
             _projectProvider = projectProvider;
             _lookupsService = lookupsService;
         }
-        #region WorkFlowHeader Screen
+        #region WorkFlowHeader Screen1
         public async Task<int> InsertOrUpdateWorkFlowHeader(InsertOrUpdateWorkFlowHeader insertOrUpdateWorkFlowHeader)
         {
             bool isUpdating = insertOrUpdateWorkFlowHeader.WorkflowHeaderID.HasValue && insertOrUpdateWorkFlowHeader.WorkflowHeaderID > 0;
@@ -75,11 +75,76 @@ namespace BusinessLogicLayer.Services.WorkFlow
                 {"pCreationDate",  getWorkFlowHeaderInput.CreationDate??Convert.DBNull}
 
             };
-            var outParms = new Dictionary<string, object>()
+          
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetWorkFlowHeaderOutput>("dbo.GetWorkFlowHeader", inputParams, null);
+            return result;
+        }
+
+
+        #endregion
+        #region WorkFlowStep Screen2
+        public async Task<int> InsertOrUpdateWorkFlowStep(InsertOrUpdateWorkFlowStep insertOrUpdateWorkFlowStep)
+        {
+            bool isUpdating = insertOrUpdateWorkFlowStep.WorkFlowStepID.HasValue && insertOrUpdateWorkFlowStep.WorkFlowStepID > 0;
+
+            var inputParams = new Dictionary<string, object>()
             {
-                {"pError","int" }
+                {"pWorkflowHeaderID",insertOrUpdateWorkFlowStep.WorkflowHeaderID},
+                {"pUserTypeID",insertOrUpdateWorkFlowStep.UserTypeID},
+                {"pCanEdit",insertOrUpdateWorkFlowStep.CanEdit},
+                {"pCanAdd",insertOrUpdateWorkFlowStep.CanAdd},
+                {"pCanDelete",insertOrUpdateWorkFlowStep.CanDelete},
+                {"pAcceptStatusID",insertOrUpdateWorkFlowStep.AcceptStatusID},
+                {"pRejectStatusID",insertOrUpdateWorkFlowStep.RejectStatusID},
+                {"pCreatedBy",isUpdating? Convert.DBNull:_projectProvider.UserId()},
+                {"pModifiedBy",isUpdating?_projectProvider.UserId():Convert.DBNull},
+                {"pProjectID",_projectProvider.GetProjectId() }
             };
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetWorkFlowHeaderOutput>("dbo.GetWorkFlowHeader", inputParams, outParms);
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+            {
+                {"pWorkFlowStepID",isUpdating? insertOrUpdateWorkFlowStep.WorkFlowStepID.Value:"int"},//Input output direction
+                { "pError","int" }
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertUpdateWorkFlowStep", inputParams, outputParams);
+            int pErrorValue = (int)outputValues["pError"];
+            return pErrorValue;
+        }
+
+        public async Task<int> DeleteWorkFlowStep(DeleteWorkFlowStep deleteWorkFlowStep)
+        {
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"pWorkFlowStepID",deleteWorkFlowStep.WorkFlowStepID}
+                
+            };
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+            {
+                { "pError","int" },
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteWorkFlowStep", inputParams, outputParams);
+            int pErrorValue = (int)outputValues["pError"];
+            return pErrorValue;
+        }
+
+        public async Task<List<GetWorkFlowStepOutput>> GetWorkFlowStep(GetWorkFlowStepInput getWorkFlowHeaderStep)
+        {
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"pWorkFlowStepID", getWorkFlowHeaderStep.WorkFlowStepID ?? Convert.DBNull},
+                {"pWorkflowHeaderID", getWorkFlowHeaderStep.WorkflowHeaderID ?? Convert.DBNull},
+                {"pUserTypeID", getWorkFlowHeaderStep.UserTypeID ?? Convert.DBNull},
+                {"pCanEdit", getWorkFlowHeaderStep.CanEdit ?? Convert.DBNull},
+                {"pCanAdd", getWorkFlowHeaderStep.CanAdd ?? Convert.DBNull},
+                {"pCanDelete", getWorkFlowHeaderStep.CanDelete ?? Convert.DBNull},
+                {"pAcceptStatusID", getWorkFlowHeaderStep.AcceptStatusID ?? Convert.DBNull},
+                {"pRejectStatusID", getWorkFlowHeaderStep.RejectStatusID ?? Convert.DBNull},
+                {"pModificationDate", getWorkFlowHeaderStep.ModificationDate ?? Convert.DBNull},
+                {"pCreationDate", getWorkFlowHeaderStep ?? Convert.DBNull},
+                {"pCreatedBy", getWorkFlowHeaderStep.CreatedBy ?? Convert.DBNull},
+                {"pModifiedBy", getWorkFlowHeaderStep.ModifiedBy ?? Convert.DBNull}
+            };
+           
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetWorkFlowStepOutput>("dbo.GetWorkFlowStepWithFilters", inputParams, null);
             return result;
         }
         #endregion
