@@ -9,6 +9,7 @@ using DataAccessLayer.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -153,6 +154,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<GetUserRolesByUserTypeOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetWorkFlowHeaderOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetWorkFlowStepOutput>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GetWorkFlowNotificationOutput>().HasNoKey().ToView(null);
 
         }
     }

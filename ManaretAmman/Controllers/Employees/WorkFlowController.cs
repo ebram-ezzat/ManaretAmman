@@ -154,5 +154,74 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<int>.Success("data has been saved succussfully", result);
         }
         #endregion
+
+        #region WorkFlowNotifications Screen3
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="getWorkFlowNotificationInput"></param>
+        /// <returns></returns>
+        [HttpGet("GetWorkFlowNotification")]
+        public async Task<IApiResponse> GetWorkFlowNotification([FromQuery] GetWorkFlowNotificationInput getWorkFlowNotificationInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _iWorkFlow.GetWorkFlowNotification(getWorkFlowNotificationInput);
+
+
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deleteWorkFlowNotification"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteWorkFlowStep")]
+        public async Task<IApiResponse> DeleteWorkFlowNotification([FromQuery] DeleteWorkFlowNotification deleteWorkFlowNotification)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _iWorkFlow.DeleteWorkFlowNotification(deleteWorkFlowNotification);
+
+
+            return ApiResponse<int>.Success("data has been deleted succussfully", result);
+        }
+        /// <summary>
+        /// Using This API For Insert Or Update
+        /// </summary>
+        /// <param name="insertOrUpdateWorkFlowNotification"></param>
+        /// <returns></returns>
+        [HttpPost("InsertWorkFlowNotification")]
+        public async Task<IApiResponse> InsertWorkFlowNotification([FromBody] InsertOrUpdateWorkFlowNotification insertOrUpdateWorkFlowNotification)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _iWorkFlow.InsertOrUpdateWorkFlowNotification(insertOrUpdateWorkFlowNotification);
+
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
+        #endregion
     }
 }
