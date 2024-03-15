@@ -73,7 +73,8 @@ namespace BusinessLogicLayer.Services.WorkFlow
                 {"pModifiedBy",getWorkFlowHeaderInput.ModifiedBy??Convert.DBNull },
                 {"pProjectID",_projectProvider.GetProjectId() },
                 {"pModificationDate", getWorkFlowHeaderInput.ModificationDate??Convert.DBNull},
-                {"pCreationDate",  getWorkFlowHeaderInput.CreationDate??Convert.DBNull}
+                {"pCreationDate",  getWorkFlowHeaderInput.CreationDate??Convert.DBNull},
+                {"@pLangID", _projectProvider.LangId()}
 
             };
           

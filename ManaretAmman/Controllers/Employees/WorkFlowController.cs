@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer.Services.WorkFlow;
 using DataAccessLayer.DTO.Permissions;
 using DataAccessLayer.DTO.WorkFlow;
+using ManaretAmman.MiddleWare;
 using ManaretAmman.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,10 +20,11 @@ namespace ManaretAmman.Controllers.Employees
 
         #region WorkFlowHeader Screen1
         /// <summary>
-        /// 
+        /// you should send {LangId} Via header request to get the correct description 1 For Arabic and 2 For English
         /// </summary>
         /// <param name="getWorkFlowHeaderInput"></param>
         /// <returns></returns>
+        [AddLanguageHeaderAttribute]
         [HttpGet("GetWorkFlowHeader")]
         public async Task<IApiResponse> GetWorkFlowHeader([FromQuery] GetWorkFlowHeaderInput getWorkFlowHeaderInput)
         {
@@ -184,7 +186,7 @@ namespace ManaretAmman.Controllers.Employees
         /// </summary>
         /// <param name="deleteWorkFlowNotification"></param>
         /// <returns></returns>
-        [HttpDelete("DeleteWorkFlowStep")]
+        [HttpDelete("DeleteWorkFlowNotification")]
         public async Task<IApiResponse> DeleteWorkFlowNotification([FromQuery] DeleteWorkFlowNotification deleteWorkFlowNotification)
         {
             if (!ModelState.IsValid)

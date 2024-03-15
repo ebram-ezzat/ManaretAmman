@@ -1,0 +1,9 @@
+﻿body {
+}
+/* Custom style for Swagger UI descriptions */
+.swagger-ui .parameters-col_description {
+    color: red !important;
+}
+.swagger-ui .opblock-summary-description {
+    color: deepskyblue !important;
+}

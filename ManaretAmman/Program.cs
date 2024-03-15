@@ -96,6 +96,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(config =>
 {
     config.OperationFilter<HeaderFilter>();
+    config.OperationFilter<AddLanguageHeaderOperationFilter>();
+    // Reference your custom CSS file
+   
     //Set the comments path for the Swagger JSON and UI.
 
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -136,8 +139,10 @@ if (app.Environment.IsDevelopment()|| app.Environment.IsProduction())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");       
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
         // c.RoutePrefix = string.Empty; // Sets Swagger UI at the app's root
+        // Add your custom CSS file to the Swagger UI
+        c.InjectStylesheet("/swagger-custom_css.css"); // Adjust the path if your CSS is in a subdirectory
     });
 }
 
@@ -157,6 +162,8 @@ app.UseCors(builder =>
 //app.UseExceptionHandler(); 
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();//this for swagger css it should be before Routing
 
 app.UseRouting();
 

@@ -30,4 +30,8 @@
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\swagger-custom_css.css" />
+  </ItemGroup>
+
 </Project>
