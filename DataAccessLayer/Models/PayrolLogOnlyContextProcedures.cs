@@ -4,6 +4,7 @@ using DataAccessLayer.DTO.Locations;
 using DataAccessLayer.DTO.Notification;
 using DataAccessLayer.DTO.Permissions;
 using DataAccessLayer.DTO.Reports;
+using DataAccessLayer.DTO.WorkFlow;
 using DataAccessLayer.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -150,6 +151,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<GetLogedInPermissionOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetProjectsOutPutOfFlag2>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetUserRolesByUserTypeOutput>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GetWorkFlowHeaderOutput>().HasNoKey().ToView(null); 
         }
     }
 
