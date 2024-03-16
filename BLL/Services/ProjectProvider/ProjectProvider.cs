@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using LanguageExt.ClassInstances.Pred;
+using Microsoft.AspNetCore.Http;
 
 namespace BusinessLogicLayer.Services.ProjectProvider;
 
@@ -19,9 +20,10 @@ public class ProjectProvider : IProjectProvider
 
     public int LangId()
     {
-        string langId = _httpContextAccessor.HttpContext.Request.Headers["LangId"].ToString();
+        string langId = _httpContextAccessor.HttpContext.Request.Headers["Accept-Language"].ToString();
         if (string.IsNullOrEmpty(langId)) return 1; //default is 1 (Arabic Lang);
-        return int.Parse(langId);
+        int returnedId = langId.Contains("en")? 2 : 1; //2 is English
+        return returnedId;
     }
 
     public int UserId()

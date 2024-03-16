@@ -18,9 +18,9 @@ namespace ManaretAmman.MiddleWare
             {
                 operation.Parameters.Add(new()
                 {
-                    Name = "LangId",
+                    Name = "Accept-Language",
                     In = ParameterLocation.Header,
-                    Description="Default is 1 (Arabic) if you don't send it",
+                    Description="Default is ar (Arabic) if you don't send it",
                     Style=ParameterStyle.Form,
                     Required = false // set to false if this is optional
                    
