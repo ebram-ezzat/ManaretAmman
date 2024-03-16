@@ -231,6 +231,21 @@ namespace ManaretAmman.Controllers.Employees
         /// </summary>
         /// <returns>List of GetLogedInPermissionOutput</returns>
         [HttpGet("GetLogedInPermission")]
+        public async Task<IApiResponse> GetLogedInPermission([FromQuery] GetLogedInPermissionInput GetLogedInPermissionInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _permissionService.GetLogedInPermissions(GetLogedInPermissionInput);
+
+            return ApiResponse<List<GetLogedInPermissionOutput>>.Success("data has been reterived succussfully", result);
+        }
         #endregion
 
         #region صلاحيات المستخدم
