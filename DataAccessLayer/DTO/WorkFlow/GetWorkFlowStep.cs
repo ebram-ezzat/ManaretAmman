@@ -16,10 +16,7 @@ namespace DataAccessLayer.DTO.WorkFlow
         public int? CanDelete { get; set; }
         public int? AcceptStatusID { get; set; }
         public int? RejectStatusID { get; set; }
-        public DateTime? ModificationDate { get; set; }
-        public DateTime? CreationDate { get; set; }
-        public int? CreatedBy { get; set; }
-        public int? ModifiedBy { get; set; }
+       
     }
     public class GetWorkFlowStepOutput
     {
@@ -31,9 +28,6 @@ namespace DataAccessLayer.DTO.WorkFlow
         public int? CanDelete { get; set; }
         public int? AcceptStatusID { get; set; }
         public int? RejectStatusID { get; set; }
-        public DateTime? ModificationDate { get; set; }
-        public DateTime? CreationDate { get; set; }
-        public int? CreatedBy { get; set; }
-        public int? ModifiedBy { get; set; }
+        public string UserType { get; set; }
     }
 }

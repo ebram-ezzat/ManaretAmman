@@ -136,15 +136,17 @@ namespace BusinessLogicLayer.Services.WorkFlow
                 {"pWorkFlowStepID", getWorkFlowHeaderStep.WorkFlowStepID ?? Convert.DBNull},
                 {"pWorkflowHeaderID", getWorkFlowHeaderStep.WorkflowHeaderID ?? Convert.DBNull},
                 {"pUserTypeID", getWorkFlowHeaderStep.UserTypeID ?? Convert.DBNull},
+                {"pProjectID",_projectProvider.GetProjectId()},
+                {"pLangID",_projectProvider.LangId()},
                 {"pCanEdit", getWorkFlowHeaderStep.CanEdit ?? Convert.DBNull},
                 {"pCanAdd", getWorkFlowHeaderStep.CanAdd ?? Convert.DBNull},
                 {"pCanDelete", getWorkFlowHeaderStep.CanDelete ?? Convert.DBNull},
                 {"pAcceptStatusID", getWorkFlowHeaderStep.AcceptStatusID ?? Convert.DBNull},
                 {"pRejectStatusID", getWorkFlowHeaderStep.RejectStatusID ?? Convert.DBNull},
-                {"pModificationDate", getWorkFlowHeaderStep.ModificationDate ?? Convert.DBNull},
-                {"pCreationDate", getWorkFlowHeaderStep ?? Convert.DBNull},
-                {"pCreatedBy", getWorkFlowHeaderStep.CreatedBy ?? Convert.DBNull},
-                {"pModifiedBy", getWorkFlowHeaderStep.ModifiedBy ?? Convert.DBNull}
+                {"pModificationDate", Convert.DBNull},
+                {"pCreationDate",Convert.DBNull},
+                {"pCreatedBy", Convert.DBNull},
+                {"pModifiedBy",  Convert.DBNull}
             };
            
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetWorkFlowStepOutput>("dbo.GetWorkFlowStepWithFilters", inputParams, null);

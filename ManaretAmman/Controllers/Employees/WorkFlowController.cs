@@ -90,10 +90,11 @@ namespace ManaretAmman.Controllers.Employees
 
         #region WorkFlowStep Screen2
         /// <summary>
-        /// 
+        /// you should send {LangId} Via header request to get the correct description 1 For Arabic and 2 For English
         /// </summary>
         /// <param name="getWorkFlowStepInput"></param>
         /// <returns></returns>
+        [AddLanguageHeaderAttribute]
         [HttpGet("GetWorkFlowStep")]
         public async Task<IApiResponse> GetWorkFlowStep([FromQuery] GetWorkFlowStepInput getWorkFlowStepInput)
         {
