@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DataAccessLayer.DTO.Permissions;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -143,6 +144,8 @@ if (app.Environment.IsDevelopment()|| app.Environment.IsProduction())
         // c.RoutePrefix = string.Empty; // Sets Swagger UI at the app's root
         // Add your custom CSS file to the Swagger UI
         c.InjectStylesheet("/swagger-custom_css.css"); // Adjust the path if your CSS is in a subdirectory
+        c.DocExpansion(DocExpansion.None); // This line collapses all sections by default
+
     });
 }
 

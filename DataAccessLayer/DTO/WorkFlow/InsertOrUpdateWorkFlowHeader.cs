@@ -10,9 +10,7 @@ namespace DataAccessLayer.DTO.WorkFlow
     {
         public int? WorkflowHeaderID { get; set; } // Output parameter
         public int WorkflowTypeID { get; set; }
-        public int TypeID { get; set; }
-        public int? CreatedBy { get; set; }       
-        public int? ModifiedBy { get; set; } // Nullable int to accommodate NULLs      
+        public int TypeID { get; set; }       
         
        
     }

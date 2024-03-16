@@ -69,12 +69,12 @@ namespace BusinessLogicLayer.Services.WorkFlow
                 {"pWorkflowHeaderID",getWorkFlowHeaderInput.WorkflowHeaderID??Convert.DBNull},
                 {"pWorkflowTypeID",getWorkFlowHeaderInput.WorkflowTypeID??Convert.DBNull},
                 {"pTypeID",getWorkFlowHeaderInput.TypeID?? Convert.DBNull},
-                {"pCreatedBy",getWorkFlowHeaderInput.CreatedBy?? Convert.DBNull},
-                {"pModifiedBy",getWorkFlowHeaderInput.ModifiedBy??Convert.DBNull },
+                {"pCreatedBy",Convert.DBNull},
+                {"pModifiedBy",Convert.DBNull },
                 {"pProjectID",_projectProvider.GetProjectId() },
-                {"pModificationDate", getWorkFlowHeaderInput.ModificationDate??Convert.DBNull},
-                {"pCreationDate",  getWorkFlowHeaderInput.CreationDate??Convert.DBNull},
-                {"@pLangID", _projectProvider.LangId()}
+                {"pModificationDate",Convert.DBNull},
+                {"pCreationDate", Convert.DBNull},
+                {"pLangID", _projectProvider.LangId()}
 
             };
           
