@@ -21,9 +21,7 @@ namespace ManaretAmman.Controllers.Employees
         #region WorkFlowHeader Screen1
         /// <summary>
         /// you should send {Accept-Language} Via header request to get the correct description  "ar" For Arabic and "en" For English
-        /// </summary>
-        /// <remarks>"ar" => 1</remarks>
-        /// <remarms>"en" => 1</remarms>
+        /// </summary>       
         /// <param name="getWorkFlowHeaderInput"></param>
         /// <returns></returns>
         [AddLanguageHeaderAttribute]
@@ -93,9 +91,7 @@ namespace ManaretAmman.Controllers.Employees
         #region WorkFlowStep Screen2
         /// <summary>
         /// you should send {Accept-Language} Via header request to get the correct description "ar" For Arabic and "en" For English
-        /// </summary>
-        ///  <remarks>"ar" => 1</remarks>
-        /// <remarms>"en" => 1</remarms>
+        /// </summary>       
         /// <param name="getWorkFlowStepInput"></param>
         /// <returns></returns>
         [AddLanguageHeaderAttribute]
