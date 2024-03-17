@@ -24,8 +24,8 @@ namespace DataAccessLayer.DTO.WorkFlow
         public int RejectStatusID { get; set; }
 
         // Optional parameters can be nullable
-        public int? CreatedBy { get; set; }
-        public int? ModifiedBy { get; set; }
+        //public int? CreatedBy { get; set; }
+        //public int? ModifiedBy { get; set; }
 
     }
 }
