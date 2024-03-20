@@ -101,7 +101,7 @@ namespace BusinessLogicLayer.Services.WorkFlow
                 {"pRejectStatusID",insertOrUpdateWorkFlowStep.RejectStatusID},
                 {"pCreatedBy",isUpdating? Convert.DBNull:_projectProvider.UserId()},
                 {"pModifiedBy",isUpdating?_projectProvider.UserId():Convert.DBNull},
-                {"pProjectID",_projectProvider.GetProjectId() }
+               // {"pProjectID",_projectProvider.GetProjectId() }
             };
             Dictionary<string, object> outputParams = new Dictionary<string, object>
             {
