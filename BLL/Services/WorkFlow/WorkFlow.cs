@@ -183,7 +183,7 @@ namespace BusinessLogicLayer.Services.WorkFlow
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertUpdateWorkFlowNotification", inputParams, outputParams);
 
             // Retrieve the output parameter value
-            int pErrorValue = (int)outputValues["@pError"];
+            int pErrorValue = (int)outputValues["pError"];
 
            
 
@@ -215,10 +215,10 @@ namespace BusinessLogicLayer.Services.WorkFlow
                 {"pWorkFlowStepID", getWorkFlowNotification.WorkFlowStepID ?? Convert.DBNull},
                 {"pUserTypeID", getWorkFlowNotification.UserTypeID ?? Convert.DBNull},
                 {"pNotificationDetail", getWorkFlowNotification.NotificationDetail ?? Convert.DBNull},
-                {"pModificationDate", getWorkFlowNotification.ModificationDate ?? Convert.DBNull},
-                {"pCreationDate", getWorkFlowNotification.CreationDate ?? Convert.DBNull},
-                {"pCreatedBy", getWorkFlowNotification.CreatedBy ?? Convert.DBNull},
-                {"pModifiedBy", getWorkFlowNotification.ModifiedBy ?? Convert.DBNull}
+                {"pModificationDate", Convert.DBNull},
+                {"pCreationDate",  Convert.DBNull},
+                {"pCreatedBy",  Convert.DBNull},
+                {"pModifiedBy", Convert.DBNull}
             };
 
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetWorkFlowNotificationOutput>("dbo.GetWorkFlowNotification", inputParams, null);

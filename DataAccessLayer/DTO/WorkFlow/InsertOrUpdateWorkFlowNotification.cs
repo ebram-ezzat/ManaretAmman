@@ -18,10 +18,6 @@ namespace DataAccessLayer.DTO.WorkFlow
 
         public string NotificationDetail { get; set; }
 
-        // Nullable to allow for scenarios where it might not be set initially
-        public int? CreatedBy { get; set; } = null;
-
-        // Nullable to allow it to be optional for INSERT operations and required for UPDATE
-        public int? ModifiedBy { get; set; } = null;
+       
     }
 }
