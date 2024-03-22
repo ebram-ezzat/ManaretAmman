@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer.Services.WorkFlow;
 using DataAccessLayer.DTO.Permissions;
 using DataAccessLayer.DTO.WorkFlow;
+using LanguageExt.Common;
 using ManaretAmman.MiddleWare;
 using ManaretAmman.Models;
 using Microsoft.AspNetCore.Http;
@@ -131,7 +132,10 @@ namespace ManaretAmman.Controllers.Employees
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
             var result = await _iWorkFlow.DeleteWorkFlowStep(deleteWorkFlowStep);
-
+            if(result==1)
+            {
+                return ApiResponse.Failure("An unexpected error on validation occurred",new string[] { "delete Failed because you should delete first notification" });
+            }
 
             return ApiResponse<int>.Success("data has been deleted succussfully", result);
         }
