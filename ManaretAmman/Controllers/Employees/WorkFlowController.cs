@@ -168,8 +168,8 @@ namespace ManaretAmman.Controllers.Employees
         /// </summary>
         /// <param name="getWorkFlowNotificationInput"></param>
         /// <returns></returns>
-        [HttpGet("GetWorkFlowNotification")]
-        public async Task<IApiResponse> GetWorkFlowNotification([FromQuery] GetWorkFlowNotificationInput getWorkFlowNotificationInput)
+        [HttpGet("GetWorkFlowNotificationStep")]
+        public async Task<IApiResponse> GetWorkFlowNotificationStep([FromQuery] GetWorkFlowNotificationInput getWorkFlowNotificationInput)
         {
             if (!ModelState.IsValid)
             {
@@ -191,8 +191,8 @@ namespace ManaretAmman.Controllers.Employees
         /// </summary>
         /// <param name="deleteWorkFlowNotification"></param>
         /// <returns></returns>
-        [HttpDelete("DeleteWorkFlowNotification")]
-        public async Task<IApiResponse> DeleteWorkFlowNotification([FromQuery] DeleteWorkFlowNotification deleteWorkFlowNotification)
+        [HttpDelete("DeleteWorkFlowNotificationStep")]
+        public async Task<IApiResponse> DeleteWorkFlowNotificationStep([FromQuery] DeleteWorkFlowNotification deleteWorkFlowNotification)
         {
             if (!ModelState.IsValid)
             {
@@ -213,8 +213,8 @@ namespace ManaretAmman.Controllers.Employees
         /// </summary>
         /// <param name="insertOrUpdateWorkFlowNotification"></param>
         /// <returns></returns>
-        [HttpPost("InsertWorkFlowNotification")]
-        public async Task<IApiResponse> InsertWorkFlowNotification([FromBody] InsertOrUpdateWorkFlowNotification insertOrUpdateWorkFlowNotification)
+        [HttpPost("InsertWorkFlowNotificationStep")]
+        public async Task<IApiResponse> InsertWorkFlowNotificationStep([FromBody] InsertOrUpdateWorkFlowNotification insertOrUpdateWorkFlowNotification)
         {
             if (!ModelState.IsValid)
             {
