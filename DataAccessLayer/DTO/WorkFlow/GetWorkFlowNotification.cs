@@ -16,6 +16,7 @@ namespace DataAccessLayer.DTO.WorkFlow
         //public DateTime? CreationDate { get; set; } = null;
         //public DateTime? ModificationDate { get; set; } = null;
         public string NotificationDetail { get; set; } = null;
+        public string NotificationDetailAr { get; set; } = null;
     }
     public class GetWorkFlowNotificationOutput
     {
@@ -27,5 +28,6 @@ namespace DataAccessLayer.DTO.WorkFlow
         public DateTime? CreationDate { get; set; } 
         public DateTime? ModificationDate { get; set; }
         public string NotificationDetail { get; set; }
+        public string NotificationDetailAr { get; set; }
     }
 }

@@ -17,7 +17,8 @@ namespace DataAccessLayer.DTO.WorkFlow
         public int UserTypeID { get; set; }
 
         public string NotificationDetail { get; set; }
+        public string NotificationDetailAr { get; set; }
 
-       
+
     }
 }
