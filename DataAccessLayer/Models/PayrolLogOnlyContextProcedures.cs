@@ -155,7 +155,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<GetWorkFlowHeaderOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetWorkFlowStepOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetWorkFlowNotificationStepOutput>().HasNoKey().ToView(null);
-
+            modelBuilder.Entity<GetWorkFlowNotificationOutput>().HasNoKey().ToView(null);
         }
     }
 

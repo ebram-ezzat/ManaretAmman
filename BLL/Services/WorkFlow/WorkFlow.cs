@@ -226,6 +226,95 @@ namespace BusinessLogicLayer.Services.WorkFlow
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetWorkFlowNotificationStepOutput>("dbo.GetWorkFlowNotificationStep", inputParams, null);
             return result;
         }
+
+
+        #endregion
+
+        #region WorkFlowNotification Seperate Screen
+        public async Task<int> InsertWorkFlowNotification(InsertWorkFlowNotification insertWorkFlowNotification)
+        {
+            // Prepare input parameters
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"pNotificationSetupID", insertWorkFlowNotification.NotificationSetupID },
+                {"pUserTypeID", insertWorkFlowNotification.UserTypeID },
+                {"pMessageFormatAr", insertWorkFlowNotification.MessageFormatAr??Convert.DBNull},
+                {"pMessageFormatEn", insertWorkFlowNotification.MessageFormatEn??Convert.DBNull},
+                {"pIsSMS", insertWorkFlowNotification.IsSMS??Convert.DBNull},
+                {"pIsEmail", insertWorkFlowNotification.IsEmail??Convert.DBNull },
+                {"pIsWhatsapp", insertWorkFlowNotification.IsWhatsapp??Convert.DBNull},
+                {"pIsSystem", insertWorkFlowNotification.IsSystem??Convert.DBNull},
+                {"pCreatedBy",  _projectProvider.UserId()}
+
+            };
+
+            // Prepare output parameters
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+            {               
+                {"pError", "int"} // Assuming error code 0 for success, non-zero for errors
+            };
+
+            // Execute the stored procedure asynchronously
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertNotificationUserType", inputParams, outputParams);
+
+            // Retrieve the output parameter value
+            int pErrorValue = (int)outputValues["pError"];
+
+
+
+            return pErrorValue;
+
+        }
+
+        public async Task<int> DeleteWorkFlowNotification(DeleteWorkFlowNotification deleteWorkFlowNotification)
+        {
+            // Prepare input parameters
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"pNotificationSetupID", deleteWorkFlowNotification.NotificationSetupID },
+                {"pUserTypeID", deleteWorkFlowNotification.UserTypeID },
+               
+
+            };
+
+            // Prepare output parameters
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+            {
+                {"pError", "int"} // Assuming error code 0 for success, non-zero for errors
+            };
+
+            // Execute the stored procedure asynchronously
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteNotificationUserType", inputParams, outputParams);
+
+            // Retrieve the output parameter value
+            int pErrorValue = (int)outputValues["pError"];
+
+
+
+            return pErrorValue;
+
+        }
+
+        public async Task<List<GetWorkFlowNotificationOutput>> GetWorkFlowNotification(GetWorkFlowNotificationInput getWorkFlowNotificationInput)
+        {
+            // Prepare input parameters
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"pNotificationSetupID", getWorkFlowNotificationInput.NotificationSetupID },
+                {"pUserTypeID", getWorkFlowNotificationInput.UserTypeID },
+                {"pFlag",getWorkFlowNotificationInput.Flag},
+                {"pLanguageID",getWorkFlowNotificationInput.LanguageID}
+
+            };
+
+           
+            // Execute the stored procedure asynchronously
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetWorkFlowNotificationOutput>("dbo.GetNotificationUserType", inputParams, null);
+
+            
+            return result;
+
+        }
         #endregion
     }
 }
