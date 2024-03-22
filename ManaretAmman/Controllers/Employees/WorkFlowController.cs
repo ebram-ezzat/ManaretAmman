@@ -162,14 +162,14 @@ namespace ManaretAmman.Controllers.Employees
         }
         #endregion
 
-        #region WorkFlowNotifications Screen3
+        #region WorkFlowNotificationsSteps Screen3
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="getWorkFlowNotificationInput"></param>
+        /// <param name="getWorkFlowNotificationStepInput"></param>
         /// <returns></returns>
         [HttpGet("GetWorkFlowNotificationStep")]
-        public async Task<IApiResponse> GetWorkFlowNotificationStep([FromQuery] GetWorkFlowNotificationInput getWorkFlowNotificationInput)
+        public async Task<IApiResponse> GetWorkFlowNotificationStep([FromQuery] GetWorkFlowNotificationStepInput getWorkFlowNotificationStepInput)
         {
             if (!ModelState.IsValid)
             {
@@ -180,7 +180,7 @@ namespace ManaretAmman.Controllers.Employees
 
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
-            var result = await _iWorkFlow.GetWorkFlowNotification(getWorkFlowNotificationInput);
+            var result = await _iWorkFlow.GetWorkFlowNotificationStep(getWorkFlowNotificationStepInput);
 
 
 
@@ -189,10 +189,10 @@ namespace ManaretAmman.Controllers.Employees
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="deleteWorkFlowNotification"></param>
+        /// <param name="deleteWorkFlowNotificationStep"></param>
         /// <returns></returns>
         [HttpDelete("DeleteWorkFlowNotificationStep")]
-        public async Task<IApiResponse> DeleteWorkFlowNotificationStep([FromQuery] DeleteWorkFlowNotification deleteWorkFlowNotification)
+        public async Task<IApiResponse> DeleteWorkFlowNotificationStep([FromQuery] DeleteWorkFlowNotificationStep deleteWorkFlowNotificationStep)
         {
             if (!ModelState.IsValid)
             {
@@ -203,7 +203,7 @@ namespace ManaretAmman.Controllers.Employees
 
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
-            var result = await _iWorkFlow.DeleteWorkFlowNotification(deleteWorkFlowNotification);
+            var result = await _iWorkFlow.DeleteWorkFlowNotificationStep(deleteWorkFlowNotificationStep);
 
 
             return ApiResponse<int>.Success("data has been deleted succussfully", result);
@@ -211,10 +211,10 @@ namespace ManaretAmman.Controllers.Employees
         /// <summary>
         /// Using This API For Insert Or Update
         /// </summary>
-        /// <param name="insertOrUpdateWorkFlowNotification"></param>
+        /// <param name="insertOrUpdateWorkFlowNotificationStep"></param>
         /// <returns></returns>
         [HttpPost("InsertWorkFlowNotificationStep")]
-        public async Task<IApiResponse> InsertWorkFlowNotificationStep([FromBody] InsertOrUpdateWorkFlowNotification insertOrUpdateWorkFlowNotification)
+        public async Task<IApiResponse> InsertWorkFlowNotificationStep([FromBody] InsertOrUpdateWorkFlowNotificationStep insertOrUpdateWorkFlowNotificationStep)
         {
             if (!ModelState.IsValid)
             {
@@ -225,7 +225,7 @@ namespace ManaretAmman.Controllers.Employees
 
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
-            var result = await _iWorkFlow.InsertOrUpdateWorkFlowNotification(insertOrUpdateWorkFlowNotification);
+            var result = await _iWorkFlow.InsertOrUpdateWorkFlowNotificationStep(insertOrUpdateWorkFlowNotificationStep);
 
             return ApiResponse<int>.Success("data has been saved succussfully", result);
         }

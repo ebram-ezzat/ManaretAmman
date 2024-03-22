@@ -156,17 +156,18 @@ namespace BusinessLogicLayer.Services.WorkFlow
 
         #endregion
 
-        #region WorkFlowNotification Screen3
-        public async Task<int> InsertOrUpdateWorkFlowNotification(InsertOrUpdateWorkFlowNotification insertOrUpdateWorkFlowNotification)
+        #region WorkFlowNotificationSteps Screen3
+        public async Task<int> InsertOrUpdateWorkFlowNotificationStep(InsertOrUpdateWorkFlowNotificationStep insertOrUpdateWorkFlowNotificationStep)
         {
-            bool isUpdating = insertOrUpdateWorkFlowNotification.WorkFlowNotificationID.HasValue && insertOrUpdateWorkFlowNotification.WorkFlowNotificationID.Value > 0;
+            bool isUpdating = insertOrUpdateWorkFlowNotificationStep.WorkFlowNotificationID.HasValue && insertOrUpdateWorkFlowNotificationStep.WorkFlowNotificationID.Value > 0;
 
             // Prepare input parameters
             var inputParams = new Dictionary<string, object>()
             {               
-                {"pWorkFlowStepID", insertOrUpdateWorkFlowNotification.WorkFlowStepID },               
-                {"pUserTypeID", insertOrUpdateWorkFlowNotification.UserTypeID },
-                {"pNotificationDetail", insertOrUpdateWorkFlowNotification.NotificationDetail },
+                {"pWorkFlowStepID", insertOrUpdateWorkFlowNotificationStep.WorkFlowStepID },               
+                {"pUserTypeID", insertOrUpdateWorkFlowNotificationStep.UserTypeID },
+                {"pNotificationDetail", insertOrUpdateWorkFlowNotificationStep.NotificationDetail??Convert.DBNull},
+                {"pNotificationDetailAr", insertOrUpdateWorkFlowNotificationStep.NotificationDetailAr??Convert.DBNull},
                 {"pCreatedBy", isUpdating ? Convert.DBNull : _projectProvider.UserId()},
                 {"pModifiedBy", isUpdating ? _projectProvider.UserId() : Convert.DBNull},
         
@@ -175,12 +176,12 @@ namespace BusinessLogicLayer.Services.WorkFlow
             // Prepare output parameters
             Dictionary<string, object> outputParams = new Dictionary<string, object>
             {
-                {"pWorkFlowNotificationID", isUpdating ? insertOrUpdateWorkFlowNotification.WorkFlowNotificationID.Value:"int"}, // Output parameter for insert (to retrieve the new ID)
+                {"pWorkFlowNotificationID", isUpdating ? insertOrUpdateWorkFlowNotificationStep.WorkFlowNotificationID.Value:"int"}, // Output parameter for insert (to retrieve the new ID)
                 {"pError", "int"} // Assuming error code 0 for success, non-zero for errors
             };
 
             // Execute the stored procedure asynchronously
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertUpdateWorkFlowNotification", inputParams, outputParams);
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertUpdateWorkFlowNotificationStep", inputParams, outputParams);
 
             // Retrieve the output parameter value
             int pErrorValue = (int)outputValues["pError"];
@@ -191,37 +192,38 @@ namespace BusinessLogicLayer.Services.WorkFlow
 
         }
 
-        public async Task<int> DeleteWorkFlowNotification(DeleteWorkFlowNotification deleteWorkFlowNotification)
+        public async Task<int> DeleteWorkFlowNotificationStep(DeleteWorkFlowNotificationStep deleteWorkFlowNotificationStep)
         {
             var inputParams = new Dictionary<string, object>()
             {
-                {"pWorkFlowNotificationID",deleteWorkFlowNotification.WorkFlowNotificationID}
+                {"pWorkFlowNotificationID",deleteWorkFlowNotificationStep.WorkFlowNotificationID}
 
             };
             Dictionary<string, object> outputParams = new Dictionary<string, object>
             {
                 { "pError","int" },
             };
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteWorkFlowNotification", inputParams, outputParams);
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteWorkFlowNotificationStep", inputParams, outputParams);
             int pErrorValue = (int)outputValues["pError"];
             return pErrorValue;
         }
 
-        public async Task<List<GetWorkFlowNotificationOutput>> GetWorkFlowNotification(GetWorkFlowNotificationInput getWorkFlowNotification)
+        public async Task<List<GetWorkFlowNotificationStepOutput>> GetWorkFlowNotificationStep(GetWorkFlowNotificationStepInput getWorkFlowNotificationStepInput)
         {
             var inputParams = new Dictionary<string, object>()
             {
-                {"pWorkFlowNotificationID", getWorkFlowNotification.WorkFlowNotificationID ?? Convert.DBNull},
-                {"pWorkFlowStepID", getWorkFlowNotification.WorkFlowStepID ?? Convert.DBNull},
-                {"pUserTypeID", getWorkFlowNotification.UserTypeID ?? Convert.DBNull},
-                {"pNotificationDetail", getWorkFlowNotification.NotificationDetail ?? Convert.DBNull},
+                {"pWorkFlowNotificationID", getWorkFlowNotificationStepInput.WorkFlowNotificationID ?? Convert.DBNull},
+                {"pWorkFlowStepID", getWorkFlowNotificationStepInput.WorkFlowStepID ?? Convert.DBNull},
+                {"pUserTypeID", getWorkFlowNotificationStepInput.UserTypeID ?? Convert.DBNull},
+                {"pNotificationDetail", getWorkFlowNotificationStepInput.NotificationDetail ?? Convert.DBNull},
+                {"pNotificationDetailAr", getWorkFlowNotificationStepInput.NotificationDetailAr ?? Convert.DBNull},
                 {"pModificationDate", Convert.DBNull},
                 {"pCreationDate",  Convert.DBNull},
                 {"pCreatedBy",  Convert.DBNull},
                 {"pModifiedBy", Convert.DBNull}
             };
 
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetWorkFlowNotificationOutput>("dbo.GetWorkFlowNotification", inputParams, null);
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetWorkFlowNotificationStepOutput>("dbo.GetWorkFlowNotificationStep", inputParams, null);
             return result;
         }
         #endregion

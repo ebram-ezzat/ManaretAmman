@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.DTO.WorkFlow
 {
-    public class DeleteWorkFlowNotification
+    public class DeleteWorkFlowNotificationStep
     {
         [Required(ErrorMessage = "The WorkFlowNotificationID is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "The WorkFlowNotificationID must be bigger than 0")]

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.DTO.WorkFlow
 {
-    public class InsertOrUpdateWorkFlowNotification
+    public class InsertOrUpdateWorkFlowNotificationStep
     {
         public int? WorkFlowNotificationID { get; set; }
         [Required(ErrorMessage = "The WorkFlowStepID is required.")]

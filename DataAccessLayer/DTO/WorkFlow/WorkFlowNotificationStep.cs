@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.DTO.WorkFlow
 {
-    public class GetWorkFlowNotificationInput
+    public class GetWorkFlowNotificationStepInput
     {
         public int? WorkFlowNotificationID { get; set; } = null;
         public int? WorkFlowStepID { get; set; } = null;
@@ -18,14 +18,14 @@ namespace DataAccessLayer.DTO.WorkFlow
         public string NotificationDetail { get; set; } = null;
         public string NotificationDetailAr { get; set; } = null;
     }
-    public class GetWorkFlowNotificationOutput
+    public class GetWorkFlowNotificationStepOutput
     {
-        public int? WorkFlowNotificationID { get; set; } 
+        public int? WorkFlowNotificationID { get; set; }
         public int? WorkFlowStepID { get; set; }
         public int? UserTypeID { get; set; }
-        public int? CreatedBy { get; set; } 
-        public int? ModifiedBy { get; set; } 
-        public DateTime? CreationDate { get; set; } 
+        public int? CreatedBy { get; set; }
+        public int? ModifiedBy { get; set; }
+        public DateTime? CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }
         public string NotificationDetail { get; set; }
         public string NotificationDetailAr { get; set; }
