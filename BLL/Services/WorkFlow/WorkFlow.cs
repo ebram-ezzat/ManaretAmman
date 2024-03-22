@@ -217,10 +217,14 @@ namespace BusinessLogicLayer.Services.WorkFlow
                 {"pUserTypeID", getWorkFlowNotificationStepInput.UserTypeID ?? Convert.DBNull},
                 {"pNotificationDetail", getWorkFlowNotificationStepInput.NotificationDetail ?? Convert.DBNull},
                 {"pNotificationDetailAr", getWorkFlowNotificationStepInput.NotificationDetailAr ?? Convert.DBNull},
-                {"pModificationDate", Convert.DBNull},
-                {"pCreationDate",  Convert.DBNull},
+                {"pLangID",_projectProvider.LangId() },
+                {"pProjectID",_projectProvider.GetProjectId() },
                 {"pCreatedBy",  Convert.DBNull},
-                {"pModifiedBy", Convert.DBNull}
+                {"pModifiedBy", Convert.DBNull},
+                {"pCreationDate",  Convert.DBNull},
+                {"pModificationDate", Convert.DBNull},
+               
+                
             };
 
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetWorkFlowNotificationStepOutput>("dbo.GetWorkFlowNotificationStep", inputParams, null);

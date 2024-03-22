@@ -164,7 +164,7 @@ namespace ManaretAmman.Controllers.Employees
 
         #region WorkFlowNotificationsSteps Screen3
         /// <summary>
-        /// 
+        /// you should send {Accept-Language} Via header request to get the correct description "ar" For Arabic and "en" For English
         /// </summary>
         /// <param name="getWorkFlowNotificationStepInput"></param>
         /// <returns></returns>

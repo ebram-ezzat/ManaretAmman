@@ -17,6 +17,7 @@ namespace DataAccessLayer.DTO.WorkFlow
         //public DateTime? ModificationDate { get; set; } = null;
         public string NotificationDetail { get; set; } = null;
         public string NotificationDetailAr { get; set; } = null;
+
     }
     public class GetWorkFlowNotificationStepOutput
     {
@@ -29,5 +30,6 @@ namespace DataAccessLayer.DTO.WorkFlow
         public DateTime? ModificationDate { get; set; }
         public string NotificationDetail { get; set; }
         public string NotificationDetailAr { get; set; }
+        public string UserType { get; set; }
     }
 }
