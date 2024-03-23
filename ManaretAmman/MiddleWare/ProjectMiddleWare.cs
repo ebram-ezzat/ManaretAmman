@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Reflection.Metadata;
 
 namespace ManaretAmman.MiddleWare
 {
@@ -25,8 +26,20 @@ namespace ManaretAmman.MiddleWare
                 await _next(context);
                 return;
             }
-            
-                if (context.Request.Headers.TryGetValue("projectid", out var ProjectIdValue))
+            #region check by filter attribute on API 
+            var endpoint = context.GetEndpoint();
+            if (endpoint != null)
+            {
+                var hasMyCustomAttribute = endpoint.Metadata.Any(metadata => metadata is SkipHeaderFilterAttribute);
+
+                if (hasMyCustomAttribute)
+                {
+                    await _next(context);
+                    return;
+                }
+            }
+            #endregion
+            if (context.Request.Headers.TryGetValue("projectid", out var ProjectIdValue))
             {
                 context.Items["ProjectId"] = ProjectIdValue.ToString();
             }

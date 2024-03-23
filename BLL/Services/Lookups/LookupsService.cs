@@ -4,12 +4,15 @@ using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO;
 using DataAccessLayer.DTO.Employees;
+using DataAccessLayer.DTO.Lookup;
+using DataAccessLayer.DTO.WorkFlow;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Security.Cryptography;
 
 namespace BusinessLogicLayer.Services.Lookups
 {
@@ -28,6 +31,9 @@ namespace BusinessLogicLayer.Services.Lookups
             _projectProvider = projectProvider;
             _payrolLogOnlyContext = payrolLogOnlyContext;
         }
+
+       
+
         public async Task<string> GetDescription(string tableName, string columnName, int columnValue)
         {
             var lookup =  _unit.LookupsRepository
@@ -125,6 +131,108 @@ namespace BusinessLogicLayer.Services.Lookups
             return employeePapersResponse;
         }
 
-        
+        public async Task<int> InsertLookup(InsertLookup insertLookup)
+        {
+            bool isUpdating = insertLookup.ID.HasValue && insertLookup.ID.Value > 0;
+
+            var inputParams = new Dictionary<string, object>
+            {
+                {"pTableName",insertLookup.TableName },
+                {"pColumnName",insertLookup.ColumnName },
+                {"pColumnValue",insertLookup.ColumnValue },
+                {"pColumnDescription",insertLookup.ColumnDescription },
+                {"pColumnDescriptionAR",insertLookup.ColumnDescriptionAR },
+                {"pOrderBy",insertLookup.OrderBy },
+                {"pProjectID",insertLookup.ProjectID },
+                {"pBalance", Convert.DBNull},
+                {"pDefaultValue", Convert.DBNull},
+                {"pParentID", Convert.DBNull},
+                {"pEmployeeID", Convert.DBNull},
+                {"pCalWithHoliday", Convert.DBNull},
+                {"pIsHealthVacation", Convert.DBNull},
+                {"pIsInjuryVacation", Convert.DBNull},
+                {"pApprovalProcessID", Convert.DBNull},
+                {"pFirstPeriod", Convert.DBNull},
+                {"pSecondPeriod", Convert.DBNull},
+                {"pThirdPeriod", Convert.DBNull},
+                {"pFourthPeriod", Convert.DBNull},
+                {"pFifthPeriod", Convert.DBNull},
+                {"pPenaltyCategoryID2", Convert.DBNull},
+                {"pPenaltyCategoryID3", Convert.DBNull},
+                {"pPenaltyCategoryID4", Convert.DBNull},
+                {"pPenaltyCategoryID5", Convert.DBNull},
+                {"pIsWithoutSalaryVacation", Convert.DBNull},
+                {"pIsPersonalVacation", Convert.DBNull},
+                {"pWithoutSalaryVacationValue", Convert.DBNull},
+                {"pisOtherVacation", Convert.DBNull}
+            };
+            var outParams = new Dictionary<string, object>
+            {
+                {"pID",isUpdating?insertLookup.ID:"int"},
+                {"pError","int"}
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertLookupTable", inputParams, outParams);
+
+            // Retrieve the output parameter value
+            int pErrorValue = (int)outputValues["pError"];
+
+
+
+            return pErrorValue;
+        }
+        public async Task<int> DeleteLookup(DeleteLookup deleteLookup)
+        {
+            var inputParams = new Dictionary<string, object>
+            {
+                {"pTableName",deleteLookup.ID },
+                {"pProjectID",deleteLookup.ProjectID }
+            };
+            var outParams = new Dictionary<string, object>
+            {
+               
+                {"pError","int"}
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteLookupTable", inputParams, outParams);
+
+            // Retrieve the output parameter value
+            int pErrorValue = (int)outputValues["pError"];
+
+
+
+            return pErrorValue;
+        }
+
+        public async Task<List<GetTableNamesWithColumnNames>> GetTableNamesColumnNamesByProjectId(GetTableAndColumnOfProject getTableAndColumnOfProject)
+        {
+            var inputParams = new Dictionary<string, object>
+            {
+              
+                {"pProjectID",getTableAndColumnOfProject.ProjectID }
+            };
+           
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetTableNamesWithColumnNames>("dbo.GetTableNameAndColumnName", inputParams, null);
+            
+
+
+
+            return result;
+        }
+
+        public async Task<List<GetLookupTableDataOutput>> GetLookupData(GetLookupTableDataInput getLookupTableDataInput)
+        {
+            var inputParam = new Dictionary<string, object>
+            {
+                {"pID",getLookupTableDataInput.ID??Convert.DBNull },
+                {"pProjectID",getLookupTableDataInput.ProjectID??Convert.DBNull},
+                {"pParentID", getLookupTableDataInput.ParentID??Convert.DBNull},
+                {"pTableName", getLookupTableDataInput.TableName??Convert.DBNull},
+                {"pColumnName", getLookupTableDataInput.ColumnName??Convert.DBNull},
+                {"pLanguageID", _projectProvider.LangId()},
+                {"pApprovalPageID", Convert.DBNull},
+
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetLookupTableDataOutput>("dbo.GetLookupTableData", inputParam, null);
+            return result; 
+        }
     }
 }
