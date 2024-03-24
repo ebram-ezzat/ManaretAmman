@@ -53,7 +53,9 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
                                  ShiftWithTimes = $"{item.StartTime.ConvertFromMinutesToTimeString()} | {item.EndTime.ConvertFromMinutesToTimeString()} | {item.ShiftName}",
                                  Systemtimeinminutes = item.Systemtimeinminutes,
                                  Approvedtimeinminutes = item.Approvedtimeinminutes,
-                                 ApprovedStatusID = item.ApprovedStatusID
+                                 ApprovedStatusID = item.ApprovedStatusID,
+                                 EmployeeImage=item.EmployeeImage,
+                                 JobTitleName=item.JobTitleName
                              }).ToList();
 
           

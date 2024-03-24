@@ -53,5 +53,7 @@ namespace DataAccessLayer.Models
         public string Systemtimeinminutes { get; set; }
         public string Approvedtimeinminutes { get; set; }
         public int? ApprovedStatusID { get; set; }
+        public string EmployeeImage { get; set; }
+		public string JobTitleName { get; set; }
     }
 }
