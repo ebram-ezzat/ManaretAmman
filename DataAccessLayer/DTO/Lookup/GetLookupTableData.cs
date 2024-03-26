@@ -31,10 +31,10 @@ namespace DataAccessLayer.DTO.Lookup
         public string DefaultValue { get; set; } // Assuming string, adjust based on actual data type
         public int? ParentID { get; set; }
         public int? ProjectID { get; set; }
-        public int EnableDelete { get; set; }  // Assuming boolean for enable/disable flags
-        public int EnableUpdate { get; set; }  // Assuming boolean for enable/disable flags
+        public int? EnableDelete { get; set; }  // Assuming boolean for enable/disable flags
+        public int? EnableUpdate { get; set; }  // Assuming boolean for enable/disable flags
         public string ParentDesc { get; set; }
-        public bool? WithBank { get; set; } // Nullable bool to accommodate the conditional assignment
+        public int? WithBank { get; set; } // Nullable bool to accommodate the conditional assignment
         public int? FirstPenaltyPeriod { get; set; }
         public int? SecondPenaltyPeriod { get; set; }
         public int? ThirdPenaltyPeriod { get; set; }
