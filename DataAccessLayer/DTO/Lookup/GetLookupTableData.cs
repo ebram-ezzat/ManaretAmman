@@ -28,7 +28,7 @@ namespace DataAccessLayer.DTO.Lookup
         public string ColumnDescription { get; set; }
         public int? OrderBy { get; set; } // Assuming int, adjust based on actual data type
         public int? Balance { get; set; } // Assuming decimal, adjust based on actual data type
-        public string DefaultValue { get; set; } // Assuming string, adjust based on actual data type
+        public int? DefaultValue { get; set; } // Assuming string, adjust based on actual data type
         public int? ParentID { get; set; }
         public int? ProjectID { get; set; }
         public int? EnableDelete { get; set; }  // Assuming boolean for enable/disable flags
