@@ -26,7 +26,7 @@ namespace BusinessLogicLayer.Common
 
             return parameters;
         }
-        public static bool UploadFileToFtp(string ftpUrl,string userName,string password, Stream fileStream, string fileName)
+        public static bool UploadFileToFtp(string ftpUrl, string userName, string password, Stream fileStream, string fileName)
         {
             bool IsComplete = false;
             // Create FTP request
@@ -74,7 +74,7 @@ namespace BusinessLogicLayer.Common
                 }
             }
         }
-        public async static Task <dynamic> GetFileBase64ByFtpPath(string fullPath,string ftpUsername, string ftpPassword)
+        public async static Task<dynamic> GetFileBase64ByFtpPath(string fullPath, string ftpUsername, string ftpPassword)
         {
             // FTP server details
 
@@ -86,11 +86,11 @@ namespace BusinessLogicLayer.Common
             request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
             request.UsePassive = true;
 
-           
-                // Get the FTP response
-                using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
-                {
-                if (response.StatusCode == FtpStatusCode.CommandOK || response.StatusCode == FtpStatusCode.DataAlreadyOpen 
+
+            // Get the FTP response
+            using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
+            {
+                if (response.StatusCode == FtpStatusCode.CommandOK || response.StatusCode == FtpStatusCode.DataAlreadyOpen
                     || response.StatusCode == FtpStatusCode.ClosingData || response.StatusCode == FtpStatusCode.OpeningData)
                 {
                     //Get the response stream
@@ -191,76 +191,28 @@ namespace BusinessLogicLayer.Common
 
             return obj;
         }
-        
-        public static object BuildRdlcReportWithDataSourc<T>(List<T> DataSource,string PathRdlc,string DSName)
-        {
-            try
-            {
-                if (Directory.Exists(Path.GetDirectoryName(PathRdlc)))
-                {
-                    Console.WriteLine("Directory exists.");
 
-                    // Check if the file exists
-                    if (File.Exists(PathRdlc))
-                    {
-                        Console.WriteLine("File exists and is correct.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("File does not exist.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Directory does not exist.");
-                }
-            
+        public static object BuildRdlcReportWithDataSourc<T>(List<T> DataSource, string PathRdlc, string DSName)
+        {
+            if (File.Exists(PathRdlc))
+            {
                 LocalReport rpt = new LocalReport();
                 rpt.ReportPath = Path.GetFullPath(PathRdlc);
-                //var ds = new ReportDataSource();
-                //ds.Name = DSName;
-                //ds.Value = DataSource;
-                //rpt.DataSources.Add(ds);
+                rpt.EnableExternalImages = true;
 
-
-                rpt.DataSources.Add(new ReportDataSource("UsersDataSet", new List<object>()));
-
-                //var reportParameter = new List<ReportParameter>()
-                //            {
-                //    new ReportParameter("StartDate", DateTime.Now.Date.ToString()),
-                //    new ReportParameter("EndDate", DateTime.Now.Date.ToString())
-                //};
-                //rpt.SetParameters(reportParameter);
+                rpt.DataSources.Clear();
+                rpt.DataSources.Add(new ReportDataSource(DSName, DataSource));
 
                 byte[] Bytes = rpt.Render(format: "PDF", deviceInfo: "");
-                // var exportPath = Path.Combine(_hostEnvironment.ContentRootPath, "Export");
-                //if (!Directory.Exists(exportPath))
-                //    Directory.CreateDirectory(exportPath);
-                //exportPath = Path.Combine(exportPath, "Reports");
-                //if (!Directory.Exists(exportPath))
-                //    Directory.CreateDirectory(exportPath);
-                //exportPath = Path.Combine(exportPath, $"Work Situation By governorates According Education With Gender.pdf");
-                //using (FileStream stream = new FileStream(PdfPath, FileMode.Create))
-                //{
-                //    stream.Write(Bytes, 0, Bytes.Length);
-                //}
                 rpt.Dispose();
-                var PdfByte = File.ReadAllBytes(PathRdlc);
 
-                var Base64 = Convert.ToBase64String(Bytes);
-                //var exportPathasd = Path.Combine(_hostEnvironment.ContentRootPath, "Export");
-                //Directory.Delete(PdfPath, true);
-
-                return Base64;
+                var base64 =  Convert.ToBase64String(Bytes);
+                return base64;
             }
-            catch (Exception ex)
+            else
             {
-
-                throw;
+                return null;
             }
-           
-           
-            
         }
     }
 }

@@ -266,11 +266,11 @@ internal class EmployeeService : IEmployeeService
                     item.ImgBase64 = base64?.Base64Content;
                 }
             }
-        
+
 
         //    );
         //string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\EmployeesReport.rdlc");
-        //var base64 = PublicHelper.BuildRdlcReportWithDataSourc(result, reportPath, "DsMain");
+        //var base64Report = PublicHelper.BuildRdlcReportWithDataSourc(result, reportPath, "DsMain");
         return result;
        
     }
