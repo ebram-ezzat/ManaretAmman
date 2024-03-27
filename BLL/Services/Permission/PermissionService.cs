@@ -142,8 +142,7 @@ namespace BusinessLogicLayer.Services.Permission
                 {"pprojectid",_projectProvider.GetProjectId() },
                 {"pusertypeid",getUserRolesInput.UserId},               
                 {"pflag",getUserRolesInput.Flag },
-                {"ploginuserid",_projectProvider.UserId() },
-                { "pusertypeid",Convert.DBNull}
+                {"ploginuserid",_projectProvider.UserId() }
             };
             
              
