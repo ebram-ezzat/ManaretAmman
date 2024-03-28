@@ -92,7 +92,7 @@ namespace ManaretAmman.Controllers
         /// <returns></returns>
         [SkipHeaderFilter]//Skip ProjectID From Header
         [HttpDelete("DeleteLookup")]
-        public async Task<IApiResponse> DeleteLookup(DeleteLookup deleteLookup)
+        public async Task<IApiResponse> DeleteLookup([FromQuery]DeleteLookup deleteLookup)
         {
             var result = await _lookupsService.DeleteLookup(deleteLookup);
             if(result==-1)//error
