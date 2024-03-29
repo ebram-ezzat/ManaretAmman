@@ -62,7 +62,10 @@ namespace ManaretAmman.Controllers.Employees
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
             var result = await _iWorkFlow.DeleteWorkFlowHeader(deleteWorkFlowHeader);
-
+            if (result == 1)//error 
+            {
+                return ApiResponse.Failure("An unexpected error on validation occurred", new string[] { "delete Failed because you should delete first workflow steps" });
+            }
 
             return ApiResponse<int>.Success("data has been deleted succussfully", result);
         }

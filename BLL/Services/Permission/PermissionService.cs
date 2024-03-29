@@ -138,9 +138,9 @@ namespace BusinessLogicLayer.Services.Permission
         {
             var inputParams = new Dictionary<string, object>()
             {
-                {"puserid",Convert.DBNull},
+                {"puserid",getUserRolesInput.UserId},
                 {"pprojectid",_projectProvider.GetProjectId() },
-                {"pusertypeid",getUserRolesInput.UserId},               
+                {"pusertypeid",Convert.DBNull},               
                 {"pflag",getUserRolesInput.Flag },
                 {"ploginuserid",_projectProvider.UserId() }
             };
