@@ -11,6 +11,7 @@ namespace BusinessLogicLayer.Services.Reports
     public interface IReportService
     {
         Task<object> GetEmployeeSalaryReport(GetEmployeeSalaryReportRequest getEmployeePaperRequest);
+        Task<object> GetEmployeeAttendanceDailyReport(GetEmployeeAttendanceDailyRequest getEmployeeAttendanceDailyRequest);
 
     }
 }

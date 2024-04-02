@@ -31,6 +31,16 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<object>.Success("data has been retrieved succussfully", result);
         }
+        [HttpGet("GetEmployeeAttendanceDailyReport")]
+        public async Task<IApiResponse> GetEmployeeAttendanceDailyReport([FromQuery] GetEmployeeAttendanceDailyRequest getEmployeeAttendanceDailyRequest)
+        {
+            var result = await _reportService.GetEmployeeAttendanceDailyReport(getEmployeeAttendanceDailyRequest);
 
+            if (result == null)
+                return ApiResponse<object>.Failure("No data", null);
+
+
+            return ApiResponse<object>.Success("data has been retrieved succussfully", result);
+        }
     }
 }
