@@ -4,6 +4,7 @@ using BusinessLogicLayer.Services.EmployeeAttendance;
 using BusinessLogicLayer.Services.Reports;
 using DataAccessLayer.DTO.Notification;
 using DataAccessLayer.DTO.Reports;
+using ManaretAmman.MiddleWare;
 using ManaretAmman.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,12 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<object>.Success("data has been retrieved succussfully", result);
         }
+        /// <summary>
+        /// you should send {Accept-Language} Via header request to get the correct description  "ar" For Arabic and "en" For English
+        /// </summary>       
+        /// <param name="getEmployeeAttendanceDailyRequest"></param>
+        /// <returns></returns>
+        [AddLanguageHeader]
         [HttpGet("GetEmployeeAttendanceDailyReport")]
         public async Task<IApiResponse> GetEmployeeAttendanceDailyReport([FromQuery] GetEmployeeAttendanceDailyRequest getEmployeeAttendanceDailyRequest)
         {
