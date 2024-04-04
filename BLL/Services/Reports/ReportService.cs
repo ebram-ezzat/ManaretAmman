@@ -42,15 +42,15 @@ namespace BusinessLogicLayer.Services.Reports
         {
             var inputParams = new Dictionary<string, object>()
             {
-               // {"pEmployeeID",getEmployeeAttendanceDailyRequest.EmployeeID??Convert.DBNull },
+                {"pEmployeeID",getEmployeeAttendanceDailyRequest.EmployeeID??Convert.DBNull },
                 {"pFromDate",getEmployeeAttendanceDailyRequest.FromDate==null?Convert.DBNull:getEmployeeAttendanceDailyRequest.FromDate.DateToIntValue() },               
                 {"pToDate",getEmployeeAttendanceDailyRequest.ToDate==null
                 ?Convert.DBNull:getEmployeeAttendanceDailyRequest.ToDate.DateToIntValue()},
                 {"pProjectID",_projectProvider.GetProjectId()},
                 {"pFlag",1},
                 {"pLanguageID",_projectProvider.LangId()},
-               // {"pCreatedBy",Convert.DBNull },
-               // {"pDepartmentID" ,Convert.DBNull}
+                {"pCreatedBy",Convert.DBNull },
+                {"pDepartmentID" ,Convert.DBNull}
             };
 
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
