@@ -17,10 +17,10 @@ namespace DataAccessLayer.DTO.Reports
         public int? a { get; set; }
         public int? EmployeeID { get; set; }
         public int? AttendanceDate { get; set; }
-        public int? CheckIn { get; set; }
-        public int? Checkout { get; set; }
-        public int? BreakIn { get; set; }
-        public int? BreakOut { get; set; }
+        public string CheckIn { get; set; }
+        public string Checkout { get; set; }
+        public string BreakIn { get; set; }
+        public string BreakOut { get; set; }
         public string EmployeeName { get; set; }
         public int? EmployeeNumber { get; set; }
         public int? EnableDelete { get; set; }
@@ -57,7 +57,7 @@ namespace DataAccessLayer.DTO.Reports
         public string allMorningLatebysystem { get; set; }
         public string allEarlyLate { get; set; }
         public string EarlyLate { get; set; }
-        public string inminutesIsabsent { get; set; }
+        public int? inminutesIsabsent { get; set; }
         public int? WithBreak { get; set; }
         public string LeavesLate { get; set; }
         public string MorningLate { get; set; }

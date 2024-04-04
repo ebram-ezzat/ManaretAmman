@@ -206,8 +206,7 @@ namespace BusinessLogicLayer.Common
                 byte[] Bytes = rpt.Render(format: "PDF", deviceInfo: "");
                 rpt.Dispose();
 
-                var base64 =  Convert.ToBase64String(Bytes);
-                return base64;
+                return Convert.ToBase64String(Bytes);
             }
             else
             {

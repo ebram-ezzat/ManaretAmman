@@ -7,6 +7,7 @@ using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.Reports;
 using DataAccessLayer.DTO.WorkFlow;
 using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
 
@@ -19,16 +20,18 @@ namespace BusinessLogicLayer.Services.Reports
         IAuthService _authService;
         private readonly IConfiguration _configuration;
         private readonly PayrolLogOnlyContext _payrolLogOnlyContext;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ReportService(IMapper mapper, IProjectProvider projectProvider, IAuthService authService, PayrolLogOnlyContext payrolLogOnlyContext, IConfiguration configuration)
+        public ReportService(IMapper mapper, IProjectProvider projectProvider, IAuthService authService, PayrolLogOnlyContext payrolLogOnlyContext, IConfiguration configuration, IHostingEnvironment hostingEnvironment)
         {
             _mapper = mapper;
             _projectProvider = projectProvider;
             _authService = authService;
             _payrolLogOnlyContext = payrolLogOnlyContext;
             _configuration = configuration;
+            _hostingEnvironment = hostingEnvironment;
         }
-       public async Task<object> GetEmployeeSalaryReport(GetEmployeeSalaryReportRequest getEmployeeSalaryReportRequest)
+        public async Task<object> GetEmployeeSalaryReport(GetEmployeeSalaryReportRequest getEmployeeSalaryReportRequest)
         {
             getEmployeeSalaryReportRequest.ProjectID = _projectProvider.GetProjectId();
             getEmployeeSalaryReportRequest.loginuserid = _projectProvider.UserId();
@@ -55,7 +58,9 @@ namespace BusinessLogicLayer.Services.Reports
 
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
                 .ExecuteStoredProcedureAsync<GetEmployeeAttendanceDailyResponse>("dbo.GetEmployeeAttendanceDaily", inputParams, null);
-            return result;
+
+            string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\EmployeesReport.rdlc");
+            return PublicHelper.BuildRdlcReportWithDataSourc(result, reportPath, "DsMain");
         }
     }
 }
