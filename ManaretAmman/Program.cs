@@ -135,7 +135,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-if (app.Environment.IsDevelopment()|| app.Environment.IsProduction())
+if (app.Environment.IsDevelopment())
 {    
     app.UseSwagger();
     app.UseSwaggerUI(c =>
@@ -145,7 +145,19 @@ if (app.Environment.IsDevelopment()|| app.Environment.IsProduction())
         // Add your custom CSS file to the Swagger UI
         c.InjectStylesheet("/swagger-custom_css.css"); // Adjust the path if your CSS is in a subdirectory
         c.DocExpansion(DocExpansion.None); // This line collapses all sections by default
+    });
+}
 
+if (app.Environment.IsProduction())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/ManaretAmmanApi/swagger/v1/swagger.json", "My API V1");
+        // c.RoutePrefix = string.Empty; // Sets Swagger UI at the app's root
+        // Add your custom CSS file to the Swagger UI
+        c.InjectStylesheet("/ManaretAmmanApi/swagger-custom_css.css"); // Adjust the path if your CSS is in a subdirectory
+        c.DocExpansion(DocExpansion.None); // This line collapses all sections by default
     });
 }
 
