@@ -56,8 +56,10 @@ namespace BusinessLogicLayer.Services.Reports
                 {"pDepartmentID" ,Convert.DBNull}
             };
 
+            //var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
+            //    .ExecuteStoredProcedureAsync<GetEmployeeAttendanceDailyResponse>("dbo.GetEmployeeAttendanceDaily", inputParams, null);
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
-                .ExecuteStoredProcedureAsync<GetEmployeeAttendanceDailyResponse>("dbo.GetEmployeeAttendanceDaily", inputParams, null);
+               .ExecuteStoredProcedureAsyncByADO("dbo.GetEmployeeAttendanceDaily", inputParams, null);
 
             string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\EmployeesReport.rdlc");
             return PublicHelper.BuildRdlcReportWithDataSourc(result, reportPath, "DsMain");

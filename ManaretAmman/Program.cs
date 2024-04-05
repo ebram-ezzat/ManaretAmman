@@ -131,6 +131,10 @@ builder.Services.AddSwaggerGen(config =>
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Logging.AddConsole();
+builder.Logging.AddFilter(category: DbLoggerCategory.Database.Command.Name, level: LogLevel.Information);
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

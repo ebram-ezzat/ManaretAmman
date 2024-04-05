@@ -50,7 +50,7 @@ namespace BusinessLogicLayer.Services.WorkFlow
         {
             var inputParams = new Dictionary<string, object>()
             {
-                {"pUserID",deleteWorkFlowHeader.WorkflowHeaderID},
+                {"pWorkflowHeaderID",deleteWorkFlowHeader.WorkflowHeaderID},
                 {"pProjectID",_projectProvider.GetProjectId() }
             };
             Dictionary<string, object> outputParams = new Dictionary<string, object>

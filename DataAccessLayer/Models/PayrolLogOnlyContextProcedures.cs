@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -171,137 +172,201 @@ namespace DataAccessLayer.Models
         {
             _context = context;
         }
+
+        #region New Version
         public async Task<(List<T>, Dictionary<string, object>)> ExecuteStoredProcedureAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default) where T : class
         {
-            List<SqlParameter> sqlParameters = new List<SqlParameter>();
 
-            if (parameters != null)
-            {
-                foreach (var kvp in parameters)
-                {
-                    var parameter = new SqlParameter(kvp.Key, kvp.Value ?? DBNull.Value);
-                    if (kvp.Value != null)
-                    {
-                        parameter.SqlDbType = GetSqlDbTypeFromValue(kvp.Value);
-                    }
-                    sqlParameters.Add(parameter);
-                }
-            }
+            // Construct the SQL command string with parameters and their values directly embedded
+            var parameterValuesWithAt = string.Join(", ", parameters.Select(kvp => $"@{kvp.Key}={(kvp.Value == null || kvp.Value.Equals(string.Empty) || kvp.Value.Equals(DBNull.Value) ? "NULL" : kvp.Value.ToString())}"));
 
-            if (outputParameters != null)
+            #region Prepare OutPut parameters 
+            List<SqlParameter> sqlOutDeclaringParameters = new List<SqlParameter>();
+            if (outputParameters != null && outputParameters.Count > 0)
             {
+
+                // Construct the output parameters string
+                var outputParameterValuesWithAt = string.Join(", ", outputParameters
+                    .Select(kvp => $"@{kvp.Key}={(kvp.Value == null || kvp.Value == "string" || kvp.Value == "int" ? $"@{kvp.Key} OUTPUT" : kvp.Value)}")
+                    );
+                // Append the output parameters to the main parameters string
+                parameterValuesWithAt += ", " + outputParameterValuesWithAt;
+
                 foreach (var outputParam in outputParameters)
                 {
+                    if (!outputParam.Value.Equals("int") && !outputParam.Value.Equals("string"))
+                    {
+                        //outputParamSql.Value = outputParam.Value;
+                        // outputParamSql.Direction = ParameterDirection.InputOutput;
+                        continue;// break the foreach if the output has a value
+                    }
                     var outputParamSql = new SqlParameter
                     {
-                        ParameterName =  outputParam.Key,
+                        Value = DBNull.Value,
+                        ParameterName = "@" + outputParam.Key,
                         Direction = ParameterDirection.Output,
                         SqlDbType = GetSqlDbTypeFromOutPutValue(outputParam.Value) // Helper method to infer SqlDbType
                     };
-                    if(outputParam.Value !="int" && outputParam.Value!="string")
-                    {
-                        outputParamSql.Value = outputParam.Value;
-                    }
-                    sqlParameters.Add(outputParamSql);
+                    sqlOutDeclaringParameters.Add(outputParamSql);
                 }
+
             }
+            #endregion
 
-            var parameterNames = string.Join(", ", parameters.Keys);
-            var parameterNamesWithAt = "@" + string.Join(", @", parameters.Keys);
-            var sqlCommand = $"EXEC {storedProcedureName} {parameterNamesWithAt}";
-            if (outputParameters != null && outputParameters.Count > 0)
-            {
-                var outputParameterNames = string.Join(", ", outputParameters.Keys.Select(k => "@" + k));
-                sqlCommand += $", {outputParameterNames} OUTPUT";
-            }
-            var result = await _context.SqlQueryAsync<T>(sqlCommand, sqlParameters.ToArray(), cancellationToken);
+            var sqlCommand = $"EXEC {storedProcedureName} {parameterValuesWithAt}";
 
 
+            //var result = await _context.SqlQueryAsync<T>(sqlCommand, sqlParameters.ToArray(), cancellationToken);
+            var result = await _context.SqlQueryAsync<T>(sqlCommand, sqlOutDeclaringParameters.ToArray(), cancellationToken);
             var outputValues = new Dictionary<string, object>();
             if (outputParameters != null)
             {
                 foreach (var outputParam in outputParameters)
                 {
-                    if (sqlParameters.FirstOrDefault(p => p.ParameterName == outputParam.Key).Direction == ParameterDirection.Output)
+                    var outputParameter = sqlOutDeclaringParameters.FirstOrDefault(p => p.ParameterName == "@" + outputParam.Key);
+                    if (outputParameter != null && outputParameter.Direction == ParameterDirection.Output)
                     {
-                        var key = outputParam.Key;
-                        var outputParameter = sqlParameters.FirstOrDefault(p => p.ParameterName == outputParam.Key);
-                        // Handle output values here, perhaps store them in the outputParameters dictionary.
                         outputValues.Add(outputParam.Key, outputParameter.Value);
-
                     }
                 }
             }
 
             return (result, outputValues);
         }
-        public async Task<(int,Dictionary<string,object>)> ExecuteStoredProcedureAsync(string storedProcedureName, Dictionary<string, object> parameters, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default)
+        public async Task<(int, Dictionary<string, object>)> ExecuteStoredProcedureAsync(string storedProcedureName, Dictionary<string, object> parameters, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default)
         {
-            var sqlParameters = new List<SqlParameter>();
+           
+            // Construct the SQL command string with parameters and their values directly embedded
+            var parameterValuesWithAt = string.Join(", ", parameters
+                .Select(kvp => $"@{kvp.Key}={(kvp.Value == null || kvp.Value.Equals(string.Empty) || kvp.Value.Equals(DBNull.Value) ? "NULL" : kvp.Value.ToString())}")    
+                
+                );
 
-            foreach (var parameter in parameters)
-            {
-                var param = new SqlParameter("@" + parameter.Key, parameter.Value);
-                sqlParameters.Add(param);
-            }
+            #region Prepare OutPut parameters 
+            List<SqlParameter> sqlOutDeclaringParameters= new List<SqlParameter>();
+            if (outputParameters != null && outputParameters.Count > 0)
+            {              
+                // Construct the output parameters string
+                var outputParameterValuesWithAt = string.Join(", ", outputParameters
+                    .Select(kvp => $"@{kvp.Key}={(kvp.Value==null|| kvp.Value == "string" || kvp.Value=="int" ? $"@{kvp.Key} OUTPUT" : kvp.Value)}")
+                    );
 
-            if (outputParameters != null)
-            {
+                // Append the output parameters to the main parameters string
+                parameterValuesWithAt += ", " + outputParameterValuesWithAt;
+
                 foreach (var outputParam in outputParameters)
                 {
+                    if (!outputParam.Value.Equals("int") && !outputParam.Value.Equals("string"))
+                    {
+                        //outputParamSql.Value = outputParam.Value;
+                        //outputParamSql.Direction = ParameterDirection.InputOutput;
+                        continue;// break the foreach if the output has a value
+                    }
                     var outputParamSql = new SqlParameter
                     {
                         ParameterName = "@" + outputParam.Key,
                         Direction = ParameterDirection.Output,
-                       SqlDbType = GetSqlDbTypeFromOutPutValue(outputParam.Value) // Helper method to infer SqlDbType
+                        SqlDbType = GetSqlDbTypeFromOutPutValue(outputParam.Value) // Helper method to infer SqlDbType
                     };
-                    if (outputParam.Value != "int" && outputParam.Value != "string")
-                    {
-                        outputParamSql.Value = outputParam.Value;
-                        outputParamSql.Direction = ParameterDirection.InputOutput;
-                    }
-                    sqlParameters.Add(outputParamSql);
+                    sqlOutDeclaringParameters.Add(outputParamSql);
                 }
             }
+            #endregion
 
-            var parameterNames = string.Join(", ", parameters.Keys);
-            var parameterNamesWithAt = "@" + string.Join(", @", parameters.Keys);
-            var sqlQuery = $"EXEC {storedProcedureName} {parameterNamesWithAt}";
-
-            if (outputParameters != null && outputParameters.Count > 0)
-            {
-                //var outputParameterNames = string.Join(", ", outputParameters.Keys.Select(k => "@" + k));
-                //sqlQuery += $", {outputParameterNames} OUTPUT";
-                var outputParameterNames = string.Empty;
-
-                foreach (var key in outputParameters.Keys)
-                {
-                    outputParameterNames += ", @" + key+" OUTPUT ";
-                }
-
-                sqlQuery += outputParameterNames; //$", {outputParameterNames.TrimStart(',', ' ')} OUTPUT";
-            }
-
-            var result = await _context.Database.ExecuteSqlRawAsync(sqlQuery, sqlParameters.ToArray(), cancellationToken);
+            var sqlQuery = $"EXEC {storedProcedureName} {parameterValuesWithAt}";
+            var result = await _context.Database.ExecuteSqlRawAsync(sqlQuery, sqlOutDeclaringParameters.ToArray(), cancellationToken);
 
             var outputValues = new Dictionary<string, object>();
             if (outputParameters != null)
             {
                 foreach (var outputParam in outputParameters)
-                {
-                    if (sqlParameters.FirstOrDefault(p => p.ParameterName == "@" + outputParam.Key).Direction == ParameterDirection.Output)
+                {                   
+                    var outputParameter = sqlOutDeclaringParameters.FirstOrDefault(p => p.ParameterName == "@" + outputParam.Key);
+                    if (outputParameter != null && outputParameter.Direction == ParameterDirection.Output)
                     {
-                        var key = outputParam.Key;
-                        var outputParameter = sqlParameters.FirstOrDefault(p => p.ParameterName == "@" + outputParam.Key);
-                        // Handle output values here, perhaps store them in the outputParameters dictionary.
                         outputValues.Add(outputParam.Key, outputParameter.Value);
-
                     }
                 }
             }
 
             return (result, outputValues);
         }
+
+        public async Task<(List<object>, Dictionary<string, object>)> ExecuteStoredProcedureAsyncByADO(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default)
+        {
+            List<object> result = new List<object>();
+            var outputValues = new Dictionary<string, object>();
+
+            var connection = _context.Database.GetDbConnection();
+
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = storedProcedureName;
+                command.CommandType = CommandType.StoredProcedure;
+
+                // Handle input parameters
+                if (parameters != null)
+                {
+                    foreach (var param in parameters)
+                    {
+                        var dbParameter = command.CreateParameter();
+                        dbParameter.ParameterName = param.Key;
+                        dbParameter.Value = param.Value ?? DBNull.Value;
+                        command.Parameters.Add(dbParameter);
+                    }
+                }
+
+                // Prepare output parameters
+                if (outputParameters != null)
+                {
+                    foreach (var outputParam in outputParameters)
+                    {
+                        var dbParameter = command.CreateParameter();
+                        dbParameter.ParameterName = outputParam.Key;
+                        dbParameter.Direction = ParameterDirection.Output;
+                       
+
+                        // Assuming a simplified scenario for setting DbType
+                        dbParameter.DbType = outputParam.Value switch
+                        {
+                            "int" => DbType.Int32,
+                            "string" => DbType.String,
+                            _ => dbParameter.DbType
+                        };
+
+                        command.Parameters.Add(dbParameter);
+                    }
+                }
+
+                await connection.OpenAsync(cancellationToken);
+
+                using (var reader = await command.ExecuteReaderAsync(cancellationToken))
+                {
+                    while (await reader.ReadAsync(cancellationToken))
+                    {
+                        var row = new List<object>();
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            row.Add(reader.GetValue(i));
+                        }
+                        result.Add(row);
+                    }
+                }
+
+                // Extract output parameter values after command execution
+                foreach (DbParameter param in command.Parameters)
+                {
+                    if (param.Direction == ParameterDirection.Output)
+                    {
+                        outputValues[param.ParameterName] = param.Value;
+                    }
+                }
+            }
+
+            return (result, outputValues);
+        }
+
+        #endregion
 
         private SqlDbType GetSqlDbTypeFromValue(object value)
         {
@@ -12834,5 +12899,199 @@ namespace DataAccessLayer.Models
 
             return result;
         }
+
+
+        #region old version
+        //public async Task<(List<T>, Dictionary<string, object>)> ExecuteStoredProcedureAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default) where T : class
+        //{
+        //    List<SqlParameter> sqlParameters = new List<SqlParameter>();
+
+        //    if (parameters != null)
+        //    {
+        //        foreach (var kvp in parameters)
+        //        {
+        //            var parameter = new SqlParameter(kvp.Key, kvp.Value ?? DBNull.Value);
+        //            if (kvp.Value != null)
+        //            {
+        //                parameter.SqlDbType = GetSqlDbTypeFromValue(kvp.Value);
+        //            }
+        //            sqlParameters.Add(parameter);
+        //        }
+        //    }
+
+        //    if (outputParameters != null)
+        //    {
+        //        foreach (var outputParam in outputParameters)
+        //        {
+        //            var outputParamSql = new SqlParameter
+        //            {
+        //                ParameterName = outputParam.Key,
+        //                Direction = ParameterDirection.Output,
+        //                SqlDbType = GetSqlDbTypeFromOutPutValue(outputParam.Value) // Helper method to infer SqlDbType
+        //            };
+        //            if (outputParam.Value != "int" && outputParam.Value != "string")
+        //            {
+        //                outputParamSql.Value = outputParam.Value;
+        //            }
+        //            sqlParameters.Add(outputParamSql);
+        //        }
+        //    }
+
+        //    var parameterNames = string.Join(", ", parameters.Keys);
+        //    var parameterNamesWithAt = "@" + string.Join(", @", parameters.Keys);
+        //    var sqlCommand = $"EXEC {storedProcedureName} {parameterNamesWithAt}";
+        //    if (outputParameters != null && outputParameters.Count > 0)
+        //    {
+        //        var outputParameterNames = string.Join(", ", outputParameters.Keys.Select(k => "@" + k));
+        //        sqlCommand += $", {outputParameterNames} OUTPUT";
+        //    }
+        //    var result = await _context.SqlQueryAsync<T>(sqlCommand, sqlParameters.ToArray(), cancellationToken);
+
+
+        //    var outputValues = new Dictionary<string, object>();
+        //    if (outputParameters != null)
+        //    {
+        //        foreach (var outputParam in outputParameters)
+        //        {
+        //            if (sqlParameters.FirstOrDefault(p => p.ParameterName == outputParam.Key).Direction == ParameterDirection.Output)
+        //            {
+        //                var key = outputParam.Key;
+        //                var outputParameter = sqlParameters.FirstOrDefault(p => p.ParameterName == outputParam.Key);
+        //                // Handle output values here, perhaps store them in the outputParameters dictionary.
+        //                outputValues.Add(outputParam.Key, outputParameter.Value);
+
+        //            }
+        //        }
+        //    }
+
+        //    return (result, outputValues);
+        //}
+        //public async Task<(int, Dictionary<string, object>)> ExecuteStoredProcedureAsync(string storedProcedureName, Dictionary<string, object> parameters, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default)
+        //{
+        //    var sqlParameters = new List<SqlParameter>();
+
+        //    foreach (var parameter in parameters)
+        //    {
+        //        var param = new SqlParameter("@" + parameter.Key, parameter.Value);
+        //        sqlParameters.Add(param);
+        //    }
+
+        //    if (outputParameters != null)
+        //    {
+        //        foreach (var outputParam in outputParameters)
+        //        {
+        //            var outputParamSql = new SqlParameter
+        //            {
+        //                ParameterName = "@" + outputParam.Key,
+        //                Direction = ParameterDirection.Output,
+        //                SqlDbType = GetSqlDbTypeFromOutPutValue(outputParam.Value) // Helper method to infer SqlDbType
+        //            };
+        //            if (outputParam.Value != "int" && outputParam.Value != "string")
+        //            {
+        //                outputParamSql.Value = outputParam.Value;
+        //                outputParamSql.Direction = ParameterDirection.InputOutput;
+        //            }
+        //            sqlParameters.Add(outputParamSql);
+        //        }
+        //    }
+
+        //    var parameterNames = string.Join(", ", parameters.Keys);
+        //    var parameterNamesWithAt = "@" + string.Join(", @", parameters.Keys);
+        //    var sqlQuery = $"EXEC {storedProcedureName} {parameterNamesWithAt}";
+
+        //    if (outputParameters != null && outputParameters.Count > 0)
+        //    {
+        //        //var outputParameterNames = string.Join(", ", outputParameters.Keys.Select(k => "@" + k));
+        //        //sqlQuery += $", {outputParameterNames} OUTPUT";
+        //        var outputParameterNames = string.Empty;
+
+        //        foreach (var key in outputParameters.Keys)
+        //        {
+        //            outputParameterNames += ", @" + key + " OUTPUT ";
+        //        }
+
+        //        sqlQuery += outputParameterNames; //$", {outputParameterNames.TrimStart(',', ' ')} OUTPUT";
+        //    }
+
+        //    var result = await _context.Database.ExecuteSqlRawAsync(sqlQuery, sqlParameters.ToArray(), cancellationToken);
+
+        //    var outputValues = new Dictionary<string, object>();
+        //    if (outputParameters != null)
+        //    {
+        //        foreach (var outputParam in outputParameters)
+        //        {
+        //            if (sqlParameters.FirstOrDefault(p => p.ParameterName == "@" + outputParam.Key).Direction == ParameterDirection.Output)
+        //            {
+        //                var key = outputParam.Key;
+        //                var outputParameter = sqlParameters.FirstOrDefault(p => p.ParameterName == "@" + outputParam.Key);
+        //                // Handle output values here, perhaps store them in the outputParameters dictionary.
+        //                outputValues.Add(outputParam.Key, outputParameter.Value);
+
+        //            }
+        //        }
+        //    }
+
+        //    return (result, outputValues);
+        //}
+        #endregion
+        #region example of using Ado
+        //    public async Task<(int, Dictionary<string, object>)> ExecuteStoredProcedureAsync(
+        //string storedProcedureName,
+        //Dictionary<string, object> parameters,
+        //Dictionary<string, object> outputParameters = null,
+        //CancellationToken cancellationToken = default)
+        //    {
+        //        using (var connection = _context.Database.GetDbConnection())
+        //        {
+        //            await connection.OpenAsync(cancellationToken);
+
+        //            using (var command = connection.CreateCommand())
+        //            {
+        //                command.CommandType = CommandType.StoredProcedure;
+        //                command.CommandText = storedProcedureName;
+
+        //                // Add input parameters
+        //                foreach (var param in parameters)
+        //                {
+        //                    var parameter = command.CreateParameter();
+        //                    parameter.ParameterName = $"@{param.Key}";
+        //                    parameter.Value = param.Value ?? DBNull.Value;
+        //                    command.Parameters.Add(parameter);
+        //                }
+
+        //                // Prepare output parameters
+        //                if (outputParameters != null)
+        //                {
+        //                    foreach (var outParam in outputParameters)
+        //                    {
+        //                        var parameter = command.CreateParameter();
+        //                        parameter.ParameterName = $"@{outParam.Key}";
+        //                        parameter.Direction = ParameterDirection.Output;
+        //                        parameter.Size = 4000; // Assuming a default size, adjust as necessary
+        //                        command.Parameters.Add(parameter);
+        //                    }
+        //                }
+
+        //                // Execute
+        //                var result = await command.ExecuteNonQueryAsync(cancellationToken);
+
+        //                // Capture output parameters
+        //                var outputValues = new Dictionary<string, object>();
+        //                if (outputParameters != null)
+        //                {
+        //                    foreach (SqlParameter param in command.Parameters)
+        //                    {
+        //                        if (param.Direction == ParameterDirection.Output)
+        //                        {
+        //                            outputValues.Add(param.ParameterName.TrimStart('@'), param.Value);
+        //                        }
+        //                    }
+        //                }
+
+        //                return (result, outputValues);
+        //            }
+        //        }
+        //    }
+        #endregion
     }
 }

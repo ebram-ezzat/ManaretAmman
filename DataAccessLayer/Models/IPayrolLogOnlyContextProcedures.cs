@@ -191,5 +191,6 @@ namespace DataAccessLayer.Models
         Task<int> SaveAttendanceByUserAsync(int? pprojectID, DateTime? pattendancedate, int? ptypeID, int? pemployeeid, string pmacip, string plangtitude, string platitude, int? plocationid, int? pcreatedby, CancellationToken cancellationToken = default);
         Task<(List<T>, Dictionary<string, object>)> ExecuteStoredProcedureAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default) where T : class;
         Task<(int, Dictionary<string, object>)> ExecuteStoredProcedureAsync(string storedProcedureName, Dictionary<string, object> parameters, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default);
+        Task<(List<object>, Dictionary<string, object>)> ExecuteStoredProcedureAsyncByADO(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default);
     }
 }
