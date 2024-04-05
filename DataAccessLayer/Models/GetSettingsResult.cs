@@ -59,7 +59,7 @@ namespace DataAccessLayer.Models
         public string ShortDatePattern { get; set; }
         public string DateFormatForGrid { get; set; }
         public int? EarlyLeaveDeductType { get; set; }
-        public int EarlyLeaveDeductPercentage { get; set; }
+        public decimal? EarlyLeaveDeductPercentage { get; set; }
         public int? Timezone { get; set; }
         public DateTime? ValidatePeriodTo { get; set; }
         public int? ApprovalProcess { get; set; }
@@ -126,6 +126,6 @@ namespace DataAccessLayer.Models
         public int? IsCompletedRamadanSetting { get; set; }
         public int? EnableSecondPeriod { get; set; }
         public string AttachementPath { get; set; }
-        public string IsviewTimeDr { get; set; }
+        public int? IsviewTimeDr { get; set; }
     }
 }
