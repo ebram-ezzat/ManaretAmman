@@ -34,12 +34,12 @@ namespace ManaretAmman.Controllers
             var result = await _lookupsService.GetFileBase64ByFtpPath(FilePath);
             return ApiResponse<object>.Success("data has been retrieved succussfully", result);
         }
-        [HttpGet("DownloadFileAsIFormFile")]
-        public async Task<IApiResponse> DownloadFileAsIFormFile(string FilePath)
-        {
-            var result = await _lookupsService.GetFileAsFormFileByFtpPath(FilePath);
-            return ApiResponse<IFormFile>.Success("data has been retrieved succussfully", result);
-        }
+        //[HttpGet("DownloadFileAsIFormFile")]
+        //public async Task<IApiResponse> DownloadFileAsIFormFile(string FilePath)
+        //{
+        //    var result = await _lookupsService.GetFileAsFormFileByFtpPath(FilePath);
+        //    return ApiResponse<IFormFile>.Success("data has been retrieved succussfully", result);
+        //}
 
         /// <summary>
         /// you should send {Accept-Language} Via header request "ar" For Arabic and "en" For English ,
