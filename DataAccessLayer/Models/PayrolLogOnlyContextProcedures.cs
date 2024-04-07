@@ -350,29 +350,34 @@ namespace DataAccessLayer.Models
             #region Prepare OutPut parameters 
 
             if (outputParameters != null && outputParameters.Count > 0)
-            {              
+            {
                 // Construct the output parameters string
+                //var outputParameterValuesWithAt = string.Join(", ", outputParameters
+                //    .Select(kvp => $"@{kvp.Key}={(kvp.Value==null|| kvp.Value == "string" || kvp.Value=="int" ? $"@{kvp.Key} OUTPUT" : kvp.Value)}")
+                //    );
+
                 var outputParameterValuesWithAt = string.Join(", ", outputParameters
-                    .Select(kvp => $"@{kvp.Key}={(kvp.Value==null|| kvp.Value == "string" || kvp.Value=="int" ? $"@{kvp.Key} OUTPUT" : kvp.Value)}")
-                    );
+                    .Select(kvp => $"@{kvp.Key}={(kvp.Value == null || kvp.Value == "string" || kvp.Value == "int" ? $"@{kvp.Key} OUTPUT" : $"@{kvp.Key}")}")
+                   );
 
                 // Append the output parameters to the main parameters string
                 parameterValuesWithAt += ", " + outputParameterValuesWithAt;
 
                 foreach (var outputParam in outputParameters)
                 {
-                    if (!outputParam.Value.Equals("int") && !outputParam.Value.Equals("string"))
-                    {
-                        //outputParamSql.Value = outputParam.Value;
-                        //outputParamSql.Direction = ParameterDirection.InputOutput;
-                        continue;// break the foreach if the output has a value
-                    }
                     var outputParamSql = new SqlParameter
                     {
                         ParameterName = "@" + outputParam.Key,
                         Direction = ParameterDirection.Output,
                         SqlDbType = GetSqlDbTypeFromOutPutValue(outputParam.Value) // Helper method to infer SqlDbType
                     };
+                    if (!outputParam.Value.Equals("int") && !outputParam.Value.Equals("string"))
+                    {
+                        outputParamSql.Value = outputParam.Value;
+                        outputParamSql.Direction = ParameterDirection.InputOutput;
+                        //continue;// break the foreach if the output has a value
+                    }
+                   
                     sqlParameters.Add(outputParamSql);
                 }
             }
