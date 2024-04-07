@@ -289,7 +289,19 @@ namespace DataAccessLayer.Models
                         var item = new T();
                         foreach (var property in properties)
                         {
-                            var ordinal = reader.GetOrdinal(property.Name);
+                            var columnName = property.Name;
+                            var ordinal = -1;
+                            try
+                            {
+                                ordinal = reader.GetOrdinal(columnName);
+                            }
+                            catch (IndexOutOfRangeException ex)
+                            {
+                                // Handle missing column gracefully
+                                // For example: log the issue, provide a default value, or skip the property
+                                continue; // Skip to the next property
+                            }
+
                             if (!reader.IsDBNull(ordinal))
                             {
                                 var value = reader.GetValue(ordinal);
@@ -12995,70 +13007,70 @@ namespace DataAccessLayer.Models
 
 
         #region old version
-        //public async Task<(List<T>, Dictionary<string, object>)> ExecuteStoredProcedureAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default) where T : class
-        //{
-        //    List<SqlParameter> sqlParameters = new List<SqlParameter>();
+        public async Task<(List<T>, Dictionary<string, object>)> ExecuteStoredProcedureOldAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default) where T : class
+        {
+            List<SqlParameter> sqlParameters = new List<SqlParameter>();
 
-        //    if (parameters != null)
-        //    {
-        //        foreach (var kvp in parameters)
-        //        {
-        //            var parameter = new SqlParameter(kvp.Key, kvp.Value ?? DBNull.Value);
-        //            if (kvp.Value != null)
-        //            {
-        //                parameter.SqlDbType = GetSqlDbTypeFromValue(kvp.Value);
-        //            }
-        //            sqlParameters.Add(parameter);
-        //        }
-        //    }
+            if (parameters != null)
+            {
+                foreach (var kvp in parameters)
+                {
+                    var parameter = new SqlParameter(kvp.Key, kvp.Value ?? DBNull.Value);
+                    if (kvp.Value != null)
+                    {
+                        parameter.SqlDbType = GetSqlDbTypeFromValue(kvp.Value);
+                    }
+                    sqlParameters.Add(parameter);
+                }
+            }
 
-        //    if (outputParameters != null)
-        //    {
-        //        foreach (var outputParam in outputParameters)
-        //        {
-        //            var outputParamSql = new SqlParameter
-        //            {
-        //                ParameterName = outputParam.Key,
-        //                Direction = ParameterDirection.Output,
-        //                SqlDbType = GetSqlDbTypeFromOutPutValue(outputParam.Value) // Helper method to infer SqlDbType
-        //            };
-        //            if (outputParam.Value != "int" && outputParam.Value != "string")
-        //            {
-        //                outputParamSql.Value = outputParam.Value;
-        //            }
-        //            sqlParameters.Add(outputParamSql);
-        //        }
-        //    }
+            if (outputParameters != null)
+            {
+                foreach (var outputParam in outputParameters)
+                {
+                    var outputParamSql = new SqlParameter
+                    {
+                        ParameterName = outputParam.Key,
+                        Direction = ParameterDirection.Output,
+                        SqlDbType = GetSqlDbTypeFromOutPutValue(outputParam.Value) // Helper method to infer SqlDbType
+                    };
+                    if (outputParam.Value != "int" && outputParam.Value != "string")
+                    {
+                        outputParamSql.Value = outputParam.Value;
+                    }
+                    sqlParameters.Add(outputParamSql);
+                }
+            }
 
-        //    var parameterNames = string.Join(", ", parameters.Keys);
-        //    var parameterNamesWithAt = "@" + string.Join(", @", parameters.Keys);
-        //    var sqlCommand = $"EXEC {storedProcedureName} {parameterNamesWithAt}";
-        //    if (outputParameters != null && outputParameters.Count > 0)
-        //    {
-        //        var outputParameterNames = string.Join(", ", outputParameters.Keys.Select(k => "@" + k));
-        //        sqlCommand += $", {outputParameterNames} OUTPUT";
-        //    }
-        //    var result = await _context.SqlQueryAsync<T>(sqlCommand, sqlParameters.ToArray(), cancellationToken);
+            var parameterNames = string.Join(", ", parameters.Keys);
+            var parameterNamesWithAt = "@" + string.Join(", @", parameters.Keys);
+            var sqlCommand = $"EXEC {storedProcedureName} {parameterNamesWithAt}";
+            if (outputParameters != null && outputParameters.Count > 0)
+            {
+                var outputParameterNames = string.Join(", ", outputParameters.Keys.Select(k => "@" + k));
+                sqlCommand += $", {outputParameterNames} OUTPUT";
+            }
+            var result = await _context.SqlQueryAsync<T>(sqlCommand, sqlParameters.ToArray(), cancellationToken);
 
 
-        //    var outputValues = new Dictionary<string, object>();
-        //    if (outputParameters != null)
-        //    {
-        //        foreach (var outputParam in outputParameters)
-        //        {
-        //            if (sqlParameters.FirstOrDefault(p => p.ParameterName == outputParam.Key).Direction == ParameterDirection.Output)
-        //            {
-        //                var key = outputParam.Key;
-        //                var outputParameter = sqlParameters.FirstOrDefault(p => p.ParameterName == outputParam.Key);
-        //                // Handle output values here, perhaps store them in the outputParameters dictionary.
-        //                outputValues.Add(outputParam.Key, outputParameter.Value);
+            var outputValues = new Dictionary<string, object>();
+            if (outputParameters != null)
+            {
+                foreach (var outputParam in outputParameters)
+                {
+                    if (sqlParameters.FirstOrDefault(p => p.ParameterName == outputParam.Key).Direction == ParameterDirection.Output)
+                    {
+                        var key = outputParam.Key;
+                        var outputParameter = sqlParameters.FirstOrDefault(p => p.ParameterName == outputParam.Key);
+                        // Handle output values here, perhaps store them in the outputParameters dictionary.
+                        outputValues.Add(outputParam.Key, outputParameter.Value);
 
-        //            }
-        //        }
-        //    }
+                    }
+                }
+            }
 
-        //    return (result, outputValues);
-        //}
+            return (result, outputValues);
+        }
         //public async Task<(int, Dictionary<string, object>)> ExecuteStoredProcedureAsync(string storedProcedureName, Dictionary<string, object> parameters, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default)
         //{
         //    var sqlParameters = new List<SqlParameter>();
@@ -13186,8 +13198,5 @@ namespace DataAccessLayer.Models
         //        }
         //    }
         #endregion
-
-       
-
     }
 }

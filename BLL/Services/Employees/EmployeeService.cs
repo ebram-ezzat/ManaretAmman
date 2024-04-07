@@ -61,7 +61,7 @@ internal class EmployeeService : IEmployeeService
 
                         };
 
-        var employees = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<Employee>("dbo.GetEmployees", parameters, null);
+        var employees = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureOldAsync<Employee>("dbo.GetEmployees", parameters, null);
         var result = _mapper.Map<List<EmployeeLookup>>(employees.Item1);
 
         return result;

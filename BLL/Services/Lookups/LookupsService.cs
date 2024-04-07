@@ -184,7 +184,7 @@ namespace BusinessLogicLayer.Services.Lookups
         {
             var inputParams = new Dictionary<string, object>
             {
-                {"pTableName",deleteLookup.ID },
+                {"pID",deleteLookup.ID },
                 {"pProjectID",deleteLookup.ProjectID }
             };
             var outParams = new Dictionary<string, object>

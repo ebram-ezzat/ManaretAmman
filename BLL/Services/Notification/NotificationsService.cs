@@ -57,7 +57,7 @@ namespace BusinessLogicLayer.Services.Notification
                 { "pTypeID", filter.FilterCriteria.TypeID },
                 { "pUserID", _userId },
                 { "pUserTypeID", null },
-                { "pIsDissmissed", filter.FilterCriteria.IsDissmissed },
+                { "pIsDismissed", filter.FilterCriteria.IsDissmissed },
                 { "pPageNo", filter.FilterCriteria.PageNo },
                 { "pPageSize", filter.FilterCriteria.PageSize },
                 { "pPageTypeID", 1 },
