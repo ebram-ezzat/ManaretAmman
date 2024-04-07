@@ -327,15 +327,28 @@ namespace DataAccessLayer.Models
         
         public async Task<(int, Dictionary<string, object>)> ExecuteStoredProcedureAsync(string storedProcedureName, Dictionary<string, object> parameters, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default)
         {
-           
+            List<SqlParameter> sqlParameters = new List<SqlParameter>();
+            foreach (var kvp in parameters)
+            {
+                var parameter = new SqlParameter($"@{kvp.Key}", kvp.Value ?? DBNull.Value);
+                if (kvp.Value != null)
+                {
+                    parameter.SqlDbType = GetSqlDbTypeFromValue(kvp.Value);
+                }
+                sqlParameters.Add(parameter);
+            }
             // Construct the SQL command string with parameters and their values directly embedded
+            //var parameterValuesWithAt = string.Join(", ", parameters
+            //    .Select(kvp => $"@{kvp.Key}={(kvp.Value == null || kvp.Value.Equals(string.Empty) || kvp.Value.Equals(DBNull.Value) ? "NULL" : kvp.Value.ToString())}")    
+
+            //    );
             var parameterValuesWithAt = string.Join(", ", parameters
-                .Select(kvp => $"@{kvp.Key}={(kvp.Value == null || kvp.Value.Equals(string.Empty) || kvp.Value.Equals(DBNull.Value) ? "NULL" : kvp.Value.ToString())}")    
-                
-                );
+              .Select(kvp => $"@{kvp.Key}=@{kvp.Key}")
+
+              );
 
             #region Prepare OutPut parameters 
-            List<SqlParameter> sqlOutDeclaringParameters= new List<SqlParameter>();
+
             if (outputParameters != null && outputParameters.Count > 0)
             {              
                 // Construct the output parameters string
@@ -360,20 +373,20 @@ namespace DataAccessLayer.Models
                         Direction = ParameterDirection.Output,
                         SqlDbType = GetSqlDbTypeFromOutPutValue(outputParam.Value) // Helper method to infer SqlDbType
                     };
-                    sqlOutDeclaringParameters.Add(outputParamSql);
+                    sqlParameters.Add(outputParamSql);
                 }
             }
             #endregion
 
             var sqlQuery = $"EXEC {storedProcedureName} {parameterValuesWithAt}";
-            var result = await _context.Database.ExecuteSqlRawAsync(sqlQuery, sqlOutDeclaringParameters.ToArray(), cancellationToken);
+            var result = await _context.Database.ExecuteSqlRawAsync(sqlQuery, sqlParameters.ToArray(), cancellationToken);
 
             var outputValues = new Dictionary<string, object>();
             if (outputParameters != null)
             {
                 foreach (var outputParam in outputParameters)
                 {                   
-                    var outputParameter = sqlOutDeclaringParameters.FirstOrDefault(p => p.ParameterName == "@" + outputParam.Key);
+                    var outputParameter = sqlParameters.FirstOrDefault(p => p.ParameterName == "@" + outputParam.Key);
                     if (outputParameter != null && outputParameter.Direction == ParameterDirection.Output)
                     {
                         outputValues.Add(outputParam.Key, outputParameter.Value);
@@ -478,6 +491,8 @@ namespace DataAccessLayer.Models
             // This function attempts to infer the SqlDbType based on the value's type
             if (value is int) return SqlDbType.Int;
             if (value is string) return SqlDbType.VarChar;
+            if (value is DateTime) return SqlDbType.DateTime;
+            if (value is DateTimeOffset) return SqlDbType.DateTimeOffset;
             // Add more type mappings as needed
 
             // Default to SqlDbType.NVarChar for unknown types
