@@ -192,6 +192,6 @@ namespace DataAccessLayer.Models
         Task<(List<T>, Dictionary<string, object>)> ExecuteStoredProcedureAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default) where T : class;
        // Task<(List<T>, Dictionary<string, object>)> ExecuteStoredProcedureOldAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default) where T : class;
         Task<(int, Dictionary<string, object>)> ExecuteStoredProcedureAsync(string storedProcedureName, Dictionary<string, object> parameters, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default);
-        Task<(List<object>, Dictionary<string, object>)> ExecuteReportStoredProcedureAsyncByADO(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default);
+        Task<(DataTable, Dictionary<string, object>)> ExecuteReportStoredProcedureAsyncByADO(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default);
     }
 }
