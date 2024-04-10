@@ -13,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BusinessLogicLayer.Services.Reports
 {
-    public class ReportService:IReportService
+    public class ReportService : IReportService
     {
         private readonly IMapper _mapper;
         IProjectProvider _projectProvider;
@@ -36,7 +36,7 @@ namespace BusinessLogicLayer.Services.Reports
             getEmployeeSalaryReportRequest.ProjectID = _projectProvider.GetProjectId();
             getEmployeeSalaryReportRequest.loginuserid = _projectProvider.UserId();
             var parameters = PublicHelper.GetPropertiesWithPrefix<GetEmployeeSalaryReportRequest>(getEmployeeSalaryReportRequest, "p");
-            
+
             var (getEmployeeSalaryReportResponse, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeSalaryReportResponse>("[dbo].[GetEmployeeSalary]", parameters, null);
             return getEmployeeSalaryReportResponse.FirstOrDefault()?.EmailContent;
         }
@@ -46,7 +46,7 @@ namespace BusinessLogicLayer.Services.Reports
             var inputParams = new Dictionary<string, object>()
             {
                 {"pEmployeeID",getEmployeeAttendanceDailyRequest.EmployeeID??Convert.DBNull },
-                {"pFromDate",getEmployeeAttendanceDailyRequest.FromDate==null?Convert.DBNull:getEmployeeAttendanceDailyRequest.FromDate.DateToIntValue() },               
+                {"pFromDate",getEmployeeAttendanceDailyRequest.FromDate==null?Convert.DBNull:getEmployeeAttendanceDailyRequest.FromDate.DateToIntValue() },
                 {"pToDate",getEmployeeAttendanceDailyRequest.ToDate==null
                 ?Convert.DBNull:getEmployeeAttendanceDailyRequest.ToDate.DateToIntValue()},
                 {"pProjectID",_projectProvider.GetProjectId()},
@@ -60,6 +60,9 @@ namespace BusinessLogicLayer.Services.Reports
             //    .ExecuteStoredProcedureAsync<GetEmployeeAttendanceDailyResponse>("dbo.GetEmployeeAttendanceDaily", inputParams, null);
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
                .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeeAttendanceDaily", inputParams, null);
+
+            if (result == null || result.Rows.Count == 0)
+                return null;
 
             string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\DailyAttendanceReportdetailsdefault.rdlc");
             return PublicHelper.BuildRdlcReportWithDataSourc(result, reportPath, "DsMain");
