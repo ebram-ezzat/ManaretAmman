@@ -11,6 +11,7 @@ namespace DataAccessLayer.DTO.Reports
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
         public int? EmployeeID { get; set; }
+        public int? DepartmentID { get; set; }
     }
     public class GetEmployeeAttendanceDailyResponse
     {

@@ -238,4 +238,9 @@ namespace BusinessLogicLayer.Common
         }
 
     }
+    public enum EnumLangId
+    {
+        Ar=1,
+        En=2
+    }
 }

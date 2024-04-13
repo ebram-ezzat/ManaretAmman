@@ -53,19 +53,66 @@ namespace BusinessLogicLayer.Services.Reports
                 {"pFlag",1},
                 {"pLanguageID",_projectProvider.LangId()},
                 {"pCreatedBy",Convert.DBNull },
-                {"pDepartmentID" ,Convert.DBNull}
+                {"pDepartmentID" ,getEmployeeAttendanceDailyRequest.DepartmentID??Convert.DBNull}
             };
 
             //var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
             //    .ExecuteStoredProcedureAsync<GetEmployeeAttendanceDailyResponse>("dbo.GetEmployeeAttendanceDaily", inputParams, null);
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
                .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeeAttendanceDaily", inputParams, null);
-
-            if (result == null || result.Rows.Count == 0)
+          
+            //string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\Ar\\DailyAttendanceReportdetailsdefault.rdlc");
+            string reportPath = GetReportPath("Reports\\Ar\\DailyAttendanceReportdetailsdefault.rdlc", "Reports\\En\\DailyAttendanceReportdetailsdefault.rdlc");
+            if (result == null || result.Rows.Count == 0 || reportPath==null)
                 return null;
-
-            string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\DailyAttendanceReportdetailsdefault.rdlc");
             return PublicHelper.BuildRdlcReportWithDataSourc(result, reportPath, "DsMain");
         }
+
+       
+        //private string GetReportPathFromAppSetting(string reportConfigName,string DefaultFullPath=null)
+        //{
+        //    var basePath = _hostingEnvironment.ContentRootPath; 
+        //    var languageId = _projectProvider.LangId();
+        //    var languageName = Enum.GetName(typeof(EnumLangId), languageId);
+
+        //    if (languageName == null)
+        //    {
+        //        throw new ArgumentException("Invalid language ID");
+        //    }
+
+        //    var reportKey = $"ReportPaths:{languageName}:{reportConfigName}";
+        //    var reportPath = _configuration.GetValue<string>(reportKey);
+
+        //    if (!string.IsNullOrEmpty(reportPath))
+        //    {
+        //        return basePath + Path.Combine(reportPath);
+        //        //return Path.Combine(basePath, reportPath.Replace("/", Path.DirectorySeparatorChar.ToString()));
+        //    }
+        //    return string.IsNullOrEmpty(DefaultFullPath) ? null : basePath + Path.Combine(DefaultFullPath);
+
+        //}
+        private string GetReportPath(string reportArFullPath = null, string reportEnFullPath = null, string defaultFullPath = null)
+        {
+            var basePath = _hostingEnvironment.ContentRootPath;
+            var languageId = _projectProvider.LangId();
+           
+            // Select the report path based on the language
+            string selectedPath = languageId switch
+            {
+                (int)EnumLangId.En => reportEnFullPath,
+                (int)EnumLangId.Ar => reportArFullPath,
+                _=>null
+            };
+
+            // Return the combined path, using the default path if no specific language path is provided
+            if (!string.IsNullOrEmpty(selectedPath))
+            {
+                //return basePath + Path.Combine(selectedPath);
+                 return Path.Combine(basePath, selectedPath.Replace("/", Path.DirectorySeparatorChar.ToString()));
+            }
+            return !string.IsNullOrEmpty(defaultFullPath) ? Path.Combine(basePath, defaultFullPath.Replace("/", Path.DirectorySeparatorChar.ToString())) : null;
+        }
+
+
     }
 }
