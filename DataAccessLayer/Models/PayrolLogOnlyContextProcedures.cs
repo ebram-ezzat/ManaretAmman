@@ -13224,6 +13224,81 @@ namespace DataAccessLayer.Models
         //            }
         //        }
         //    }
+
+
+        //public async Task<(List<object>, Dictionary<string, object>)> ExecuteReportStoredProcedureAsyncByADO(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default)
+        //{
+        //    List<object> result = new List<object>();
+        //    var outputValues = new Dictionary<string, object>();
+
+        //    var connection = _context.Database.GetDbConnection();
+
+        //    using (var command = connection.CreateCommand())
+        //    {
+        //        command.CommandText = storedProcedureName;
+        //        command.CommandType = CommandType.StoredProcedure;
+
+        //        // Handle input parameters
+        //        if (parameters != null)
+        //        {
+        //            foreach (var param in parameters)
+        //            {
+        //                var dbParameter = command.CreateParameter();
+        //                dbParameter.ParameterName = param.Key;
+        //                dbParameter.Value = param.Value ?? DBNull.Value;
+        //                command.Parameters.Add(dbParameter);
+        //            }
+        //        }
+
+        //        // Prepare output parameters
+        //        if (outputParameters != null)
+        //        {
+        //            foreach (var outputParam in outputParameters)
+        //            {
+        //                var dbParameter = command.CreateParameter();
+        //                dbParameter.ParameterName = outputParam.Key;
+        //                dbParameter.Direction = ParameterDirection.Output;
+
+
+        //                // Assuming a simplified scenario for setting DbType
+        //                dbParameter.DbType = outputParam.Value switch
+        //                {
+        //                    "int" => DbType.Int32,
+        //                    "string" => DbType.String,
+        //                    _ => dbParameter.DbType
+        //                };
+
+        //                command.Parameters.Add(dbParameter);
+        //            }
+        //        }
+
+        //        await connection.OpenAsync(cancellationToken);
+
+        //        using (var reader = await command.ExecuteReaderAsync(cancellationToken))
+        //        {
+        //            while (await reader.ReadAsync(cancellationToken))
+        //            {
+        //                var row = new List<object>();
+        //                for (int i = 0; i < reader.FieldCount; i++)
+        //                {
+        //                    row.Add(reader.GetValue(i));
+        //                }
+        //                result.Add(row);
+        //            }
+        //        }
+
+        //        // Extract output parameter values after command execution
+        //        foreach (DbParameter param in command.Parameters)
+        //        {
+        //            if (param.Direction == ParameterDirection.Output)
+        //            {
+        //                outputValues[param.ParameterName] = param.Value;
+        //            }
+        //        }
+        //    }
+
+        //    return (result, outputValues);
+        //}
         #endregion
     }
 }
