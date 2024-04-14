@@ -252,96 +252,7 @@ namespace DataAccessLayer.Models
 
             return (result, outputValues);
         }
-        //public async Task<(List<T>, Dictionary<string, object>)> ExecuteStoredProcedureAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default) where T : new()
-        //{
-        //    List<T> result = new List<T>();
-        //    var outputValues = new Dictionary<string, object>();
-
-        //    var connection = _context.Database.GetDbConnection();
-
-        //    using (var command = connection.CreateCommand())
-        //    {
-        //        command.CommandText = storedProcedureName;
-        //        command.CommandType = CommandType.StoredProcedure;
-
-        //        // Handle input parameters
-        //        if (parameters != null)
-        //        {
-        //            foreach (var param in parameters)
-        //            {
-        //                var dbParameter = command.CreateParameter();
-        //                dbParameter.ParameterName = param.Key;
-        //                dbParameter.Value = param.Value ?? DBNull.Value;
-        //                command.Parameters.Add(dbParameter);
-        //            }
-        //        }
-
-        //        // Prepare output parameters
-        //        if (outputParameters != null)
-        //        {
-        //            foreach (var outputParam in outputParameters)
-        //            {
-        //                var dbParameter = command.CreateParameter();
-        //                dbParameter.ParameterName = outputParam.Key;
-        //                dbParameter.Direction = ParameterDirection.Output;
-
-        //                // Assuming a simplified scenario for setting DbType
-        //                dbParameter.DbType = outputParam.Value switch
-        //                {
-        //                    "int" => DbType.Int32,
-        //                    "string" => DbType.String,
-        //                    _ => dbParameter.DbType
-        //                };
-
-        //                command.Parameters.Add(dbParameter);
-        //            }
-        //        }
-
-        //        await connection.OpenAsync(cancellationToken);
-
-        //        using (var reader = await command.ExecuteReaderAsync(cancellationToken))
-        //        {
-        //            var properties = typeof(T).GetProperties().Where(p => p.CanWrite).ToList();
-        //            while (await reader.ReadAsync(cancellationToken))
-        //            {
-        //                var item = new T();
-        //                foreach (var property in properties)
-        //                {
-        //                    var columnName = property.Name;
-        //                    var ordinal = -1;
-        //                    try
-        //                    {
-        //                        ordinal = reader.GetOrdinal(columnName);
-        //                    }
-        //                    catch (IndexOutOfRangeException ex)
-        //                    {
-        //                        // Handle missing column gracefully
-        //                        // For example: log the issue, provide a default value, or skip the property
-        //                        continue; // Skip to the next property
-        //                    }
-
-        //                    if (!reader.IsDBNull(ordinal))
-        //                    {
-        //                        var value = reader.GetValue(ordinal);
-        //                        property.SetValue(item, ChangeType(value, property.PropertyType));
-        //                    }
-        //                }
-        //                result.Add(item);
-        //            }
-        //        }
-
-        //        // Extract output parameter values after command execution
-        //        foreach (DbParameter param in command.Parameters)
-        //        {
-        //            if (param.Direction == ParameterDirection.Output)
-        //            {
-        //                outputValues[param.ParameterName] = param.Value;
-        //            }
-        //        }
-        //    }
-
-        //    return (result, outputValues);
-        //}
+        
 
         public async Task<(int, Dictionary<string, object>)> ExecuteStoredProcedureAsync(string storedProcedureName, Dictionary<string, object> parameters, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default)
         {
@@ -13159,6 +13070,97 @@ namespace DataAccessLayer.Models
         //                // Handle output values here, perhaps store them in the outputParameters dictionary.
         //                outputValues.Add(outputParam.Key, outputParameter.Value);
 
+        //            }
+        //        }
+        //    }
+
+        //    return (result, outputValues);
+        //}
+
+        //public async Task<(List<T>, Dictionary<string, object>)> ExecuteStoredProcedureAsync<T>(string storedProcedureName, Dictionary<string, object> parameters = null, Dictionary<string, object> outputParameters = null, CancellationToken cancellationToken = default) where T : new()
+        //{
+        //    List<T> result = new List<T>();
+        //    var outputValues = new Dictionary<string, object>();
+
+        //    var connection = _context.Database.GetDbConnection();
+
+        //    using (var command = connection.CreateCommand())
+        //    {
+        //        command.CommandText = storedProcedureName;
+        //        command.CommandType = CommandType.StoredProcedure;
+
+        //        // Handle input parameters
+        //        if (parameters != null)
+        //        {
+        //            foreach (var param in parameters)
+        //            {
+        //                var dbParameter = command.CreateParameter();
+        //                dbParameter.ParameterName = param.Key;
+        //                dbParameter.Value = param.Value ?? DBNull.Value;
+        //                command.Parameters.Add(dbParameter);
+        //            }
+        //        }
+
+        //        // Prepare output parameters
+        //        if (outputParameters != null)
+        //        {
+        //            foreach (var outputParam in outputParameters)
+        //            {
+        //                var dbParameter = command.CreateParameter();
+        //                dbParameter.ParameterName = outputParam.Key;
+        //                dbParameter.Direction = ParameterDirection.Output;
+
+        //                // Assuming a simplified scenario for setting DbType
+        //                dbParameter.DbType = outputParam.Value switch
+        //                {
+        //                    "int" => DbType.Int32,
+        //                    "string" => DbType.String,
+        //                    _ => dbParameter.DbType
+        //                };
+
+        //                command.Parameters.Add(dbParameter);
+        //            }
+        //        }
+
+        //        await connection.OpenAsync(cancellationToken);
+
+        //        using (var reader = await command.ExecuteReaderAsync(cancellationToken))
+        //        {
+        //            var properties = typeof(T).GetProperties().Where(p => p.CanWrite).ToList();
+        //            while (await reader.ReadAsync(cancellationToken))
+        //            {
+        //                var item = new T();
+        //                foreach (var property in properties)
+        //                {
+        //                    var columnName = property.Name;
+        //                    var ordinal = -1;
+        //                    try
+        //                    {
+        //                        ordinal = reader.GetOrdinal(columnName);
+        //                    }
+        //                    catch (IndexOutOfRangeException ex)
+        //                    {
+        //                        // Handle missing column gracefully
+        //                        // For example: log the issue, provide a default value, or skip the property
+        //                        continue; // Skip to the next property
+        //                    }
+
+        //                    if (!reader.IsDBNull(ordinal))
+        //                    {
+        //                        var value = reader.GetValue(ordinal);
+        //                        property.SetValue(item, ChangeType(value, property.PropertyType));
+        //                    }
+        //                }
+        //                result.Add(item);
+        //            }
+        //        }
+
+        //        // Extract output parameter values after command execution
+        //        foreach (DbParameter param in command.Parameters)
+        //        {
+        //            if (param.Direction == ParameterDirection.Output)
+        //            {
+        //                outputValues[param.ParameterName] = param.Value;
         //            }
         //        }
         //    }
