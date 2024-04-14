@@ -107,7 +107,7 @@ namespace ManaretAmman.Controllers.Employees
             {
                 throw new Exception("Error on Save Operation");
             }
-            return ApiResponse.Success("data has been retrieved succussfully");
+            return ApiResponse.Success("data has been saved succussfully");
         }
         #endregion
     }
