@@ -2,6 +2,7 @@
 using AutoMapper.Execution;
 using BusinessLogicLayer.Common;
 using BusinessLogicLayer.Exceptions;
+using BusinessLogicLayer.Extensions;
 using BusinessLogicLayer.Services.Auth;
 using BusinessLogicLayer.Services.Lookups;
 using BusinessLogicLayer.Services.ProjectProvider;
@@ -274,6 +275,33 @@ internal class EmployeeService : IEmployeeService
         return result;
        
     }
+    #region شاشة خدمات شوون الموظفين
+    public async Task<int> SaveEmployeeAffairsService(SaveEmployeeAffairsServices saveEmployeeAffairsService)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeHRServiceID", saveEmployeeAffairsService.EmployeeHRServiceID??Convert.DBNull },
+                { "pEmployeeID", saveEmployeeAffairsService.EmployeeID??Convert.DBNull },
+                { "pHRServiceID", saveEmployeeAffairsService.HRServiceID??Convert.DBNull },
+                { "pMonthID", saveEmployeeAffairsService.MonthID??Convert.DBNull },
+                { "pHRServiceDate", saveEmployeeAffairsService.HRServiceDate==null?Convert.DBNull:saveEmployeeAffairsService.HRServiceDate.DateToIntValue() },
+                { "pReasonDesc", saveEmployeeAffairsService.Notes??Convert.DBNull },                
+                { "pStatusID", saveEmployeeAffairsService.StatusID?? 1 },
+                { "pYearID", saveEmployeeAffairsService.YearID??Convert.DBNull },
+                { "pBankID", saveEmployeeAffairsService.BankID ??Convert.DBNull},
+                { "pBranchID", saveEmployeeAffairsService.BranchID??Convert.DBNull },
+                { "pServiceText", saveEmployeeAffairsService.Notes??Convert.DBNull },
+                { "pAttachmentDesc", saveEmployeeAffairsService.AttachmentDesc??Convert.DBNull },      
+                { "pCreatedBy", _projectProvider.UserId() } 
+            };
 
-   
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {            
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeHRService", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+    #endregion
 }

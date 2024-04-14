@@ -92,6 +92,23 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<List<EmplyeeProfileVModel>>.Success("data has been retrieved succussfully", result);
         }
-
+        #region شاشة خدمات شوون الموظفين
+        /// <summary>
+        ///{StatusID} Should be sent by 1 
+        /// </summary>
+        /// <param name="saveEmployeeAffairsService"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("SaveEmployeeAffairsService")]
+        public async Task<IApiResponse> SaveEmployeeAffairsService(SaveEmployeeAffairsServices saveEmployeeAffairsService)
+        {
+           var result= await _employeeService.SaveEmployeeAffairsService(saveEmployeeAffairsService);
+            if(result ==-1)//error
+            {
+                throw new Exception("Error on Save Operation");
+            }
+            return ApiResponse.Success("data has been retrieved succussfully");
+        }
+        #endregion
     }
 }

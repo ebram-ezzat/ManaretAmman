@@ -13,5 +13,5 @@ public interface IEmployeeService
     Task<int> SaveEmployeePaperProc(SaveEmployeePaper saveEmployeePaper);
     Task<List<EmplyeeProfileVModel>> EmployeeProfile(int EmployeeId);
 
-
+    Task<int> SaveEmployeeAffairsService (SaveEmployeeAffairsServices saveEmployeeAffairsService);
 }
