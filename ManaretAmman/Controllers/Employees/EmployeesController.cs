@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer.Services.Employees;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.Models;
+using ManaretAmman.MiddleWare;
 using ManaretAmman.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Policy;
@@ -102,13 +103,45 @@ namespace ManaretAmman.Controllers.Employees
         [HttpPost("SaveEmployeeAffairsService")]
         public async Task<IApiResponse> SaveEmployeeAffairsService(SaveEmployeeAffairsServices saveEmployeeAffairsService)
         {
-           var result= await _employeeService.SaveEmployeeAffairsService(saveEmployeeAffairsService);
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result= await _employeeService.SaveEmployeeAffairsService(saveEmployeeAffairsService);
             if(result ==-1)//error
             {
                 throw new Exception("Error on Save Operation");
             }
             return ApiResponse.Success("data has been saved succussfully");
         }
+        /// <summary>
+        /// you can send {Accept-Language} Via header request to get the correct description "ar" For Arabic and "en" For English
+        /// </summary>       
+        /// <param name="getEmployeeAffairsServiceRequest"></param>
+        /// <returns></returns>
+        [AddLanguageHeaderAttribute]
+        [HttpGet("GetEmployeeAffairsService")]
+        public async Task<IApiResponse> GetEmployeeAffairsService([FromQuery]GetEmployeeAffairsServiceRequest getEmployeeAffairsServiceRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeAffairsService(getEmployeeAffairsServiceRequest);
+           
+            return ApiResponse<List<GetEmployeeAffairsServiceResponse>>.Success("data has been returned succussfully", result);
+        }
+
         #endregion
     }
 }

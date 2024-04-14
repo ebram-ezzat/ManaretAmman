@@ -42,7 +42,7 @@ namespace ManaretAmman.MiddleWare
                 //stackTrace = apiException.StackTrace;
             }
 
-            IApiResponse response = ApiResponse.Failure(message, new[] { exception.Message ,exception.StackTrace?.ToString() });
+            IApiResponse response = ApiResponse.Failure(message, new[] { exception.Message ,exception.StackTrace?.ToString() , exception.InnerException?.Message});
 
             string responseAsString = JsonSerializer.Serialize(response);
 

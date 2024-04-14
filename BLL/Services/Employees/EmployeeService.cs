@@ -303,5 +303,23 @@ internal class EmployeeService : IEmployeeService
         int pErrorValue = (int)outputValues["pError"];
         return pErrorValue;
     }
+
+    public async Task<List<GetEmployeeAffairsServiceResponse>> GetEmployeeAffairsService(GetEmployeeAffairsServiceRequest getEmployeeAffairsServiceRequest)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pEmployeeHRServiceID", getEmployeeAffairsServiceRequest.EmployeeHRServiceID ?? Convert.DBNull },
+            { "pEmployeeID", getEmployeeAffairsServiceRequest.EmployeeID ?? Convert.DBNull },
+            { "pProjectID", _projectProvider.GetProjectId() },  // Not nullable, no need for DB null check
+            { "pFromDate", getEmployeeAffairsServiceRequest.FromDate==null ? Convert.DBNull:getEmployeeAffairsServiceRequest.FromDate.DateToIntValue() },
+            { "pToDate", getEmployeeAffairsServiceRequest.ToDate==null ? Convert.DBNull:getEmployeeAffairsServiceRequest.ToDate.DateToIntValue() },
+            { "pStatusID", getEmployeeAffairsServiceRequest.StatusID ?? Convert.DBNull },
+            { "pLanguageID", _projectProvider.LangId() }, // Not nullable, no need for DB null check
+            { "pHRServiceID", getEmployeeAffairsServiceRequest.HRServiceID ?? Convert.DBNull }
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeAffairsServiceResponse>("dbo.GetEmployeeHRService", inputParams, null);
+        return result;
+
+    }
     #endregion
 }

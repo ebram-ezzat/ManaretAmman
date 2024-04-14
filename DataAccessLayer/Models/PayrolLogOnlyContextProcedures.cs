@@ -161,6 +161,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<GetWorkFlowNotificationOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetTableNamesWithColumnNames>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetLookupTableDataOutput>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GetEmployeeAffairsServiceResponse>().HasNoKey().ToView(null);
         }
     }
 
