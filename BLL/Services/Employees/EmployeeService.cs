@@ -8,6 +8,7 @@ using BusinessLogicLayer.Services.Lookups;
 using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.Employees;
+using DataAccessLayer.DTO.Locations;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -304,7 +305,7 @@ internal class EmployeeService : IEmployeeService
         return pErrorValue;
     }
 
-    public async Task<List<GetEmployeeAffairsServiceResponse>> GetEmployeeAffairsService(GetEmployeeAffairsServiceRequest getEmployeeAffairsServiceRequest)
+    public async Task<dynamic> GetEmployeeAffairsService(GetEmployeeAffairsServiceRequest getEmployeeAffairsServiceRequest)
     {
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
@@ -315,11 +316,35 @@ internal class EmployeeService : IEmployeeService
             { "pToDate", getEmployeeAffairsServiceRequest.ToDate==null ? Convert.DBNull:getEmployeeAffairsServiceRequest.ToDate.DateToIntValue() },
             { "pStatusID", getEmployeeAffairsServiceRequest.StatusID ?? Convert.DBNull },
             { "pLanguageID", _projectProvider.LangId() }, // Not nullable, no need for DB null check
-            { "pHRServiceID", getEmployeeAffairsServiceRequest.HRServiceID ?? Convert.DBNull }
+            { "pHRServiceID", getEmployeeAffairsServiceRequest.HRServiceID ?? Convert.DBNull },
+            {"pPageNo" ,getEmployeeAffairsServiceRequest.PageNo},
+            {"pPageSize",getEmployeeAffairsServiceRequest.PageSize }
         };
-        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeAffairsServiceResponse>("dbo.GetEmployeeHRService", inputParams, null);
-        return result;
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            {"prowcount","int" }
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeAffairsServiceResponse>("dbo.GetEmployeeHRService", inputParams, outputParams);
+        return PublicHelper.CreateResultPaginationObject(getEmployeeAffairsServiceRequest, result, outputValues); ;
 
+    }
+
+    public async Task<int> DeleteEmployeeAffairsService(DeleteEmployeeAffairsService deleteEmployeeAffairsService)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeHRServiceID", deleteEmployeeAffairsService.EmployeeHRServiceID},
+                { "pEmployeeID", deleteEmployeeAffairsService.EmployeeID},
+                {"pStatusID",deleteEmployeeAffairsService.StatusID==0?2:deleteEmployeeAffairsService.StatusID },
+                {"pCreatedBy",_projectProvider.UserId() }
+        };
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            {"pError","int" }
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.UpdateEmployeeHRService", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
     }
     #endregion
 }

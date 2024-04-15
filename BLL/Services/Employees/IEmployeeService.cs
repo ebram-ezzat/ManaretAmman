@@ -14,6 +14,8 @@ public interface IEmployeeService
     Task<List<EmplyeeProfileVModel>> EmployeeProfile(int EmployeeId);
 
     Task<int> SaveEmployeeAffairsService (SaveEmployeeAffairsServices saveEmployeeAffairsService);
-    Task<List<GetEmployeeAffairsServiceResponse>> GetEmployeeAffairsService(GetEmployeeAffairsServiceRequest getEmployeeAffairsServiceRequest);
+    Task<int> DeleteEmployeeAffairsService(DeleteEmployeeAffairsService deleteEmployeeAffairsService);
+
+    Task<dynamic> GetEmployeeAffairsService(GetEmployeeAffairsServiceRequest getEmployeeAffairsServiceRequest);
 
 }

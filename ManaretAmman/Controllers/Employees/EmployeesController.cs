@@ -95,8 +95,11 @@ namespace ManaretAmman.Controllers.Employees
         }
         #region شاشة خدمات شوون الموظفين
         /// <summary>
-        ///{StatusID} Should be sent by 1 
+        /// You can use this API For Insert or Update
         /// </summary>
+        /// <remarks>
+        /// {StatusID} Should be sent by 1 
+        /// </remarks>
         /// <param name="saveEmployeeAffairsService"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
@@ -139,9 +142,36 @@ namespace ManaretAmman.Controllers.Employees
             }
             var result = await _employeeService.GetEmployeeAffairsService(getEmployeeAffairsServiceRequest);
            
-            return ApiResponse<List<GetEmployeeAffairsServiceResponse>>.Success("data has been returned succussfully", result);
+            return ApiResponse<dynamic>.Success("data has been returned succussfully", result);
         }
+        /// <summary>
+        /// {StatusID} Should be sent by 2 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <param name="deleteEmployeeAffairsService"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [HttpDelete("DeleteEmployeeAffairsService")]
+        public async Task<IApiResponse> DeleteEmployeeAffairsService([FromQuery] DeleteEmployeeAffairsService deleteEmployeeAffairsService)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
 
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.DeleteEmployeeAffairsService(deleteEmployeeAffairsService);
+            if (result == -1)//error
+            {
+                throw new Exception("Error on Delete Operation");
+            }
+            return ApiResponse.Success("data has been deleted succussfully");
+        }
         #endregion
     }
 }

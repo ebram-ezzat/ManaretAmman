@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.DTO.Employees
 {
-    public class GetEmployeeAffairsServiceRequest
+    public class GetEmployeeAffairsServiceRequest:PageModel
     {
         public int? EmployeeHRServiceID { get; set; }
         public int? EmployeeID { get; set; }      
