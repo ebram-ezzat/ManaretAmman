@@ -12,6 +12,10 @@ namespace DataAccessLayer.DTO.Reports
         public DateTime? ToDate { get; set; }
         public int? EmployeeID { get; set; }
         public int? DepartmentID { get; set; }
+        /// <summary>
+        /// Default is false that is meaning is a PDF Format 
+        /// </summary>
+        public bool IsExcel { get; set; } = false;//Default is PDF
     }
     public class GetEmployeeAttendanceDailyResponse
     {

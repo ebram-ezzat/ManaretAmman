@@ -65,7 +65,7 @@ namespace BusinessLogicLayer.Services.Reports
             string reportPath = GetReportPath("Reports\\Ar\\DailyAttendanceReportdetailsdefault.rdlc", "Reports\\En\\DailyAttendanceReportdetailsdefault.rdlc");
             if (result == null || result.Rows.Count == 0 || reportPath==null)
                 return null;
-            return PublicHelper.BuildRdlcReportWithDataSourc(result, reportPath, "DsMain");
+            return getEmployeeAttendanceDailyRequest.IsExcel?PublicHelper.BuildRdlcReportWithDataSourcExcelFormat(result, reportPath, "DsMain"): PublicHelper.BuildRdlcReportWithDataSourcPDFFormat(result, reportPath, "DsMain");
         }
 
        

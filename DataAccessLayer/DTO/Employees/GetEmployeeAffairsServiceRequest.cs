@@ -18,7 +18,8 @@ namespace DataAccessLayer.DTO.Employees
     public class GetEmployeeAffairsServiceResponse
     {
         public int? HRServiceID { get; set; }
-        public int? HRServiceDate { get; set; }  // Assuming this should be a DateTime
+        public int? EmployeeHRServiceID { get; set; }
+        public int? HRServiceDate { get; set; }  
         public string ReasonDesc { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? CreationDate { get; set; }

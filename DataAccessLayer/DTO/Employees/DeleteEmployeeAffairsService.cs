@@ -15,7 +15,7 @@ namespace DataAccessLayer.DTO.Employees
         [Required(ErrorMessage = "The EmployeeID is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "The EmployeeID must be bigger than 0")]
         public int EmployeeID { get; set; }
-        public int StatusID { get; set; }// 2 Deleted  , 1 active , 0 archived
+        public int StatusID { get; set; } = 2;// 2 Deleted  , 1 active , 0 archived
       
     }
 }

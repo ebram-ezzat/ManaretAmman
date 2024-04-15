@@ -215,7 +215,7 @@ namespace BusinessLogicLayer.Common
                 return null;
             }
         }
-        public static object BuildRdlcReportWithDataSourc(DataTable DataSource, string PathRdlc, string DSName)
+        public static object BuildRdlcReportWithDataSourcPDFFormat(DataTable DataSource, string PathRdlc, string DSName)
         {
             if (File.Exists(PathRdlc))
             {
@@ -236,7 +236,27 @@ namespace BusinessLogicLayer.Common
                 return null;
             }
         }
+        public static object BuildRdlcReportWithDataSourcExcelFormat(DataTable DataSource, string PathRdlc, string DSName)
+        {
+            if (File.Exists(PathRdlc))
+            {
+                LocalReport rpt = new LocalReport();
+                rpt.ReportPath = Path.GetFullPath(PathRdlc);
+                rpt.EnableExternalImages = true;
 
+                rpt.DataSources.Clear();
+                rpt.DataSources.Add(new ReportDataSource(DSName, DataSource));
+
+                byte[] Bytes = rpt.Render(format: "Excel", deviceInfo: "");
+                rpt.Dispose();
+
+                return Convert.ToBase64String(Bytes);
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
     public enum EnumLangId
     {
