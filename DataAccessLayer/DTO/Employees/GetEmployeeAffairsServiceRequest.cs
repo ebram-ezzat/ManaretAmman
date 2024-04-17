@@ -18,6 +18,7 @@ namespace DataAccessLayer.DTO.Employees
     public class GetEmployeeAffairsServiceResponse
     {
         public int? HRServiceID { get; set; }
+        public int? EmployeeID { get; set; }
         public int? EmployeeHRServiceID { get; set; }
         public int? HRServiceDate { get; set; }  
         public string ReasonDesc { get; set; }
