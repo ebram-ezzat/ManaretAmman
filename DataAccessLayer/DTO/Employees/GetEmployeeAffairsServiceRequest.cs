@@ -26,6 +26,7 @@ namespace DataAccessLayer.DTO.Employees
         public DateTime? CreationDate { get; set; }
         public int? ModifiedBy { get; set; }
         public DateTime? ModificationDate { get; set; }
+        public DateTime? HRServiceDateAsDate { get; set; }
         public string HRServiceDesc { get; set; }
         public string EmployeeName { get; set; }
         public int? EmployeeNumber { get; set; }
