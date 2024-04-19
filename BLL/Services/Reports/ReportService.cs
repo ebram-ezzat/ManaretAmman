@@ -107,28 +107,17 @@ namespace BusinessLogicLayer.Services.Reports
         #region التقرير اليومى التفصيلى
         public async Task<object> GetEmployeeAttendanceDailyDetailedReport(GetEmployeeAttendanceDailyRequest getEmployeeAttendanceDailyRequest)
         {
-            var inputParams = BuildBaseReportInputParams(getEmployeeAttendanceDailyRequest);
-
-           
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
-               .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeeAttendanceDaily", inputParams, null);
-
-            var settingResult = await _lookupsService.GetSettings();
-
-
-
-            string reportName = getEmployeeAttendanceDailyRequest.ReportType switch
-            {
-                (int)EnumReportType.Date => settingResult.DailyAttendanceReportDetails,
-                //(int)EnumReportType.Employee => settingResult.DailyAttendanceByEmployeeReportName,
-               // (int)EnumReportType.AllEmployees => settingResult.DailyAttendanceByAllEmployeeReportName,
-                _ => null
-            };
-
-            string reportPath =!string.IsNullOrEmpty(reportName)? GetReportPath($"Reports\\Ar\\{reportName}.rdlc", $"Reports\\En\\{reportName}.rdlc"):null;
-            if (result == null || result.Rows.Count == 0 || reportPath == null)
-                return null;
-            return getEmployeeAttendanceDailyRequest.IsExcel ? PublicHelper.BuildRdlcReportWithDataSourcExcelFormat(result, reportPath, "DsMain") : PublicHelper.BuildRdlcReportWithDataSourcPDFFormat(result, reportPath, "DsMain");
+          
+            return await GenerateReportAsync(
+               getEmployeeAttendanceDailyRequest,
+               "dbo.GetEmployeeAttendanceDaily",
+               r => r.ReportType,
+               (req, settings) => req.ReportType switch
+               {
+                   (int)EnumReportType.Date => settings.DailyAttendanceReportDetails,                  
+                   _ => null
+               }
+           );
         }
         #endregion
         #region تقرير العمل الاضافى
