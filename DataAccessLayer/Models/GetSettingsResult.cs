@@ -127,5 +127,21 @@ namespace DataAccessLayer.Models
         public int? EnableSecondPeriod { get; set; }
         public string AttachementPath { get; set; }
         public int? IsviewTimeDr { get; set; }
+        public string DailyAttendanceByEmployeeReportName { get; set; }
+        public string DailyAttendanceByAllEmployeeReportName { get; set; }
+        public string DailyAbsentByAllEmployeeReportName { get; set; }
+        public string DailyAbsentByEmployeeReportName { get; set; }
+        public string DailyEarlyLeaveByAllEmployeeReportName { get; set; }
+        public string DailyEarlyLeaveByEmployeeReportName { get; set; }
+        public string DailyLateByAllEmployeeReportName { get; set; }
+        public string DailyLateByEmployeeReportName { get; set; }
+        public string DailyAdditionalWorkByAllEmployeeReportName { get; set; }
+        public string DailyAdditionalWorkByEmployeeReportName { get; set; }       
+        public string DailyAbsentEmployeesReportName { get; set; }
+        public string DailyEarlyLeaveReportName { get; set; }
+        public string DailyLateReportName { get; set; }
+        public string DailyAdditionalWorkReportName { get; set; }
+        public string CompanyNationalID { get; set; }
+       // public string HRServiceReportName { get; set; }
     }
 }

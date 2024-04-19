@@ -39,6 +39,7 @@ namespace DataAccessLayer.DTO.Employees
         public int? BranchID { get; set; }
         public string ServiceText { get; set; }
         public string AttachmentDesc { get; set; }
+        public string HRServiceReportName { get; set; }
     }
 
 }

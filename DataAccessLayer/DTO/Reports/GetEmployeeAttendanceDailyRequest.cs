@@ -6,20 +6,15 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.DTO.Reports
 {
-    public class GetEmployeeAttendanceDailyRequest
+    public class GetEmployeeAttendanceDailyRequest: ReportBaseFields
     {
-        public DateTime? FromDate { get; set; }
-        public DateTime? ToDate { get; set; }
-        public int? EmployeeID { get; set; }
-        public int? DepartmentID { get; set; }
-        /// <summary>
-        /// Default is false that is meaning is a PDF Format 
-        /// </summary>
-        public bool IsExcel { get; set; } = false;//Default is PDF
+       
+       
     }
     public class GetEmployeeAttendanceDailyResponse
     {
         public int? a { get; set; }
+      
         public int? EmployeeID { get; set; }
         public int? AttendanceDate { get; set; }
         public string CheckIn { get; set; }
