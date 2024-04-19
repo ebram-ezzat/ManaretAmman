@@ -12,7 +12,7 @@ namespace BusinessLogicLayer.Services.Reports
     {
         Task<object> GetEmployeeSalaryReport(GetEmployeeSalaryReportRequest getEmployeePaperRequest);
         Task<object> GetEmployeeAttendanceDailyReport(GetEmployeeAttendanceDailyRequest getEmployeeAttendanceDailyRequest);
-        Task<object> GetEmployeeAttendanceDailyDetailedReport(GetEmployeeAttendanceDailyRequest getEmployeeAttendanceDailyRequest);
+        Task<object> GetEmployeeAttendanceDailyDetailedReport(GetEmployeeAttendanceDailyDetailedReportRequest getEmployeeAttendanceDailyDetailedReportRequest);
         Task<object> GetEmployeeOverTimeWorkReport(GetEmployeeOverTimeWorkReportRequest getEmployeeOverTimeReportRequest);
         Task<object> GetEmployeeMorningLateReport(GetEmployeeMorningLateReportRequest getEmployeeMorningLateReportRequest);
         Task<object> GetEmployeeEarlyLeaveReport(GetEmployeeEarlyLeaveReportRequest getEmployeeEarlyLeaveReportRequest);

@@ -103,13 +103,13 @@ namespace ManaretAmman.Controllers.Employees
         /// you should send {UserId} Via header,
         /// {Flag} here is 1
         /// </remarks>
-        /// <param name="getEmployeeAttendanceDailyDetailedReport"></param>
+        /// <param name="getEmployeeAttendanceDailyDetailedReportRequest"></param>
         /// <returns></returns>
         [AddLanguageHeader]
         [HttpGet("GetEmployeeAttendanceDailyDetailedReport")]
-        public async Task<IApiResponse> GetEmployeeAttendanceDailyDetailedReport([FromQuery] GetEmployeeAttendanceDailyRequest getEmployeeAttendanceDailyDetailedReport)
+        public async Task<IApiResponse> GetEmployeeAttendanceDailyDetailedReport([FromQuery] GetEmployeeAttendanceDailyDetailedReportRequest getEmployeeAttendanceDailyDetailedReportRequest)
         {
-            var result = await _reportService.GetEmployeeAttendanceDailyDetailedReport(getEmployeeAttendanceDailyDetailedReport);
+            var result = await _reportService.GetEmployeeAttendanceDailyDetailedReport(getEmployeeAttendanceDailyDetailedReportRequest);
 
             if (result == null)
                 return ApiResponse<object>.Failure("No data", null);

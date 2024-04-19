@@ -105,11 +105,11 @@ namespace BusinessLogicLayer.Services.Reports
         }
         #endregion
         #region التقرير اليومى التفصيلى
-        public async Task<object> GetEmployeeAttendanceDailyDetailedReport(GetEmployeeAttendanceDailyRequest getEmployeeAttendanceDailyRequest)
+        public async Task<object> GetEmployeeAttendanceDailyDetailedReport(GetEmployeeAttendanceDailyDetailedReportRequest getEmployeeAttendanceDailyDetailedReportRequest)
         {
           
             return await GenerateReportAsync(
-               getEmployeeAttendanceDailyRequest,
+               getEmployeeAttendanceDailyDetailedReportRequest,
                "dbo.GetEmployeeAttendanceDaily",
                r => r.ReportType,
                (req, settings) => req.ReportType switch
