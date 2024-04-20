@@ -79,29 +79,43 @@ namespace BusinessLogicLayer.Services.Reports
         #region التقرير اليومى
         public async Task<object> GetEmployeeAttendanceDailyReport(GetEmployeeAttendanceDailyRequest getEmployeeAttendanceDailyRequest)
         {
-            var inputParams = BuildBaseReportInputParams(getEmployeeAttendanceDailyRequest);
+            return await GenerateReportAsync(
+               getEmployeeAttendanceDailyRequest,
+               "dbo.GetEmployeeAttendanceDaily",
+               r => r.ReportType,
+               (req, settings) => req.ReportType switch
+               {
+                   (int)EnumReportType.Date => settings.DailyAttendanceReportName,
+                   (int)EnumReportType.Employee => settings.DailyAttendanceByEmployeeReportName,
+                   (int)EnumReportType.AllEmployees => settings.DailyAttendanceByAllEmployeeReportName,
+                   _ => null
+               }
+           );
+            #region Old Version
+            //var inputParams = BuildBaseReportInputParams(getEmployeeAttendanceDailyRequest);
+            ////var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
+            ////    .ExecuteStoredProcedureAsync<GetEmployeeAttendanceDailyResponse>("dbo.GetEmployeeAttendanceDaily", inputParams, null);
             //var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
-            //    .ExecuteStoredProcedureAsync<GetEmployeeAttendanceDailyResponse>("dbo.GetEmployeeAttendanceDaily", inputParams, null);
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
-               .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeeAttendanceDaily", inputParams, null);
+            //   .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeeAttendanceDaily", inputParams, null);
 
-            var settingResult = await _lookupsService.GetSettings();
+            //var settingResult = await _lookupsService.GetSettings();
 
 
 
-            string reportName = getEmployeeAttendanceDailyRequest.ReportType switch
-            {
-                (int)EnumReportType.Date => settingResult.DailyAttendanceReportName,
-                (int)EnumReportType.Employee => settingResult.DailyAttendanceByEmployeeReportName,
-                (int)EnumReportType.AllEmployees => settingResult.DailyAttendanceByAllEmployeeReportName,
-                _ => null
-            };
+            //string reportName = getEmployeeAttendanceDailyRequest.ReportType switch
+            //{
+            //    (int)EnumReportType.Date => settingResult.DailyAttendanceReportName,
+            //    (int)EnumReportType.Employee => settingResult.DailyAttendanceByEmployeeReportName,
+            //    (int)EnumReportType.AllEmployees => settingResult.DailyAttendanceByAllEmployeeReportName,
+            //    _ => null
+            //};
 
-            //string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\Ar\\DailyAttendanceReportdetailsdefault.rdlc");
-            string reportPath =!string.IsNullOrEmpty(reportName) ? GetReportPath($"Reports\\Ar\\{reportName}.rdlc", $"Reports\\En\\{reportName}.rdlc"):null;
-            if (result == null || result.Rows.Count == 0 || reportPath==null)
-                return null;
-            return getEmployeeAttendanceDailyRequest.IsExcel?PublicHelper.BuildRdlcReportWithDataSourcExcelFormat(result, reportPath, "DsMain"): PublicHelper.BuildRdlcReportWithDataSourcPDFFormat(result, reportPath, "DsMain");
+            ////string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\Ar\\DailyAttendanceReportdetailsdefault.rdlc");
+            //string reportPath =!string.IsNullOrEmpty(reportName) ? GetReportPath($"Reports\\Ar\\{reportName}.rdlc", $"Reports\\En\\{reportName}.rdlc"):null;
+            //if (result == null || result.Rows.Count == 0 || reportPath==null)
+            //    return null;
+            //return getEmployeeAttendanceDailyRequest.IsExcel?PublicHelper.BuildRdlcReportWithDataSourcExcelFormat(result, reportPath, "DsMain"): PublicHelper.BuildRdlcReportWithDataSourcPDFFormat(result, reportPath, "DsMain");
+            #endregion 
         }
         #endregion
         #region التقرير اليومى التفصيلى
