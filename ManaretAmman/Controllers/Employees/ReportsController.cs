@@ -101,7 +101,8 @@ namespace ManaretAmman.Controllers.Employees
         /// <remarks>
         /// you should send {Accept-Language} Via header request to get the correct description  "ar" For Arabic and "en" For English,
         /// you should send {UserId} Via header,
-        /// {Flag} here is 1
+        /// {Flag} here is 1,
+        /// {ReportType} here is always 0 that is meaning Date
         /// </remarks>
         /// <param name="getEmployeeAttendanceDailyDetailedReportRequest"></param>
         /// <returns></returns>

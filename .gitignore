@@ -130,6 +130,6 @@ $RECYCLE.BIN/
 /.vs/ProjectEvaluation/manaretamman.projects.v7.bin
 /ManaretAmman/Properties/PublishProfiles
 /BLL/Services/Employees/EmployeeService.cs
-/ManaretAmman/Reports
+
 /.gitignore
 /ManaretAmman/web.config
