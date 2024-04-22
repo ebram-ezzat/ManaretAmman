@@ -83,6 +83,15 @@ namespace ManaretAmman.Controllers.Employees
         [HttpGet("GetEmployeeAttendanceDailyReport")]
         public async Task<IApiResponse> GetEmployeeAttendanceDailyReport([FromQuery] GetEmployeeAttendanceDailyRequest getEmployeeAttendanceDailyRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
             var result = await _reportService.GetEmployeeAttendanceDailyReport(getEmployeeAttendanceDailyRequest);
 
             if (result == null)
@@ -110,6 +119,15 @@ namespace ManaretAmman.Controllers.Employees
         [HttpGet("GetEmployeeAttendanceDailyDetailedReport")]
         public async Task<IApiResponse> GetEmployeeAttendanceDailyDetailedReport([FromQuery] GetEmployeeAttendanceDailyDetailedReportRequest getEmployeeAttendanceDailyDetailedReportRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
             var result = await _reportService.GetEmployeeAttendanceDailyDetailedReport(getEmployeeAttendanceDailyDetailedReportRequest);
 
             if (result == null)
@@ -136,6 +154,15 @@ namespace ManaretAmman.Controllers.Employees
         [HttpGet("GetEmployeeOverTimeWorkReport")]
         public async Task<IApiResponse> GetEmployeeOverTimeWorkReport([FromQuery] GetEmployeeOverTimeWorkReportRequest getEmployeeOverTimeWorkReportRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
             var result = await _reportService.GetEmployeeOverTimeWorkReport(getEmployeeOverTimeWorkReportRequest);
 
             if (result == null)
@@ -162,6 +189,15 @@ namespace ManaretAmman.Controllers.Employees
         [HttpGet("GetEmployeeMorningLateReport")]
         public async Task<IApiResponse> GetEmployeeMorningLateReport([FromQuery] GetEmployeeMorningLateReportRequest getEmployeeMorningLateReportReportRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
             var result = await _reportService.GetEmployeeMorningLateReport(getEmployeeMorningLateReportReportRequest);
 
             if (result == null)
@@ -187,6 +223,15 @@ namespace ManaretAmman.Controllers.Employees
         [HttpGet("GetEmployeeEarlyLeaveReport")]
         public async Task<IApiResponse> GetEmployeeEarlyLeaveReport([FromQuery] GetEmployeeEarlyLeaveReportRequest getEmployeeEarlyLeaveReportRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
             var result = await _reportService.GetEmployeeEarlyLeaveReport(getEmployeeEarlyLeaveReportRequest);
 
             if (result == null)
@@ -212,6 +257,15 @@ namespace ManaretAmman.Controllers.Employees
         [HttpGet("GetEmployeeAbsentsReport")]
         public async Task<IApiResponse> GetEmployeeAbsentsReport([FromQuery] GetEmployeeAbsentsReportRequest getEmployeeAbsentsReportRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
             var result = await _reportService.GetEmployeeAbsentsReport(getEmployeeAbsentsReportRequest);
 
             if (result == null)

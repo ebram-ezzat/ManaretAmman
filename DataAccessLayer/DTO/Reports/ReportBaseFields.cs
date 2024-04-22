@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,8 +23,9 @@ namespace DataAccessLayer.DTO.Reports
         /// 2 that is meaning is an AllEmployess
         /// </summary>
         public int ReportType { get; set; }
-
+        [Required(ErrorMessage = "The FromDate is required.")]
         public DateTime? FromDate { get; set; }
+        [Required(ErrorMessage = "The ToDate is required.")]
         public DateTime? ToDate { get; set; }
         public int? EmployeeID { get; set; }
         public int? DepartmentID { get; set; }
