@@ -5,7 +5,6 @@
         protected ApiResponse(bool isSuccess, string message, string[] errors) 
             : base(isSuccess, message, errors)
         {
-
         }
         protected ApiResponse(bool isSuccess, string message, string[] errors, T data)
             : base(isSuccess, message, errors)
