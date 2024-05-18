@@ -31,5 +31,10 @@ namespace DataAccessLayer.DTO.WorkFlow
         public string UserType { get; set; }
         public string AcceptStatus { get; set; }
         public string RejectStatus { get; set; }
+        public int? PreviousRejectStatusID { get; set; }
+        public int? PreviousAcceptStatusID { get; set; }
+        public string PreviousRejectStatusDesc { get; set; }
+        public string PreviousAcceptStatusDesc { get; set; }
+
     }
 }

@@ -317,6 +317,7 @@ internal class EmployeeService : IEmployeeService
             { "pStatusID", getEmployeeAffairsServiceRequest.StatusID ?? Convert.DBNull },
             { "pLanguageID", _projectProvider.LangId() }, // Not nullable, no need for DB null check
             { "pHRServiceID", getEmployeeAffairsServiceRequest.HRServiceID ?? Convert.DBNull },
+            {"pLoginUserID",_projectProvider.UserId() },
             {"pPageNo" ,getEmployeeAffairsServiceRequest.PageNo},
             {"pPageSize",getEmployeeAffairsServiceRequest.PageSize }
         };

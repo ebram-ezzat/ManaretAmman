@@ -22,6 +22,8 @@ namespace DataAccessLayer.DTO.WorkFlow
         public int CanDelete { get; set; }
         public int AcceptStatusID { get; set; }
         public int RejectStatusID { get; set; }
+        public int PreviousRejectStatusID { get; set; }
+        public int PreviousAcceptStatusID { get; set; }
 
         // Optional parameters can be nullable
         //public int? CreatedBy { get; set; }
