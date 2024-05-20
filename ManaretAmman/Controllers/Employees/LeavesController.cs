@@ -22,7 +22,7 @@ public class LeavesController : ControllerBase
     {
         var result = await  _employeeService.GetPage(filter);
 
-        return ApiResponse<BusinessLogicLayer.Common.PagedResponse<EmployeeLeavesOutput>>.Success("data has been retrieved succussfully", result);
+        return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
     }
 
     [HttpGet]

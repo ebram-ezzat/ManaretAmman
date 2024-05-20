@@ -34,6 +34,9 @@ public class EmployeeVacationResult
     public int? VacationTypeID { get; set; }
     public int? FromDate { get; set; }
     public int? ToDate { get; set; }
+
+    public DateTime? v_FromDate { get; set; }
+    public DateTime? v_ToDate { get; set; }
     public string Notes { get; set; }
     public int? DayCount { get; set; }
     public int? CreatedBy { get; set; }
