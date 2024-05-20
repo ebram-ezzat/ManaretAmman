@@ -117,5 +117,22 @@ namespace ManaretAmman.Controllers
             }
             return ApiResponse<int>.Success("data has been inserted succussfully", result);
         }
+
+        [SkipHeaderFilter]//Skip ProjectID From Header
+        [HttpGet("GetMobileVersion")]
+        public async Task<IApiResponse> GetMobileVersion()
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _lookupsService.GetMobileVersion();
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
     }
 }

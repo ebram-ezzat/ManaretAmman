@@ -103,6 +103,7 @@ namespace DataAccessLayer.Models
         public virtual DbSet<YearInDay> YearInDays { get; set; }
         public virtual DbSet<aaa> aaas { get; set; }
         public virtual DbSet<employeeleaves20220907> employeeleaves20220907s { get; set; }
+        public virtual DbSet<MobileVersion> MobileVersion { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

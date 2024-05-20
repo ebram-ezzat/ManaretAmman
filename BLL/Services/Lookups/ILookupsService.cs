@@ -19,6 +19,7 @@ namespace BusinessLogicLayer.Services.Lookups
         Task<int> DeleteLookup(DeleteLookup deleteLookup);
         Task<List<GetTableNamesWithColumnNames>> GetTableNamesColumnNamesByProjectId(GetTableAndColumnOfProject getTableAndColumnOfProject);
         Task<List<GetLookupTableDataOutput>> GetLookupData(GetLookupTableDataInput getLookupTableDataInput);
+        Task<GetMobileVersionOutput> GetMobileVersion();
 
     }
 }

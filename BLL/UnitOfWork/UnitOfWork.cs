@@ -71,6 +71,12 @@ namespace BusinessLogicLayer.UnitOfWork
             get { return _projectRepository ?? (_projectRepository = new Repository<Project>(_context)); }
         }
 
+        IRepository<MobileVersion> _mobileVersionRepository;
+        public IRepository<MobileVersion> MobileVersionRepository
+        {
+            get { return _mobileVersionRepository ?? (_mobileVersionRepository = new Repository<MobileVersion>(_context)); }
+        }
+
         public void Save()
         {
             _context.SaveChanges();

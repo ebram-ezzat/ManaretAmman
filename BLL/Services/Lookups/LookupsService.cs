@@ -9,6 +9,7 @@ using DataAccessLayer.DTO.WorkFlow;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -233,6 +234,20 @@ namespace BusinessLogicLayer.Services.Lookups
             };
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetLookupTableDataOutput>("dbo.GetLookupTableData", inputParam, null);
             return result; 
+        }
+
+        public async Task<GetMobileVersionOutput> GetMobileVersion()
+        {
+            return _unit.MobileVersionRepository
+                    .Get()
+                    .Select(x=>new GetMobileVersionOutput() 
+                    {
+                        DurationUntilAlertAgaint = x.DurationUntilAlertAgaint,
+                        MinAppVersion = x.MinAppVersion,
+                        ShowIgnore = x.ShowIgnore,
+                        ShowLater = x.ShowLater,
+                    })
+                    .FirstOrDefault();
         }
     }
 }
