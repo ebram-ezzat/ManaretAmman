@@ -20,8 +20,9 @@ public class VacationsController : ControllerBase
     public async Task<IApiResponse> GetPage([FromQuery] PaginationFilter<EmployeeVacationFilter> filter)
     {
         var result = await  _employeeService.GetPage(filter);
+        return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
 
-        return ApiResponse<BusinessLogicLayer.Common.PagedResponse<EmployeeVacationOutput>>.Success("data has been retrieved succussfully", result);
+        //return ApiResponse<BusinessLogicLayer.Common.PagedResponse<EmployeeVacationOutput>>.Success("data has been retrieved succussfully", result);
     }
 
     [HttpGet]

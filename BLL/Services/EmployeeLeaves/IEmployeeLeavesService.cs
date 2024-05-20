@@ -10,5 +10,6 @@ public interface IEmployeeLeavesService
     Task Update(EmployeeLeavesUpdate employee);
     Task Delete(int employeeLeaveId);
     Task<EmployeeLeavesOutput> Get(int id);
-    Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<EmployeeLeaveFilter> filter);
+    //Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<EmployeeLeaveFilter> filter);
+    Task<dynamic> GetPage(PaginationFilter<EmployeeLeaveFilter> filter);
 }

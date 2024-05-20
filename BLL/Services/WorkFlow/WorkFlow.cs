@@ -101,6 +101,8 @@ namespace BusinessLogicLayer.Services.WorkFlow
                 {"pRejectStatusID",insertOrUpdateWorkFlowStep.RejectStatusID},
                 {"pCreatedBy",isUpdating? Convert.DBNull:_projectProvider.UserId()},
                 {"pModifiedBy",isUpdating?_projectProvider.UserId():Convert.DBNull},
+                {"pPreviousRejectStatusID",insertOrUpdateWorkFlowStep.PreviousRejectStatusID},
+                {"pPreviousAcceptStatusID",insertOrUpdateWorkFlowStep.PreviousAcceptStatusID},
                // {"pProjectID",_projectProvider.GetProjectId() }
             };
             Dictionary<string, object> outputParams = new Dictionary<string, object>
@@ -170,7 +172,8 @@ namespace BusinessLogicLayer.Services.WorkFlow
                 {"pNotificationDetailAr", insertOrUpdateWorkFlowNotificationStep.NotificationDetailAr??Convert.DBNull},
                 {"pCreatedBy", isUpdating ? Convert.DBNull : _projectProvider.UserId()},
                 {"pModifiedBy", isUpdating ? _projectProvider.UserId() : Convert.DBNull},
-        
+                {"pRejectNote",insertOrUpdateWorkFlowNotificationStep.RejectNote },
+                {"pRejectNoteAr",insertOrUpdateWorkFlowNotificationStep.RejectNoteAr},
             };
 
             // Prepare output parameters

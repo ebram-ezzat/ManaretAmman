@@ -151,63 +151,93 @@ internal class EmployeeLeavesService : IEmployeeLeavesService
 
     }
 
-    public async Task<PagedResponse<EmployeeLeavesOutput>> GetPage(PaginationFilter<EmployeeLeaveFilter> filter)
+    public async Task<dynamic> GetPage(PaginationFilter<EmployeeLeaveFilter> filter)
     {
 
         if (_userId == -1) throw new UnauthorizedAccessException("Incorrect userId from header");
         if (!_authService.IsValidUser(_userId)) throw new UnauthorizedAccessException("Incorrect userId");
         int? employeeId = _authService.IsHr(_userId);
 
-        var query = from e in _unitOfWork.EmployeeRepository.PQuery()
-                    join lt in _unitOfWork.LookupsRepository.PQuery() on e.DepartmentID equals lt.ID into ltGroup
-                    from lt in ltGroup.DefaultIfEmpty()
-                    join el in _unitOfWork.EmployeeLeaveRepository.PQuery() on e.EmployeeID equals el.EmployeeID
-                    where (lt.TableName == "Department" && lt.ColumnName == "DepartmentID") && e.ProjectID == _projecId && lt.ProjectID == _projecId && el.ProjectID == _projecId && (e.EmployeeID == employeeId || lt.EmployeeID == employeeId || employeeId == null)
-                    select new EmployeeLeaf
-                    {
-                        Employee = e,
-                        EmployeeID = e.EmployeeID,
-                        approvalstatusid = el.approvalstatusid,
-                        EmployeeLeaveID = el.EmployeeLeaveID,
-                        LeaveTypeID = el.LeaveTypeID,
-                        ProjectID = el.ProjectID,
-                        LeaveDate = el.LeaveDate,
-                        FromTime = el.FromTime,
-                        ToTime = el.ToTime,
-                        statusid = el.statusid,
-                        imagepath = el.imagepath
-                    };
+        //var query = from e in _unitOfWork.EmployeeRepository.PQuery()
+        //            join lt in _unitOfWork.LookupsRepository.PQuery() on e.DepartmentID equals lt.ID into ltGroup
+        //            from lt in ltGroup.DefaultIfEmpty()
+        //            join el in _unitOfWork.EmployeeLeaveRepository.PQuery() on e.EmployeeID equals el.EmployeeID
+        //            where (lt.TableName == "Department" && lt.ColumnName == "DepartmentID") && e.ProjectID == _projecId && lt.ProjectID == _projecId && el.ProjectID == _projecId && (e.EmployeeID == employeeId || lt.EmployeeID == employeeId || employeeId == null)
+        //            select new EmployeeLeaf
+        //            {
+        //                Employee = e,
+        //                EmployeeID = e.EmployeeID,
+        //                approvalstatusid = el.approvalstatusid,
+        //                EmployeeLeaveID = el.EmployeeLeaveID,
+        //                LeaveTypeID = el.LeaveTypeID,
+        //                ProjectID = el.ProjectID,
+        //                LeaveDate = el.LeaveDate,
+        //                FromTime = el.FromTime,
+        //                ToTime = el.ToTime,
+        //                statusid = el.statusid,
+        //                imagepath = el.imagepath
+        //            };
 
-        var rquery = filter.FilterCriteria != null ? ApplyFilters(query, filter.FilterCriteria) : query;
+        //var rquery = filter.FilterCriteria != null ? ApplyFilters(query, filter.FilterCriteria) : query;
 
-        var totalRecords = await rquery.CountAsync();
+        //var totalRecords = await rquery.CountAsync();
 
 
-        var leaves = await rquery.Skip((filter.PageIndex - 1) * filter.Offset)
-                    .Take(filter.Offset).ToListAsync();
+        //var leaves = await rquery.Skip((filter.PageIndex - 1) * filter.Offset)
+        //            .Take(filter.Offset).ToListAsync();
 
-        var lookups = await _lookupsService.GetLookups(Constants.EmployeeLeaves, Constants.LeaveTypeID);
+        //var lookups = await _lookupsService.GetLookups(Constants.EmployeeLeaves, Constants.LeaveTypeID);
 
-        var approvals = await _lookupsService.GetLookups(Constants.Approvals, string.Empty);
+        //var approvals = await _lookupsService.GetLookups(Constants.Approvals, string.Empty);
 
-        var result = leaves.Select(item => new EmployeeLeavesOutput
+        //var result = leaves.Select(item => new EmployeeLeavesOutput
+        //{
+        //    ID = item.EmployeeLeaveID,
+        //    EmployeeID = item.EmployeeID,
+        //    EmployeeName = item.Employee.EmployeeName,
+        //    LeaveTypeID = item.LeaveTypeID,
+        //    ProjectID = item.ProjectID,
+        //    LeaveType = lookups.FirstOrDefault(e => item.LeaveTypeID is not null
+        //                     && e.ID == item.LeaveTypeID)?.ColumnDescription,
+        //    LeaveDate = item.LeaveDate.IntToDateValue(),
+        //    FromTime = item.FromTime.ConvertFromMinutesToTimeString(),
+        //    ToTime = item.ToTime.ConvertFromMinutesToTimeString(),
+        //    ApprovalStatus = approvals.FirstOrDefault(e => e.ColumnValue == item.approvalstatusid.ToString())?.ColumnDescriptionAr,
+        //    statusid = item.statusid,
+        //    imagepath = item.imagepath
+        //}).ToList();
+
+       // return result.CreatePagedReponse(filter.PageIndex, filter.Offset, totalRecords);
+
+
+        var inputParams = new Dictionary<string, object>()
+            {
+                {"pProjectID",_projectProvider.GetProjectId()},
+                {"pFromDate",filter.FilterCriteria.FromDate!=null?filter.FilterCriteria.FromDate.DateToIntValue():Convert.DBNull},
+                {"pToDate", filter.FilterCriteria.ToDate!=null ?filter.FilterCriteria.ToDate.DateToIntValue():Convert.DBNull },
+                {"ploginuserid",_projectProvider.UserId()},
+                {"pLeaveTypeID",filter.FilterCriteria.LeaveTypeID??Convert.DBNull },
+                {"pEmployeeID",employeeId },                
+                {"pPageNo",filter.PageIndex },
+                {"pPageSize", filter.Offset},
+                {"pLanguageID",_projectProvider.LangId() }
+            
+            };
+        var outputParams = new Dictionary<string, object>() { { "prowcount", "int" } };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeLeaveResult>("dbo.GetEmployeeLeaves", inputParams, outputParams);
+        dynamic obj = new ExpandoObject();
+        if (outputValues.TryGetValue("prowcount", out var totalRecordsObj) && totalRecordsObj is int totalRecords)
         {
-            ID = item.EmployeeLeaveID,
-            EmployeeID = item.EmployeeID,
-            EmployeeName = item.Employee.EmployeeName,
-            LeaveTypeID = item.LeaveTypeID,
-            ProjectID = item.ProjectID,
-            LeaveType = lookups.FirstOrDefault(e => item.LeaveTypeID is not null
-                             && e.ID == item.LeaveTypeID)?.ColumnDescription,
-            LeaveDate = item.LeaveDate.IntToDateValue(),
-            FromTime = item.FromTime.ConvertFromMinutesToTimeString(),
-            ToTime = item.ToTime.ConvertFromMinutesToTimeString(),
-            ApprovalStatus = approvals.FirstOrDefault(e => e.ColumnValue == item.approvalstatusid.ToString())?.ColumnDescriptionAr,
-            statusid = item.statusid,
-            imagepath = item.imagepath
-        }).ToList();
+            var totalPages = ((double)totalRecords / (double)filter.Offset);
+            int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
 
-        return result.CreatePagedReponse(filter.PageIndex, filter.Offset, totalRecords);
+            obj.totalPages = roundedTotalPages;
+            obj.result = result;
+            obj.pageIndex = filter.PageIndex;
+            obj.offset = filter.Offset;
+        }
+
+        return obj;
     }
 
     public async Task Create(EmployeeLeavesInput model)

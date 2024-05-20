@@ -31,5 +31,8 @@ namespace DataAccessLayer.DTO.WorkFlow
         public string NotificationDetail { get; set; }
         public string NotificationDetailAr { get; set; }
         public string UserType { get; set; }
+        public string RejectNote { get; set; }
+        public string RejectNoteAr { get; set; }
+
     }
 }

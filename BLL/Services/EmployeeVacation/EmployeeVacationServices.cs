@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using BusinessLogicLayer.Common;
 using BusinessLogicLayer.Exceptions;
 using BusinessLogicLayer.Extensions;
@@ -11,6 +12,7 @@ using DataAccessLayer.DTO;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeVacations;
 using DataAccessLayer.DTO.Notification;
+using DataAccessLayer.DTO.Permissions;
 using DataAccessLayer.Identity;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
@@ -74,66 +76,96 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
             return result;
         }
 
-        public async Task<PagedResponse<EmployeeVacationOutput>> GetPage(PaginationFilter<EmployeeVacationFilter> filter)
+        public async Task<dynamic> GetPage(PaginationFilter<EmployeeVacationFilter> filter)
         {
             if (_userId == -1) throw new UnauthorizedAccessException("Incorrect userId");
             if (!_authService.IsValidUser(_userId)) throw new UnauthorizedAccessException("Incorrect userId");
             int? employeeId = _authService.IsHr(_userId);
 
-            var query = from e in _unitOfWork.EmployeeRepository.PQuery()
-                        join lt in _unitOfWork.LookupsRepository.PQuery() on e.DepartmentID equals lt.ID into ltGroup
-                        from lt in ltGroup.DefaultIfEmpty()
-                        join ev in _unitOfWork.EmployeeVacationRepository.PQuery() on e.EmployeeID equals ev.EmployeeID
-                        where (lt.TableName == "Department" && lt.ColumnName == "DepartmentID") && e.ProjectID == _projecId && lt.ProjectID == _projecId && ev.ProjectID == _projecId && (e.EmployeeID == employeeId || lt.EmployeeID == employeeId || employeeId == null)
-                        select new EmployeeVacation
-                        {
-                            Employee = e,
-                            EmployeeID = e.EmployeeID,
-                            ApprovalStatusID = ev.ApprovalStatusID,
-                            EmployeeVacationID = ev.EmployeeVacationID,
-                            VacationTypeID = ev.VacationTypeID,
-                            ProjectID = ev.ProjectID,
-                            FromDate = ev.FromDate,
-                            ToDate = ev.ToDate,
-                            DayCount=ev.DayCount,
-                            Notes=ev.Notes,
-                            StatusID=ev.StatusID,
-                            imagepath= ev.imagepath
+            //var query = from e in _unitOfWork.EmployeeRepository.PQuery()
+            //            join lt in _unitOfWork.LookupsRepository.PQuery() on e.DepartmentID equals lt.ID into ltGroup
+            //            from lt in ltGroup.DefaultIfEmpty()
+            //            join ev in _unitOfWork.EmployeeVacationRepository.PQuery() on e.EmployeeID equals ev.EmployeeID
+            //            where (lt.TableName == "Department" && lt.ColumnName == "DepartmentID") && e.ProjectID == _projecId && lt.ProjectID == _projecId && ev.ProjectID == _projecId && (e.EmployeeID == employeeId || lt.EmployeeID == employeeId || employeeId == null)
+            //            select new EmployeeVacation
+            //            {
+            //                Employee = e,
+            //                EmployeeID = e.EmployeeID,
+            //                ApprovalStatusID = ev.ApprovalStatusID,
+            //                EmployeeVacationID = ev.EmployeeVacationID,
+            //                VacationTypeID = ev.VacationTypeID,
+            //                ProjectID = ev.ProjectID,
+            //                FromDate = ev.FromDate,
+            //                ToDate = ev.ToDate,
+            //                DayCount=ev.DayCount,
+            //                Notes=ev.Notes,
+            //                StatusID=ev.StatusID,
+            //                imagepath= ev.imagepath
 
-                        };
-            //var query = _unitOfWork.EmployeeVacationRepository.PQuery(include: e => e.Employee);   
+            //            };
+            ////var query = _unitOfWork.EmployeeVacationRepository.PQuery(include: e => e.Employee);   
 
 
-            if (filter.FilterCriteria != null)
-                query= ApplyFilter(query, filter.FilterCriteria);
+            //if (filter.FilterCriteria != null)
+            //    query= ApplyFilter(query, filter.FilterCriteria);
 
-            var totalRecords = await query.CountAsync();
+            //var totalRecords = await query.CountAsync();
 
-            var Vacation = await query.Skip((filter.PageIndex - 1) * filter.Offset)
-                    .Take(filter.Offset).ToListAsync();
+            //var Vacation = await query.Skip((filter.PageIndex - 1) * filter.Offset)
+            //        .Take(filter.Offset).ToListAsync();
 
-            var lookups = await _lookupsService.GetLookups(Constants.EmployeeLeaves, Constants.LeaveTypeID);
+           // var lookups = await _lookupsService.GetLookups(Constants.EmployeeLeaves, Constants.LeaveTypeID);
            
-            var approvals = await _lookupsService.GetLookups(Constants.Approvals, string.Empty);
+            //var approvals = await _lookupsService.GetLookups(Constants.Approvals, string.Empty);
 
-            var result = Vacation.Select(item => new EmployeeVacationOutput 
+            var inputParams = new Dictionary<string, object>()
             {
-                ID              = item.EmployeeVacationID,
-                EmployeeID      = item.EmployeeID,
-                EmployeeName    = item.Employee.EmployeeName,
-                VacationTypeID  = item.VacationTypeID,
-                VacationType    = lookups.FirstOrDefault(e => item.VacationTypeID is not null
-                                 && e.ID == item.VacationTypeID)?.ColumnDescription,
-                FromDate        = item.FromDate.IntToDateValue(),
-                ToDate          = item.ToDate.IntToDateValue() ,
-                DayCount        = item.DayCount,
-                Notes           = item.Notes,
-                ApprovalStatus  = approvals.FirstOrDefault(e => e.ColumnValue == item.ApprovalStatusID.ToString())?.ColumnDescriptionAr,
-                StatusID=item.StatusID,
-                imagepath=item.imagepath
-            }).ToList();
+                { "pProjectID",_projectProvider.GetProjectId()},                
+                 {"pFromDate",filter.FilterCriteria.FromDate!=null?filter.FilterCriteria.FromDate.DateToIntValue():Convert.DBNull},
+                {"pToDate", filter.FilterCriteria.ToDate!=null ?filter.FilterCriteria.ToDate.DateToIntValue():Convert.DBNull },
+                {"ploginuserid",_projectProvider.UserId()},
+                {"pEmployeeID",employeeId },
+                {"pVacationTypeID",  filter.FilterCriteria.VacationTypeId??Convert.DBNull},
+                {"pPageNo",filter.PageIndex },
+                {"pPageSize", filter.Offset}
+            };
+            var outputParams = new Dictionary<string, object>() { { "prowcount", "int" } };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeVacationResult>("dbo.GetEmployeeVacation", inputParams, outputParams);
 
-            return result.CreatePagedReponse(filter.PageIndex, filter.Offset, totalRecords);
+
+            //var result = Vacation.Select(item => new EmployeeVacationOutput 
+            //{
+            //    ID              = item.EmployeeVacationID,
+            //    EmployeeID      = item.EmployeeID,
+            //    EmployeeName    = item.Employee.EmployeeName,
+            //    VacationTypeID  = item.VacationTypeID,
+            //    VacationType    = lookups.FirstOrDefault(e => item.VacationTypeID is not null
+            //                     && e.ID == item.VacationTypeID)?.ColumnDescription,
+            //    FromDate        = item.FromDate.IntToDateValue(),
+            //    ToDate          = item.ToDate.IntToDateValue() ,
+            //    DayCount        = item.DayCount,
+            //    Notes           = item.Notes,
+            //    ApprovalStatus  = approvals.FirstOrDefault(e => e.ColumnValue == item.ApprovalStatusID.ToString())?.ColumnDescriptionAr,
+            //    StatusID=item.StatusID,
+            //    imagepath=item.imagepath
+            //}).ToList();
+
+            dynamic obj = new ExpandoObject();
+            if (outputValues.TryGetValue("prowcount", out var totalRecordsObj) && totalRecordsObj is int totalRecords)
+            {
+                var totalPages = ((double)totalRecords / (double)filter.Offset);
+                int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
+
+                obj.totalPages = roundedTotalPages;
+                obj.result = result;
+                obj.pageIndex = filter.PageIndex;
+                obj.offset = filter.Offset;
+            }
+          
+
+            
+            // return result.CreatePagedReponse(filter.PageIndex, filter.Offset, totalRecords);
+            return obj;
         }
 
         private static IQueryable<EmployeeVacation> ApplyFilter(IQueryable<EmployeeVacation> query, EmployeeVacationFilter criteria)

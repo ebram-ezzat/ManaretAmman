@@ -26,3 +26,31 @@ public class EmployeeVacationInput
 
 
 }
+
+public class EmployeeVacationResult
+{
+    public int? EmployeeVacationID { get; set; }
+    public int? EmployeeID { get; set; }
+    public int? VacationTypeID { get; set; }
+    public int? FromDate { get; set; }
+    public int? ToDate { get; set; }
+
+    public DateTime? v_FromDate { get; set; }
+    public DateTime? v_ToDate { get; set; }
+    public string Notes { get; set; }
+    public int? DayCount { get; set; }
+    public int? CreatedBy { get; set; }
+    public DateTime? CreationDate { get; set; }
+    public int? ModifiedBy { get; set; } 
+    public DateTime? ModificationDate { get; set; } 
+    public int? ProjectID { get; set; }
+    public string EmployeeName { get; set; }
+    public int? EmployeeNumber { get; set; }
+    public string VacationTypeDesc { get; set; }
+    public int? EnableDelete { get; set; }
+    public string StatusDesc { get; set; }
+    public int? StatusID { get; set; }
+    public int? ApprovalStatusID { get; set; }
+    public string ApprovalProcessID { get; set; }
+    public string ImagePath { get; set; }
+}
