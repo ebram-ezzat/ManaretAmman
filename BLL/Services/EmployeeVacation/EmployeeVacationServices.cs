@@ -80,7 +80,7 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
         {
             if (_userId == -1) throw new UnauthorizedAccessException("Incorrect userId");
             if (!_authService.IsValidUser(_userId)) throw new UnauthorizedAccessException("Incorrect userId");
-            int? employeeId = _authService.IsHr(_userId);
+            //int? employeeId = _authService.IsHr(_userId);
 
             //var query = from e in _unitOfWork.EmployeeRepository.PQuery()
             //            join lt in _unitOfWork.LookupsRepository.PQuery() on e.DepartmentID equals lt.ID into ltGroup
@@ -124,7 +124,7 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
                  {"pFromDate",filter.FilterCriteria.FromDate!=null?filter.FilterCriteria.FromDate.DateToIntValue():Convert.DBNull},
                 {"pToDate", filter.FilterCriteria.ToDate!=null ?filter.FilterCriteria.ToDate.DateToIntValue():Convert.DBNull },
                 {"ploginuserid",_projectProvider.UserId()},
-                {"pEmployeeID",employeeId },
+                {"pEmployeeID",filter.FilterCriteria.EmployeeID },
                 {"pVacationTypeID",  filter.FilterCriteria.VacationTypeId??Convert.DBNull},
                 {"pPageNo",filter.PageIndex },
                 {"pPageSize", filter.Offset}

@@ -156,7 +156,7 @@ internal class EmployeeLeavesService : IEmployeeLeavesService
 
         if (_userId == -1) throw new UnauthorizedAccessException("Incorrect userId from header");
         if (!_authService.IsValidUser(_userId)) throw new UnauthorizedAccessException("Incorrect userId");
-        int? employeeId = _authService.IsHr(_userId);
+        //int? employeeId = _authService.IsHr(_userId);
 
         //var query = from e in _unitOfWork.EmployeeRepository.PQuery()
         //            join lt in _unitOfWork.LookupsRepository.PQuery() on e.DepartmentID equals lt.ID into ltGroup
@@ -217,7 +217,7 @@ internal class EmployeeLeavesService : IEmployeeLeavesService
                 {"pToDate", filter.FilterCriteria.ToDate!=null ?filter.FilterCriteria.ToDate.DateToIntValue():Convert.DBNull },
                 {"ploginuserid",_projectProvider.UserId()},
                 {"pLeaveTypeID",filter.FilterCriteria.LeaveTypeID??Convert.DBNull },
-                {"pEmployeeID",employeeId },                
+                {"pEmployeeID",filter.FilterCriteria.EmployeeID },                
                 {"pPageNo",filter.PageIndex },
                 {"pPageSize", filter.Offset},
                 {"pLanguageID",_projectProvider.LangId() }
