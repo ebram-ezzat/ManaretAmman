@@ -10,6 +10,7 @@ using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.Locations;
 using DataAccessLayer.Models;
+using LanguageExt.ClassInstances.Const;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,7 @@ using System.Data;
 using System.Dynamic;
 using System.Net;
 using System.Reflection;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using UnauthorizedAccessException = BusinessLogicLayer.Exceptions.UnauthorizedAccessException;
 
 namespace BusinessLogicLayer.Services.Employees;
@@ -346,6 +348,35 @@ internal class EmployeeService : IEmployeeService
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.UpdateEmployeeHRService", inputParams, outputParams);
         int pErrorValue = (int)outputValues["pError"];
         return pErrorValue;
+    }
+
+    public async Task<int> SaveOrUpdateEmployeeEvaluation(SaveOrUpdateEmployeeEvaluation saveOrUpdateEmployeeEvaluation)
+    {
+        int id = 0;
+        if(saveOrUpdateEmployeeEvaluation.CategoryId>0)
+        {
+            var dbObj = _unitOfWork.EvaluationCategoryRepository.GetById(saveOrUpdateEmployeeEvaluation.CategoryId);
+            dbObj.CategoryName = saveOrUpdateEmployeeEvaluation.CategoryName;
+            dbObj.StatusId = saveOrUpdateEmployeeEvaluation.StatusId;
+            dbObj.ModifiedBy = _projectProvider.GetProjectId();
+            dbObj.ModificationDate = DateTime.Now;
+            _unitOfWork.EvaluationCategoryRepository.Update(dbObj);
+            id = saveOrUpdateEmployeeEvaluation.CategoryId;
+        }
+        else
+        {
+            var employeeCategory = _mapper.Map<EvaluationCategory>(saveOrUpdateEmployeeEvaluation);
+
+            employeeCategory.CreatedBy = _projectProvider.UserId();
+            employeeCategory.CreationDate = DateTime.Now;
+            employeeCategory.ProjectID = _projectProvider.GetProjectId();
+
+
+            await _unitOfWork.EvaluationCategoryRepository.PInsertAsync(employeeCategory);
+            id = employeeCategory.CategoryId;
+        }
+      await  _unitOfWork.SaveAsync();
+      return id;
     }
     #endregion
 }

@@ -104,6 +104,7 @@ namespace DataAccessLayer.Models
         public virtual DbSet<aaa> aaas { get; set; }
         public virtual DbSet<employeeleaves20220907> employeeleaves20220907s { get; set; }
         public virtual DbSet<MobileVersion> MobileVersion { get; set; }
+        public virtual DbSet<EvaluationCategory> EvaluationCategory { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -915,6 +916,15 @@ namespace DataAccessLayer.Models
                     .HasForeignKey(d => d.ProjectID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Users_Projects");
+            });
+            modelBuilder.Entity<EvaluationCategory>(entity =>
+            {
+                entity.HasKey(e => new { e.CategoryId, e.ProjectID });
+
+                entity.Property(e => e.CategoryId).ValueGeneratedOnAdd();
+                
+
+                
             });
 
             OnModelCreatingGeneratedProcedures(modelBuilder);

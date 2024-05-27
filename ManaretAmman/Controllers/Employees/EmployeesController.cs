@@ -83,7 +83,7 @@ namespace ManaretAmman.Controllers.Employees
 
 
 
-            return ApiResponse<int>.Success("data has been retrieved succussfully", result);
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
         }
 
         [HttpGet("EmployeeProfile")]
@@ -172,6 +172,25 @@ namespace ManaretAmman.Controllers.Employees
             }
             return ApiResponse.Success("data has been deleted succussfully");
         }
+        #endregion
+
+        #region Employee Evaluation
+        [HttpPost("SaveOrUpdateEmployeeEvaluation")]
+        public async Task<IApiResponse> SaveOrUpdateEmployeeEvaluation(SaveOrUpdateEmployeeEvaluation saveOrUpdateEmployeeEvaluation)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveOrUpdateEmployeeEvaluation(saveOrUpdateEmployeeEvaluation);
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
+
         #endregion
     }
 }

@@ -15,6 +15,7 @@ namespace BusinessLogicLayer.UnitOfWork
         IRepository<User> UserRepository { get; }
         IRepository<Project> ProjectRepository { get; }
         IRepository<MobileVersion> MobileVersionRepository { get; }
+        IRepository<EvaluationCategory> EvaluationCategoryRepository { get; }
 
         void Save();
         Task SaveAsync();
