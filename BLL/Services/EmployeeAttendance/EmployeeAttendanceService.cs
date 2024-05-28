@@ -55,7 +55,8 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
                                  Approvedtimeinminutes = item.Approvedtimeinminutes,
                                  ApprovedStatusID = item.ApprovedStatusID,
                                  EmployeeImage=item.EmployeeImage,
-                                 JobTitleName=item.JobTitleName
+                                 JobTitleName=item.JobTitleName,
+                                 AnyWhere=item.AnyWhere
                              }).ToList();
 
           

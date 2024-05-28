@@ -55,5 +55,6 @@ namespace DataAccessLayer.Models
         public int? ApprovedStatusID { get; set; }
         public string EmployeeImage { get; set; }
 		public string JobTitleName { get; set; }
+        public int? AnyWhere { get; set; }
     }
 }
