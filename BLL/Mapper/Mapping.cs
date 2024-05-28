@@ -27,6 +27,21 @@ namespace BusinessLogicLayer.Mapper
             .ForMember(dest => dest.ModificationDate, opt => opt.Ignore())
             .ForMember(dest => dest.ProjectID, opt => opt.Ignore())
             .ForMember(dest => dest.Projects, opt => opt.Ignore());
+            CreateMap<GetEmployeeEvaluation, EvaluationCategory>()
+           .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
+           .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.CategoryName))
+           .ForMember(dest => dest.StatusId, opt => opt.MapFrom(src => src.StatusId))
+           .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+           .ForMember(dest => dest.CreationDate, opt => opt.Ignore())
+           .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+           .ForMember(dest => dest.ModificationDate, opt => opt.Ignore())
+           .ForMember(dest => dest.ProjectID, opt => opt.Ignore())
+           .ForMember(dest => dest.Projects, opt => opt.Ignore());
+            CreateMap<EvaluationCategory, GetEmployeeEvaluation>()
+          .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
+          .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.CategoryName))
+          .ForMember(dest => dest.StatusId, opt => opt.MapFrom(src => src.StatusId));
+         
             #endregion
 
 

@@ -190,6 +190,21 @@ namespace ManaretAmman.Controllers.Employees
             var result = await _employeeService.SaveOrUpdateEmployeeEvaluation(saveOrUpdateEmployeeEvaluation);
             return ApiResponse<int>.Success("data has been saved succussfully", result);
         }
+        [HttpGet("GetEmployeeEvaluation")]
+        public async Task<IApiResponse> GetEmployeeEvaluation([FromQuery]GetEmployeeEvaluation getEmployeeEvaluation)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeEvaluation(getEmployeeEvaluation);
+            return ApiResponse<List<GetEmployeeEvaluation>>.Success("data has been returned succussfully", result);
+        }
 
         #endregion
     }

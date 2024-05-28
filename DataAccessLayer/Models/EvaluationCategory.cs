@@ -10,8 +10,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Models
 {
-    [Index("CategoryId", Name = "PK__Evaluati__23CDE590C4A24BAA")]
-
+    //[Index("CategoryId", Name = "PK__Evaluati__23CDE590C4A24BAA")]
+    //[Keyless]
+    //[Table("EvaluationCategory")]
     public class EvaluationCategory:IMustHaveProject
     {
         [Key]

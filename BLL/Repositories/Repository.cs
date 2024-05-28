@@ -40,6 +40,37 @@ namespace BusinessLogicLayer.Repositories
 
             return query.AsNoTracking();
         }
+        public async virtual Task<IEnumerable<TEntity>> GetWithListOfFilters(
+      List<Expression<Func<TEntity, bool>>> filters = null,
+      Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+      int? skip = null,
+      int? take = null,
+      params Expression<Func<TEntity, object>>[] includes)
+        {
+            IQueryable<TEntity> query = dbSet;
+
+            foreach (Expression<Func<TEntity, object>> include in includes)
+                query = query.Include(include);
+
+            if (filters != null)
+            {
+                foreach (var filter in filters)
+                {
+                    query = query.Where(filter);
+                }
+            }
+
+            if (orderBy != null)
+                query = orderBy(query);
+
+            if (skip.HasValue)
+                query = query.Skip(skip.Value);
+
+            if (take.HasValue)
+                query = query.Take(take.Value);
+
+            return await query.AsNoTracking().ToListAsync();
+        }
 
         public virtual IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
         {

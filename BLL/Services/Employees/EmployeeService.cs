@@ -14,9 +14,11 @@ using LanguageExt.ClassInstances.Const;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.ReportingServices.Interfaces;
 using System.Data;
 using System.Dynamic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -355,7 +357,7 @@ internal class EmployeeService : IEmployeeService
         int id = 0;
         if(saveOrUpdateEmployeeEvaluation.CategoryId>0)
         {
-            var dbObj = _unitOfWork.EvaluationCategoryRepository.GetById(saveOrUpdateEmployeeEvaluation.CategoryId);
+            var dbObj = _unitOfWork.EvaluationCategoryRepository.GetFirstOrDefault(x=>x.CategoryId== saveOrUpdateEmployeeEvaluation.CategoryId);
             dbObj.CategoryName = saveOrUpdateEmployeeEvaluation.CategoryName;
             dbObj.StatusId = saveOrUpdateEmployeeEvaluation.StatusId;
             dbObj.ModifiedBy = _projectProvider.GetProjectId();
@@ -376,7 +378,25 @@ internal class EmployeeService : IEmployeeService
             id = employeeCategory.CategoryId;
         }
       await  _unitOfWork.SaveAsync();
-      return id;
+
+        return id;
+    }
+
+    public async Task<List<GetEmployeeEvaluation>> GetEmployeeEvaluation(GetEmployeeEvaluation getEmployeeEvaluation)
+    {
+        // Define filters
+        var filters = new List<Expression<Func<EvaluationCategory, bool>>>
+        {
+            e => e.StatusId == getEmployeeEvaluation.StatusId,
+            e => e.ProjectID==_projectProvider.GetProjectId(),
+            //getEmployeeEvaluation.CategoryId>0?(e => e.CategoryId==getEmployeeEvaluation.CategoryId) : null,
+           // getEmployeeEvaluation.CategoryName!=null?(e => e.CategoryName==getEmployeeEvaluation.CategoryName) : null
+        }.Concat(!string.IsNullOrEmpty(getEmployeeEvaluation.CategoryName) ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.CategoryName == getEmployeeEvaluation.CategoryName) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
+         .Concat(getEmployeeEvaluation.CategoryId>0 ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.CategoryId == getEmployeeEvaluation.CategoryId) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
+                .ToList();
+        var dataDb = await _unitOfWork.EvaluationCategoryRepository.GetWithListOfFilters(filters);
+        var result = _mapper.Map<List<GetEmployeeEvaluation>>(dataDb);
+        return result;
     }
     #endregion
 }

@@ -12,7 +12,21 @@ namespace BusinessLogicLayer.Repositories
         /// <param name="includes"></param>
         /// <returns></returns>
         IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, params Expression<Func<TEntity, object>>[] includes);
-
+        /// <summary>
+        /// Get all entities with List of filters from db
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <param name="orderBy"></param>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <param name="includes"></param>
+        /// <returns></returns>
+        Task<IEnumerable<TEntity>> GetWithListOfFilters(
+      List<Expression<Func<TEntity, bool>>> filters = null,
+      Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+      int? skip = null,
+      int? take = null,
+      params Expression<Func<TEntity, object>>[] includes);
         /// <summary>
         /// Get query for entity
         /// </summary>
