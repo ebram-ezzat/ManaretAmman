@@ -190,6 +190,15 @@ namespace ManaretAmman.Controllers.Employees
             var result = await _employeeService.SaveOrUpdateEmployeeEvaluation(saveOrUpdateEmployeeEvaluation);
             return ApiResponse<int>.Success("data has been saved succussfully", result);
         }
+        /// <summary>
+        /// {StatusId} Should be sent by 0 Active (when page Load), 1 Archive ,null if you want get by {CategoryId}  
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <param name="getEmployeeEvaluation"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         [HttpGet("GetEmployeeEvaluation")]
         public async Task<IApiResponse> GetEmployeeEvaluation([FromQuery]GetEmployeeEvaluation getEmployeeEvaluation)
         {

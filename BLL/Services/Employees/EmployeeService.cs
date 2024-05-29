@@ -386,12 +386,14 @@ internal class EmployeeService : IEmployeeService
     {
         // Define filters
         var filters = new List<Expression<Func<EvaluationCategory, bool>>>
-        {
-            e => e.StatusId == getEmployeeEvaluation.StatusId,
+        {           
             e => e.ProjectID==_projectProvider.GetProjectId(),
+             //e => e.StatusId == getEmployeeEvaluation.StatusId,
             //getEmployeeEvaluation.CategoryId>0?(e => e.CategoryId==getEmployeeEvaluation.CategoryId) : null,
            // getEmployeeEvaluation.CategoryName!=null?(e => e.CategoryName==getEmployeeEvaluation.CategoryName) : null
-        }.Concat(!string.IsNullOrEmpty(getEmployeeEvaluation.CategoryName) ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.CategoryName == getEmployeeEvaluation.CategoryName) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
+        }
+        .Concat(getEmployeeEvaluation.StatusId!=null ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.StatusId == getEmployeeEvaluation.StatusId) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
+        .Concat(!string.IsNullOrEmpty(getEmployeeEvaluation.CategoryName) ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.CategoryName == getEmployeeEvaluation.CategoryName) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
          .Concat(getEmployeeEvaluation.CategoryId>0 ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.CategoryId == getEmployeeEvaluation.CategoryId) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
                 .ToList();
         var dataDb = await _unitOfWork.EvaluationCategoryRepository.GetWithListOfFilters(filters);

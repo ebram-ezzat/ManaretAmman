@@ -13,7 +13,7 @@ namespace DataAccessLayer.DTO.Employees
 
         public string CategoryName { get; set; }
 
-        public int StatusId { get; set; }
+        public int? StatusId { get; set; }
 
 
     }
