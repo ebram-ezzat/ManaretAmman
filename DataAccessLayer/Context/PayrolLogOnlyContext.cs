@@ -105,6 +105,8 @@ namespace DataAccessLayer.Models
         public virtual DbSet<employeeleaves20220907> employeeleaves20220907s { get; set; }
         public virtual DbSet<MobileVersion> MobileVersion { get; set; }
         public virtual DbSet<EvaluationCategory> EvaluationCategory { get; set; }
+        public virtual DbSet<EvaluationQuestion> EvaluationQuestion { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -926,6 +928,22 @@ namespace DataAccessLayer.Models
 
                 
             });
+            //modelBuilder.Entity<EvaluationQuestion>(entity =>
+            //{
+            //    entity.HasKey(e => new { e.CategoryId, e.ProjectID,e.Id });
+
+            //    entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+
+
+            //});
+
+
+            modelBuilder.Entity<EvaluationQuestion>()
+                .HasOne(eq => eq.EvaluationCategory)
+                .WithMany(ec => ec.EvaluationQuestions)
+                .HasForeignKey(eq => new { eq.CategoryId, eq.ProjectID })
+                .OnDelete(DeleteBehavior.Restrict);
 
             OnModelCreatingGeneratedProcedures(modelBuilder);
             OnModelCreatingGeneratedFunctions(modelBuilder);

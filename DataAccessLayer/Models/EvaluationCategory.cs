@@ -36,5 +36,7 @@ namespace DataAccessLayer.Models
         [ForeignKey("Projects")]
         public int ProjectID { get; set; }
         public Project Projects { get; set; }
+
+        public ICollection<EvaluationQuestion> EvaluationQuestions { get; set; }
     }
 }

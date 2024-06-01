@@ -10,6 +10,7 @@ using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.Locations;
 using DataAccessLayer.Models;
+using LanguageExt;
 using LanguageExt.ClassInstances.Const;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -352,12 +353,14 @@ internal class EmployeeService : IEmployeeService
         return pErrorValue;
     }
 
+    #endregion
+    #region Employee evalution
     public async Task<int> SaveOrUpdateEmployeeEvaluation(SaveOrUpdateEmployeeEvaluation saveOrUpdateEmployeeEvaluation)
     {
         int id = 0;
-        if(saveOrUpdateEmployeeEvaluation.CategoryId>0)
+        if (saveOrUpdateEmployeeEvaluation.CategoryId > 0)
         {
-            var dbObj = _unitOfWork.EvaluationCategoryRepository.GetFirstOrDefault(x=>x.CategoryId== saveOrUpdateEmployeeEvaluation.CategoryId);
+            var dbObj = _unitOfWork.EvaluationCategoryRepository.GetFirstOrDefault(x => x.CategoryId == saveOrUpdateEmployeeEvaluation.CategoryId);
             dbObj.CategoryName = saveOrUpdateEmployeeEvaluation.CategoryName;
             dbObj.StatusId = saveOrUpdateEmployeeEvaluation.StatusId;
             dbObj.ModifiedBy = _projectProvider.GetProjectId();
@@ -377,7 +380,7 @@ internal class EmployeeService : IEmployeeService
             await _unitOfWork.EvaluationCategoryRepository.PInsertAsync(employeeCategory);
             id = employeeCategory.CategoryId;
         }
-      await  _unitOfWork.SaveAsync();
+        await _unitOfWork.SaveAsync();
 
         return id;
     }
@@ -386,18 +389,65 @@ internal class EmployeeService : IEmployeeService
     {
         // Define filters
         var filters = new List<Expression<Func<EvaluationCategory, bool>>>
-        {           
+        {
             e => e.ProjectID==_projectProvider.GetProjectId(),
              //e => e.StatusId == getEmployeeEvaluation.StatusId,
             //getEmployeeEvaluation.CategoryId>0?(e => e.CategoryId==getEmployeeEvaluation.CategoryId) : null,
            // getEmployeeEvaluation.CategoryName!=null?(e => e.CategoryName==getEmployeeEvaluation.CategoryName) : null
         }
-        .Concat(getEmployeeEvaluation.StatusId!=null ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.StatusId == getEmployeeEvaluation.StatusId) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
+        .Concat(getEmployeeEvaluation.StatusId != null ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.StatusId == getEmployeeEvaluation.StatusId) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
         .Concat(!string.IsNullOrEmpty(getEmployeeEvaluation.CategoryName) ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.CategoryName == getEmployeeEvaluation.CategoryName) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
-         .Concat(getEmployeeEvaluation.CategoryId>0 ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.CategoryId == getEmployeeEvaluation.CategoryId) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
+         .Concat(getEmployeeEvaluation.CategoryId > 0 ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.CategoryId == getEmployeeEvaluation.CategoryId) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
                 .ToList();
         var dataDb = await _unitOfWork.EvaluationCategoryRepository.GetWithListOfFilters(filters);
         var result = _mapper.Map<List<GetEmployeeEvaluation>>(dataDb);
+        return result;
+    }
+
+    public async Task<int> SaveOrUpdateEmployeeEvaluationQuestion(SaveOrUpdateEvaluationQuestion saveOrUpdateEvaluationQuestion)
+    {
+        int id = 0;
+        if (saveOrUpdateEvaluationQuestion.Id > 0)
+        {
+            var dbObj = _unitOfWork.EvaluationQuestionRepository.GetFirstOrDefault(x => x.Id == saveOrUpdateEvaluationQuestion.Id);
+            dbObj.Question = saveOrUpdateEvaluationQuestion.Question;
+            dbObj.ModifiedBy = _projectProvider.GetProjectId();
+            dbObj.ModificationDate = DateTime.Now;
+            _unitOfWork.EvaluationQuestionRepository.Update(dbObj);
+            id = saveOrUpdateEvaluationQuestion.Id;
+        }
+        else
+        {
+            var evaluationQuestion = _mapper.Map<EvaluationQuestion>(saveOrUpdateEvaluationQuestion);
+
+            evaluationQuestion.CreatedBy = _projectProvider.UserId();
+            evaluationQuestion.CreationDate = DateTime.Now;
+            evaluationQuestion.ProjectID = _projectProvider.GetProjectId();
+
+
+            await _unitOfWork.EvaluationQuestionRepository.PInsertAsync(evaluationQuestion);
+            id = evaluationQuestion.Id;
+        }
+        await _unitOfWork.SaveAsync();
+
+        return id;
+    }
+
+    public async Task<List<GetEvaluationQuestion>> GetEmployeeEvaluationQuestion(GetEvaluationQuestion getEvaluationQuestion)
+    {
+        var filters = new List<Expression<Func<EvaluationQuestion, bool>>>
+        {
+            e => e.ProjectID==_projectProvider.GetProjectId(),
+           
+        }
+       .Concat(getEvaluationQuestion.CategoryId != null ? new[] { (Expression<Func<EvaluationQuestion, bool>>)(e => e.CategoryId == getEvaluationQuestion.CategoryId) } : Array.Empty<Expression<Func<EvaluationQuestion, bool>>>())       
+         .Concat(getEvaluationQuestion.Id > 0 ? new[] { (Expression<Func<EvaluationQuestion, bool>>)(e => e.Id == getEvaluationQuestion.Id) } : Array.Empty<Expression<Func<EvaluationQuestion, bool>>>())
+          .ToList();
+        // Include related data (optional)
+        // Prepare the includes
+       // Expression<Func<EvaluationQuestion, object>> includes =  entity => entity.EvaluationCategory ;
+        var dataDb = await _unitOfWork.EvaluationQuestionRepository.GetWithListOfFilters(filters,null,null,null,null, null);
+        var result = _mapper.Map<List<GetEvaluationQuestion>>(dataDb);
         return result;
     }
     #endregion

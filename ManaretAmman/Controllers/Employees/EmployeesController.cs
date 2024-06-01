@@ -175,7 +175,8 @@ namespace ManaretAmman.Controllers.Employees
         #endregion
 
         #region Employee Evaluation
-        [HttpPost("SaveOrUpdateEmployeeEvaluation")]
+            #region EvaluationCategory
+        [HttpPost("SaveOrUpdateEmployeeEvaluation")]        
         public async Task<IApiResponse> SaveOrUpdateEmployeeEvaluation(SaveOrUpdateEmployeeEvaluation saveOrUpdateEmployeeEvaluation)
         {
             if (!ModelState.IsValid)
@@ -214,7 +215,48 @@ namespace ManaretAmman.Controllers.Employees
             var result = await _employeeService.GetEmployeeEvaluation(getEmployeeEvaluation);
             return ApiResponse<List<GetEmployeeEvaluation>>.Success("data has been returned succussfully", result);
         }
+        #endregion
+        #region Evaluation Question
+        [HttpPost("SaveOrUpdateEvaluationQuestion")]
+        public async Task<IApiResponse> SaveOrUpdateEvaluationQuestion(SaveOrUpdateEvaluationQuestion saveOrUpdateEvaluationQuestion)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
 
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveOrUpdateEmployeeEvaluationQuestion(saveOrUpdateEvaluationQuestion);
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
+        /// <summary>
+        /// {CategoryId} Get as DDL with only sent {StatusId} 1 Active To GetEmployeeEvaluation EndPoint (when page Load)
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <param name="getEvaluationQuestion"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [HttpGet("GetEvaluationQuestion")]
+        public async Task<IApiResponse> GetEvaluationQuestion([FromQuery] GetEvaluationQuestion getEvaluationQuestion)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeEvaluationQuestion(getEvaluationQuestion);
+            return ApiResponse<List<GetEvaluationQuestion>>.Success("data has been returned succussfully", result);
+        }
+        #endregion
         #endregion
     }
 }

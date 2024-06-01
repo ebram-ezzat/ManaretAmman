@@ -45,7 +45,7 @@ namespace BusinessLogicLayer.Repositories
       Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
       int? skip = null,
       int? take = null,
-      params Expression<Func<TEntity, object>>[] includes)
+       params Expression<Func<TEntity, object>>[] includes)
         {
             IQueryable<TEntity> query = dbSet;
 
