@@ -8,9 +8,7 @@ namespace DataAccessLayer.Models
     {
         public int? ShowLater { get; set; }
         public int? ShowIgnore { get; set; }
-
-        [Column(TypeName = "decimal(18,3)")]
-        public decimal? MinAppVersion { get; set; }
+        public int? MinAppVersion { get; set; }
         public int? DurationUntilAlertAgaint { get; set; }
     }
 }

@@ -3,9 +3,9 @@ namespace DataAccessLayer.DTO.Lookup
 {
     public class GetMobileVersionOutput
     {
-        public int? ShowLater { get; set; }
+        public bool? ShowLater { get; set; }
         public int? ShowIgnore { get; set; }
-        public decimal? MinAppVersion { get; set; }
+        public int? MinAppVersion { get; set; }
         public int? DurationUntilAlertAgaint { get; set; }
     }
 }
