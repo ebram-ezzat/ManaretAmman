@@ -245,7 +245,7 @@ namespace BusinessLogicLayer.Services.Lookups
                         DurationUntilAlertAgaint = x.DurationUntilAlertAgaint,
                         MinAppVersion = x.MinAppVersion,
                         ShowIgnore = x.ShowIgnore,
-                        ShowLater = x.ShowLater,
+                        ShowLater = x.ShowLater == 1 ? true : false,
                     })
                     .FirstOrDefault();
         }
