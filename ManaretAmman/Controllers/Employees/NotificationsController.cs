@@ -38,7 +38,7 @@ namespace ManaretAmman.Controllers.Employees
         {
             var result = await _notificationService.AcceptOrRejectNotificationsAsync(model);
 
-            if (result == null || result == 0)
+            if (result == null /*|| result == 0*/)
             {
                 List<ChangeEmployeeRequestStatusResult> res = new List<ChangeEmployeeRequestStatusResult>();
 
