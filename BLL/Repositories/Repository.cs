@@ -49,8 +49,11 @@ namespace BusinessLogicLayer.Repositories
         {
             IQueryable<TEntity> query = dbSet;
 
-            foreach (Expression<Func<TEntity, object>> include in includes)
-                query = query.Include(include);
+            if (includes != null && includes.Count() > 0)
+            {
+                foreach (Expression<Func<TEntity, object>> include in includes)
+                    query = query.Include(include);
+            }
 
             if (filters != null)
             {
