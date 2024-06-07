@@ -27,10 +27,10 @@ namespace DataAccessLayer.Models
         [ForeignKey("Project")]
         public int ProjectID { get; set ; }
        
-        public virtual Project Project { get; set; }
+        public  Project Project { get; set; }
 
 
-        public virtual EvaluationCategory EvaluationCategory { get; set; } = new EvaluationCategory();
+        public EvaluationCategory EvaluationCategory { get; set; } 
 
     }
 }

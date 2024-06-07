@@ -445,8 +445,8 @@ internal class EmployeeService : IEmployeeService
           .ToList();
         // Include related data (optional)
         // Prepare the includes
-       // Expression<Func<EvaluationQuestion, object>> includes =  entity => entity.EvaluationCategory ;
-        var dataDb = await _unitOfWork.EvaluationQuestionRepository.GetWithListOfFilters(filters);
+        Expression<Func<EvaluationQuestion, object>> includes =  entity => entity.EvaluationCategory ;
+        var dataDb = await _unitOfWork.EvaluationQuestionRepository.GetWithListOfFilters(filters,null,null,null, includes);
         var result = _mapper.Map<List<GetEvaluationQuestion>>(dataDb);
         return result;
     }
