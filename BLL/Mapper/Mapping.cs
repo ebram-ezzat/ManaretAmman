@@ -78,6 +78,37 @@ namespace BusinessLogicLayer.Mapper
           .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.EvaluationCategory.CategoryName))
          .ForMember(dest => dest.Question, opt => opt.MapFrom(src => src.Question))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+
+
+            CreateMap<SaveOrUpdateEvaluationSurvey, EvaluationSurvey>()
+           .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+           .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+           .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
+           .ForMember(dest => dest.StatusId, opt => opt.MapFrom(src => src.StatusId))
+           .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+           .ForMember(dest => dest.CreationDate, opt => opt.Ignore())
+           .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+           .ForMember(dest => dest.ModificationDate, opt => opt.Ignore())
+           .ForMember(dest => dest.ProjectID, opt => opt.Ignore())
+           .ForMember(dest => dest.Projects, opt => opt.Ignore());
+
+            CreateMap<EvaluationSurvey, GetEvaluationSurvey>()
+        .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+        .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+       .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
+          .ForMember(dest => dest.StatusId, opt => opt.MapFrom(src => src.StatusId));
+
+            CreateMap<GetEvaluationSurvey, EvaluationSurvey>()
+         .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+         .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+         .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
+         .ForMember(dest => dest.StatusId, opt => opt.MapFrom(src => src.StatusId))
+         .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+         .ForMember(dest => dest.CreationDate, opt => opt.Ignore())
+         .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+         .ForMember(dest => dest.ModificationDate, opt => opt.Ignore())
+         .ForMember(dest => dest.ProjectID, opt => opt.Ignore());
+        
             #endregion
 
 
