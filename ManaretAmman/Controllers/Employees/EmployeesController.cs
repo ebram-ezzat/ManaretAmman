@@ -259,7 +259,68 @@ namespace ManaretAmman.Controllers.Employees
         #endregion
 
         #region Evaluation Survey
+        /// <summary>
+        /// {StatusId} 0 Active ,1 not ctive
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <param name="saveOrUpdateEvaluationSurvey"></param>
+        /// <returns></returns>
+        [HttpPost("SaveOrUpdateEvaluationSurvey")]
+        public async Task<IApiResponse> SaveOrUpdateEvaluationSurvey(SaveOrUpdateEvaluationSurvey saveOrUpdateEvaluationSurvey)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
 
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveOrUpdateEvaluationSurvey(saveOrUpdateEvaluationSurvey);
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
+        /// <summary>
+        /// {StatusId} 0 Active ,1 not ctive
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <param name="getEvaluationSurvey"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [HttpGet("GetEvaluationSurvey")]
+        public async Task<IApiResponse> GetEvaluationSurvey([FromQuery] GetEvaluationSurvey getEvaluationSurvey)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEvaluationSurvey(getEvaluationSurvey);
+            return ApiResponse<List<GetEvaluationSurvey>>.Success("data has been returned succussfully", result);
+        }
+        [HttpDelete("DeleteEvalualtionSurvey")]
+        public async Task<IApiResponse> DeleteEvaluationSurvey([FromQuery] DeleteEvalualtionSurvey deleteEvalualtionSurvey)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.DeleteEvaluationSurvey(deleteEvalualtionSurvey);
+            return ApiResponse<int>.Success("data has been delte succussfully", result);
+        }
         #endregion
         #endregion
     }

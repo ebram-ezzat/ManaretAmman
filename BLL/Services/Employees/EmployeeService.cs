@@ -19,6 +19,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.ReportingServices.Interfaces;
 using System.Data;
 using System.Dynamic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
@@ -449,5 +450,67 @@ internal class EmployeeService : IEmployeeService
         var result = _mapper.Map<List<GetEvaluationQuestion>>(dataDb);
         return result;
     }
+
+    public async Task<int> SaveOrUpdateEvaluationSurvey(SaveOrUpdateEvaluationSurvey saveOrUpdateEvaluationSurvey)
+    {
+
+        int id = 0;
+        if (saveOrUpdateEvaluationSurvey.Id > 0)
+        {
+            var dbObj = _unitOfWork.EvaluationSurveyRepository.GetFirstOrDefault(x => x.Id == saveOrUpdateEvaluationSurvey.Id);
+            dbObj.Name = saveOrUpdateEvaluationSurvey.Name;
+            dbObj.Notes = saveOrUpdateEvaluationSurvey.Notes;
+            dbObj.StatusId = saveOrUpdateEvaluationSurvey.StatusId;
+            await _unitOfWork.EvaluationSurveyRepository.PUpdateAsync(dbObj);
+            id = saveOrUpdateEvaluationSurvey.Id;
+        }
+        else
+        {
+            var evaluationSurvey = _mapper.Map<EvaluationSurvey>(saveOrUpdateEvaluationSurvey);    
+
+
+            await _unitOfWork.EvaluationSurveyRepository.PInsertAsync(evaluationSurvey);
+            id = evaluationSurvey.Id;
+        }
+        await _unitOfWork.SaveAsync();
+
+        return id;
+    }
+
+    public async Task<List<GetEvaluationSurvey>> GetEvaluationSurvey(GetEvaluationSurvey getEvaluationSurvey)
+    {
+        var filters = new List<Expression<Func<EvaluationSurvey, bool>>>
+        {
+            e => e.ProjectID==_projectProvider.GetProjectId()
+        }
+         .Concat(getEvaluationSurvey.Id > 0 ? new[] { (Expression<Func<EvaluationSurvey, bool>>)(e => e.Id == getEvaluationSurvey.Id) } : Array.Empty<Expression<Func<EvaluationSurvey, bool>>>())
+         .Concat(!string.IsNullOrEmpty(getEvaluationSurvey.Name) ? new[] { (Expression<Func<EvaluationSurvey, bool>>)(e => e.Name.Contains(getEvaluationSurvey.Name)) } : Array.Empty<Expression<Func<EvaluationSurvey, bool>>>())
+          .ToList();
+        // Include related data (optional)
+        // Prepare the includes
+        var dataDb = await _unitOfWork.EvaluationSurveyRepository.GetWithListOfFilters(filters);
+        var result = _mapper.Map<List<GetEvaluationSurvey>>(dataDb);
+        return result;
+    }
+    public async Task<int> DeleteEvaluationSurvey(DeleteEvalualtionSurvey deleteEvalualtionServey)
+    {
+
+        int id = 0;
+        if (deleteEvalualtionServey.Id > 0)
+        {
+            var dbObj = _unitOfWork.EvaluationSurveyRepository.GetFirstOrDefault(x => x.Id == deleteEvalualtionServey.Id);
+           if(dbObj != null)
+            {
+                _unitOfWork.EvaluationSurveyRepository.Delete(dbObj);
+                id = deleteEvalualtionServey.Id;
+            }
+           
+        }
+     
+        await _unitOfWork.SaveAsync();
+
+        return id;
+    }
+
     #endregion
 }
