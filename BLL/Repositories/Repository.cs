@@ -244,7 +244,7 @@ namespace BusinessLogicLayer.Repositories
             await InsertAsync(entity);
         }
 
-        public virtual async Task PUpdateAsync(TEntity entity)
+        public async Task PUpdateAsync(TEntity entity)
         {
             if (!(entity is IMustHaveProject projectEntity))
             {

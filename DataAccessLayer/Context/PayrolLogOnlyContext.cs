@@ -930,7 +930,7 @@ namespace DataAccessLayer.Models
             });
             modelBuilder.Entity<EvaluationQuestion>(entity =>
             {
-                entity.HasKey(e => new { e.CategoryId, e.ProjectID, e.Id });
+                //entity.HasKey(e => new { e.CategoryId, e.ProjectID, e.Id });
 
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 

@@ -411,9 +411,8 @@ internal class EmployeeService : IEmployeeService
         {
             var dbObj = _unitOfWork.EvaluationQuestionRepository.GetFirstOrDefault(x => x.Id == saveOrUpdateEvaluationQuestion.Id);
             dbObj.Question = saveOrUpdateEvaluationQuestion.Question;
-            dbObj.ModifiedBy = _projectProvider.GetProjectId();
-            dbObj.ModificationDate = DateTime.Now;
-            _unitOfWork.EvaluationQuestionRepository.Update(dbObj);
+            dbObj.CategoryId = saveOrUpdateEvaluationQuestion.CategoryId;
+            await _unitOfWork.EvaluationQuestionRepository.PUpdateAsync(dbObj);
             id = saveOrUpdateEvaluationQuestion.Id;
         }
         else
@@ -437,11 +436,11 @@ internal class EmployeeService : IEmployeeService
     {
         var filters = new List<Expression<Func<EvaluationQuestion, bool>>>
         {
-            e => e.ProjectID==_projectProvider.GetProjectId(),
-           
+            e => e.ProjectID==_projectProvider.GetProjectId()
         }
        .Concat(getEvaluationQuestion.CategoryId != null ? new[] { (Expression<Func<EvaluationQuestion, bool>>)(e => e.CategoryId == getEvaluationQuestion.CategoryId) } : Array.Empty<Expression<Func<EvaluationQuestion, bool>>>())       
          .Concat(getEvaluationQuestion.Id > 0 ? new[] { (Expression<Func<EvaluationQuestion, bool>>)(e => e.Id == getEvaluationQuestion.Id) } : Array.Empty<Expression<Func<EvaluationQuestion, bool>>>())
+         .Concat(!string.IsNullOrEmpty(getEvaluationQuestion.Question) ? new[] { (Expression<Func<EvaluationQuestion, bool>>)(e => e.Question == getEvaluationQuestion.Question) } : Array.Empty<Expression<Func<EvaluationQuestion, bool>>>())
           .ToList();
         // Include related data (optional)
         // Prepare the includes
