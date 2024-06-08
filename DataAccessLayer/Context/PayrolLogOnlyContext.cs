@@ -945,6 +945,16 @@ namespace DataAccessLayer.Models
                 .HasForeignKey(eq => new { eq.CategoryId, eq.ProjectID })
                 .OnDelete(DeleteBehavior.Restrict);
 
+
+            modelBuilder.Entity<EvaluationSurvey>(entity =>
+            {
+                //entity.HasKey(e => new { e.CategoryId, e.ProjectID, e.Id });
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+
+
+            });
             OnModelCreatingGeneratedProcedures(modelBuilder);
             OnModelCreatingGeneratedFunctions(modelBuilder);
             OnModelCreatingPartial(modelBuilder);
