@@ -461,13 +461,17 @@ internal class EmployeeService : IEmployeeService
             dbObj.Name = saveOrUpdateEvaluationSurvey.Name;
             dbObj.Notes = saveOrUpdateEvaluationSurvey.Notes;
             dbObj.StatusId = saveOrUpdateEvaluationSurvey.StatusId;
+            dbObj.ModificationDate = DateTime.Now;
+            dbObj.ModifiedBy = _projectProvider.UserId();
             await _unitOfWork.EvaluationSurveyRepository.PUpdateAsync(dbObj);
             id = saveOrUpdateEvaluationSurvey.Id;
         }
         else
         {
-            var evaluationSurvey = _mapper.Map<EvaluationSurvey>(saveOrUpdateEvaluationSurvey);    
-
+            var evaluationSurvey = _mapper.Map<EvaluationSurvey>(saveOrUpdateEvaluationSurvey);
+            evaluationSurvey.CreationDate = DateTime.Now;
+            evaluationSurvey.CreatedBy = _projectProvider.UserId();
+            evaluationSurvey.ProjectID = _projectProvider.GetProjectId();
 
             await _unitOfWork.EvaluationSurveyRepository.PInsertAsync(evaluationSurvey);
             id = evaluationSurvey.Id;
