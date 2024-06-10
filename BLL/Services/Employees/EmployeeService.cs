@@ -397,7 +397,7 @@ internal class EmployeeService : IEmployeeService
            // getEmployeeEvaluation.CategoryName!=null?(e => e.CategoryName==getEmployeeEvaluation.CategoryName) : null
         }
         .Concat(getEmployeeEvaluation.StatusId != null ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.StatusId == getEmployeeEvaluation.StatusId) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
-        .Concat(!string.IsNullOrEmpty(getEmployeeEvaluation.CategoryName) ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.CategoryName == getEmployeeEvaluation.CategoryName) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
+        .Concat(!string.IsNullOrEmpty(getEmployeeEvaluation.CategoryName) ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.CategoryName.Contains(getEmployeeEvaluation.CategoryName)) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
          .Concat(getEmployeeEvaluation.CategoryId > 0 ? new[] { (Expression<Func<EvaluationCategory, bool>>)(e => e.CategoryId == getEmployeeEvaluation.CategoryId) } : Array.Empty<Expression<Func<EvaluationCategory, bool>>>())
                 .ToList();
         var dataDb = await _unitOfWork.EvaluationCategoryRepository.GetWithListOfFilters(filters);
