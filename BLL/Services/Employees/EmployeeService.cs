@@ -39,7 +39,7 @@ internal class EmployeeService : IEmployeeService
     private readonly ILookupsService _lookupsService;
     private readonly IHostingEnvironment _hostingEnvironment;
     public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, IProjectProvider projectProvider, IAuthService authService, PayrolLogOnlyContext payrolLogOnlyContext
-        , IConfiguration configuration, ILookupsService lookupsService,IHostingEnvironment hostingEnvironment)
+        , IConfiguration configuration, ILookupsService lookupsService, IHostingEnvironment hostingEnvironment)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -205,7 +205,7 @@ internal class EmployeeService : IEmployeeService
             int detailId = (int)outputValues["pDetailID"];
             outputParams["pDetailID"] = detailId;
 
-            var settingResult =await _lookupsService.GetSettings();
+            var settingResult = await _lookupsService.GetSettings();
             //var (settingResult, outputSetting) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetSettingsResult>("dbo.GetSettings", new Dictionary<string, object> { { "pProjectID", projecId } }, null);
             var projectPath = settingResult.AttachementPath;
             var fileName = "01" + saveEmployeePaper.EmployeeID.ToString().PadLeft(6, '0') + detailId.ToString().PadLeft(6, '0') + fileExtension;
@@ -245,10 +245,10 @@ internal class EmployeeService : IEmployeeService
 
     public async Task<List<EmplyeeProfileVModel>> EmployeeProfile(int EmployeeId)
     {
-       
-            int projecId = _projectProvider.GetProjectId();
 
-            var parameters = new Dictionary<string, object>
+        int projecId = _projectProvider.GetProjectId();
+
+        var parameters = new Dictionary<string, object>
                         {
                             {"pProjectID", projecId } ,
                             {"pEmployeeID",EmployeeId},
@@ -260,27 +260,27 @@ internal class EmployeeService : IEmployeeService
                             //{"pDepartmentID" , "" }
                         };
 
-            var employees = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeProfile>("dbo.GetEmployeeReport", parameters, null);
+        var employees = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeProfile>("dbo.GetEmployeeReport", parameters, null);
 
-            var result = _mapper.Map<List<EmplyeeProfileVModel>>(employees.Item1);
+        var result = _mapper.Map<List<EmplyeeProfileVModel>>(employees.Item1);
 
-            var setting =await _lookupsService.GetSettings();
-            foreach(var item in result)
+        var setting = await _lookupsService.GetSettings();
+        foreach (var item in result)
+        {
+            if (item.EmployeeImage != null)
             {
-                if (item.EmployeeImage != null)
-                {
-                    var fullPath = item.EmployeeImage.ToLower().Contains("ftp") ? item.EmployeeImage : setting?.AttachementPath + item.EmployeeImage;
-                    dynamic base64  = await PublicHelper.GetFileBase64ByFtpPath(fullPath, setting.WindowsUserName, setting.WindowsUserPassword);
-                    item.ImgBase64 = base64?.Base64Content;
-                }
+                var fullPath = item.EmployeeImage.ToLower().Contains("ftp") ? item.EmployeeImage : setting?.AttachementPath + item.EmployeeImage;
+                dynamic base64 = await PublicHelper.GetFileBase64ByFtpPath(fullPath, setting.WindowsUserName, setting.WindowsUserPassword);
+                item.ImgBase64 = base64?.Base64Content;
             }
+        }
 
 
         //    );
         //string reportPath = _hostingEnvironment.ContentRootPath + Path.Combine("Reports\\EmployeesReport.rdlc");
         //var base64Report = PublicHelper.BuildRdlcReportWithDataSourc(result, reportPath, "DsMain");
         return result;
-       
+
     }
     #region شاشة خدمات شوون الموظفين
     public async Task<int> SaveEmployeeAffairsService(SaveEmployeeAffairsServices saveEmployeeAffairsService)
@@ -292,18 +292,18 @@ internal class EmployeeService : IEmployeeService
                 { "pHRServiceID", saveEmployeeAffairsService.HRServiceID??Convert.DBNull },
                 { "pMonthID", saveEmployeeAffairsService.MonthID??Convert.DBNull },
                 { "pHRServiceDate", saveEmployeeAffairsService.HRServiceDate==null?Convert.DBNull:saveEmployeeAffairsService.HRServiceDate.DateToIntValue() },
-                { "pReasonDesc", saveEmployeeAffairsService.Notes??Convert.DBNull },                
+                { "pReasonDesc", saveEmployeeAffairsService.Notes??Convert.DBNull },
                 { "pStatusID", saveEmployeeAffairsService.StatusID?? 1 },
                 { "pYearID", saveEmployeeAffairsService.YearID??Convert.DBNull },
                 { "pBankID", saveEmployeeAffairsService.BankID ??Convert.DBNull},
                 { "pBranchID", saveEmployeeAffairsService.BranchID??Convert.DBNull },
                 { "pServiceText", saveEmployeeAffairsService.Notes??Convert.DBNull },
-                { "pAttachmentDesc", saveEmployeeAffairsService.AttachmentDesc??Convert.DBNull },      
-                { "pCreatedBy", _projectProvider.UserId() } 
+                { "pAttachmentDesc", saveEmployeeAffairsService.AttachmentDesc??Convert.DBNull },
+                { "pCreatedBy", _projectProvider.UserId() }
             };
 
         Dictionary<string, object> outputParams = new Dictionary<string, object>
-        {            
+        {
             { "pError","int" },
         };
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeHRService", inputParams, outputParams);
@@ -439,14 +439,14 @@ internal class EmployeeService : IEmployeeService
         {
             e => e.ProjectID==_projectProvider.GetProjectId()
         }
-       .Concat(getEvaluationQuestion.CategoryId != null ? new[] { (Expression<Func<EvaluationQuestion, bool>>)(e => e.CategoryId == getEvaluationQuestion.CategoryId) } : Array.Empty<Expression<Func<EvaluationQuestion, bool>>>())       
+       .Concat(getEvaluationQuestion.CategoryId != null ? new[] { (Expression<Func<EvaluationQuestion, bool>>)(e => e.CategoryId == getEvaluationQuestion.CategoryId) } : Array.Empty<Expression<Func<EvaluationQuestion, bool>>>())
          .Concat(getEvaluationQuestion.Id > 0 ? new[] { (Expression<Func<EvaluationQuestion, bool>>)(e => e.Id == getEvaluationQuestion.Id) } : Array.Empty<Expression<Func<EvaluationQuestion, bool>>>())
          .Concat(!string.IsNullOrEmpty(getEvaluationQuestion.Question) ? new[] { (Expression<Func<EvaluationQuestion, bool>>)(e => e.Question == getEvaluationQuestion.Question) } : Array.Empty<Expression<Func<EvaluationQuestion, bool>>>())
           .ToList();
         // Include related data (optional)
         // Prepare the includes
-        Expression<Func<EvaluationQuestion, object>> includes =  entity => entity.EvaluationCategory ;
-        var dataDb = await _unitOfWork.EvaluationQuestionRepository.GetWithListOfFilters(filters,null,null,null, includes);
+        Expression<Func<EvaluationQuestion, object>> includes = entity => entity.EvaluationCategory;
+        var dataDb = await _unitOfWork.EvaluationQuestionRepository.GetWithListOfFilters(filters, null, null, null, includes);
         var result = _mapper.Map<List<GetEvaluationQuestion>>(dataDb);
         return result;
     }
@@ -503,17 +503,40 @@ internal class EmployeeService : IEmployeeService
         if (deleteEvalualtionServey.Id > 0)
         {
             var dbObj = _unitOfWork.EvaluationSurveyRepository.GetFirstOrDefault(x => x.Id == deleteEvalualtionServey.Id);
-           if(dbObj != null)
+            if (dbObj != null)
             {
                 _unitOfWork.EvaluationSurveyRepository.Delete(dbObj);
                 id = deleteEvalualtionServey.Id;
             }
-           
+
         }
-     
+
         await _unitOfWork.SaveAsync();
 
         return id;
+    }
+
+
+    public async Task<int> SaveEvaluationSurveyQuestions(List<SaveEvaluationSurveyQuestions> LstQuestions)
+    {
+        //delete
+        var dbQuestions = _unitOfWork.EvaluationSurveyQuestionsRepository.PQuery(x => x.SurveyId == LstQuestions.First().SurveyId).ToList();
+        _unitOfWork.EvaluationSurveyQuestionsRepository.DeleteRange(dbQuestions);
+
+        //add
+        foreach (var Question in LstQuestions)
+        {
+            var evaluationSurveyQuestion = _mapper.Map<EvaluationSurveyQuestions>(Question);
+            evaluationSurveyQuestion.CreationDate = DateTime.Now;
+            evaluationSurveyQuestion.CreatedBy = _projectProvider.UserId();
+            evaluationSurveyQuestion.SurveyId = Question.SurveyId;
+
+            await _unitOfWork.EvaluationSurveyQuestionsRepository.PInsertAsync(evaluationSurveyQuestion);
+            return evaluationSurveyQuestion.Id;
+        }
+        await _unitOfWork.SaveAsync();
+
+        return 0;
     }
 
     #endregion

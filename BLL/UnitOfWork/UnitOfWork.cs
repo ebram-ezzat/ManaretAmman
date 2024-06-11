@@ -75,6 +75,7 @@ namespace BusinessLogicLayer.UnitOfWork
         IRepository<EvaluationCategory> _evaluationCategoryRepository;
         IRepository<EvaluationQuestion> _evaluationQuestionRepository;
         IRepository<EvaluationSurvey> _evaluationSurveyRepository;
+        IRepository<EvaluationSurveyQuestions> _evaluationSurveyQuestionsRepository;
 
         public IRepository<MobileVersion> MobileVersionRepository
         {
@@ -95,7 +96,12 @@ namespace BusinessLogicLayer.UnitOfWork
             get { return _evaluationSurveyRepository ?? (_evaluationSurveyRepository = new Repository<EvaluationSurvey>(_context, _projectProvider)); } 
         }
 
-    public void Save()
+        public IRepository<EvaluationSurveyQuestions> EvaluationSurveyQuestionsRepository
+        {
+            get { return _evaluationSurveyQuestionsRepository ?? (_evaluationSurveyQuestionsRepository = new Repository<EvaluationSurveyQuestions>(_context, _projectProvider)); }
+        }
+
+        public void Save()
         {
             _context.SaveChanges();
         }

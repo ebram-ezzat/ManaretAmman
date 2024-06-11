@@ -106,6 +106,7 @@ namespace DataAccessLayer.Models
         public virtual DbSet<MobileVersion> MobileVersion { get; set; }
         public virtual DbSet<EvaluationCategory> EvaluationCategory { get; set; }
         public virtual DbSet<EvaluationQuestion> EvaluationQuestion { get; set; }
+        public virtual DbSet<EvaluationSurveyQuestions> EvaluationSurveyQuestions { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

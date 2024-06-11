@@ -322,6 +322,26 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<int>.Success("data has been delte succussfully", result);
         }
         #endregion
+
+        #region Evaluation Survey questions
+
+        [HttpPost("SaveEvaluationSurveyQuestions")]
+        public async Task<IApiResponse> SaveEvaluationSurveyQuestions(List<SaveEvaluationSurveyQuestions> LstQuestions)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveEvaluationSurveyQuestions(LstQuestions);
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
+
+        #endregion
         #endregion
     }
 }
