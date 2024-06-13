@@ -38,5 +38,7 @@ namespace DataAccessLayer.Models
         public Project Projects { get; set; }
 
         public ICollection<EvaluationQuestion> EvaluationQuestions { get; set; }
+        public ICollection<EvaluationSurveyQuestions> EvaluationSurveyQuestions { get; set; }
+
     }
 }

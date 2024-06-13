@@ -922,7 +922,7 @@ namespace DataAccessLayer.Models
             });
             modelBuilder.Entity<EvaluationCategory>(entity =>
             {
-                entity.HasKey(e => new { e.CategoryId, e.ProjectID });
+                //entity.HasKey(e => new { e.CategoryId, e.ProjectID });
 
                 entity.Property(e => e.CategoryId).ValueGeneratedOnAdd();
                 
@@ -943,7 +943,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<EvaluationQuestion>()
                 .HasOne(eq => eq.EvaluationCategory)
                 .WithMany(ec => ec.EvaluationQuestions)
-                .HasForeignKey(eq => new { eq.CategoryId, eq.ProjectID })
+               // .HasForeignKey(eq => new { eq.CategoryId, eq.ProjectID })
                 .OnDelete(DeleteBehavior.Restrict);
 
 
@@ -956,6 +956,29 @@ namespace DataAccessLayer.Models
 
 
             });
+            modelBuilder.Entity<EvaluationSurveyQuestions>(entity =>
+            {               
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+
+            });
+
+            modelBuilder.Entity<EvaluationSurveyQuestions>()
+           .HasOne(e => e.EvaluationSurvey)
+           .WithMany(c => c.EvaluationSurveyQuestions);
+          // .HasForeignKey(e => new { e.SurveyId }); // Configure the composite foreign key
+
+            modelBuilder.Entity<EvaluationSurveyQuestions>()
+        .HasOne(e => e.EvaluationCategory)
+        .WithMany(c => c.EvaluationSurveyQuestions);
+       // .HasForeignKey(e => new { e.CategoryId }); // Configure the composite foreign key
+
+            modelBuilder.Entity<EvaluationSurveyQuestions>()
+       .HasOne(e => e.EvaluationQuestion)
+       .WithMany(c => c.EvaluationSurveyQuestions);
+       //.HasForeignKey(e => new { e.QuestionId }); // Configure the composite foreign key
+
             OnModelCreatingGeneratedProcedures(modelBuilder);
             OnModelCreatingGeneratedFunctions(modelBuilder);
             OnModelCreatingPartial(modelBuilder);

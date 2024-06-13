@@ -27,5 +27,6 @@ public interface IEmployeeService
     Task<List<GetEvaluationSurvey>> GetEvaluationSurvey(GetEvaluationSurvey getEvaluationSurvey);
     Task<int> DeleteEvaluationSurvey(DeleteEvalualtionSurvey deleteEvalualtionServey);
     Task<int> SaveEvaluationSurveyQuestions(List<SaveEvaluationSurveyQuestions> LstQuestions);
+    Task<List<GetEvaluationSurveyQuestions>> GetEvaluationSurveyQuestions(GetEvaluationSurveyQuestions getEvaluationSurveyQuestions);
 
 }

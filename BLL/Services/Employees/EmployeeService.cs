@@ -520,7 +520,7 @@ internal class EmployeeService : IEmployeeService
     public async Task<int> SaveEvaluationSurveyQuestions(List<SaveEvaluationSurveyQuestions> LstQuestions)
     {
         //delete
-        var dbQuestions = _unitOfWork.EvaluationSurveyQuestionsRepository.PQuery(x => x.SurveyId == LstQuestions.First().SurveyId).ToList();
+        var dbQuestions = _unitOfWork.EvaluationSurveyQuestionsRepository.Query(x => x.SurveyId == LstQuestions.First().SurveyId).ToList();
         _unitOfWork.EvaluationSurveyQuestionsRepository.DeleteRange(dbQuestions);
 
         //add
@@ -530,13 +530,33 @@ internal class EmployeeService : IEmployeeService
             evaluationSurveyQuestion.CreationDate = DateTime.Now;
             evaluationSurveyQuestion.CreatedBy = _projectProvider.UserId();
             evaluationSurveyQuestion.SurveyId = Question.SurveyId;
-
-            await _unitOfWork.EvaluationSurveyQuestionsRepository.PInsertAsync(evaluationSurveyQuestion);
-            return evaluationSurveyQuestion.Id;
+            evaluationSurveyQuestion.CreatedBy = _projectProvider.UserId();
+            evaluationSurveyQuestion.CreationDate = DateTime.Now;
+            await _unitOfWork.EvaluationSurveyQuestionsRepository.InsertAsync(evaluationSurveyQuestion);
         }
         await _unitOfWork.SaveAsync();
 
         return 0;
+    }
+
+    public async Task<List<GetEvaluationSurveyQuestions>> GetEvaluationSurveyQuestions(GetEvaluationSurveyQuestions getEvaluationSurveyQuestions)
+    {
+        var filters = new List<Expression<Func<EvaluationSurveyQuestions, bool>>>
+        {
+            e => e.SurveyId==getEvaluationSurveyQuestions.SurveyId
+        }
+      .Concat(getEvaluationSurveyQuestions.CategoryId > 0 ? new[] { (Expression<Func<EvaluationSurveyQuestions, bool>>)(e => e.CategoryId == getEvaluationSurveyQuestions.CategoryId) } : Array.Empty<Expression<Func<EvaluationSurveyQuestions, bool>>>())
+        .Concat(getEvaluationSurveyQuestions.Id > 0 ? new[] { (Expression<Func<EvaluationSurveyQuestions, bool>>)(e => e.Id == getEvaluationSurveyQuestions.Id) } : Array.Empty<Expression<Func<EvaluationSurveyQuestions, bool>>>())     
+         .ToList();
+        // Include related data (optional)
+        // Prepare the includes
+        Expression<Func<EvaluationSurveyQuestions, object>> includeEvaluationCategory = entity => entity.EvaluationCategory;
+        Expression<Func<EvaluationSurveyQuestions, object>> includeSurvey = entity => entity.EvaluationSurvey;
+        Expression<Func<EvaluationSurveyQuestions, object>> includeQuestion = entity => entity.EvaluationQuestion;
+
+        var dataDb = await _unitOfWork.EvaluationSurveyQuestionsRepository.GetWithListOfFilters(filters, null, null, null, includeEvaluationCategory, includeSurvey, includeQuestion);
+        var result = _mapper.Map<List<GetEvaluationSurveyQuestions>>(dataDb);
+        return result;
     }
 
     #endregion

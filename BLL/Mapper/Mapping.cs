@@ -108,7 +108,49 @@ namespace BusinessLogicLayer.Mapper
          .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
          .ForMember(dest => dest.ModificationDate, opt => opt.Ignore())
          .ForMember(dest => dest.ProjectID, opt => opt.Ignore());
-        
+
+
+            CreateMap<EvaluationSurveyQuestions, GetEvaluationSurveyQuestions>()
+              .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+              .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
+              .ForMember(dest => dest.EvaluationCategoryName, opt => opt.MapFrom(src => src.EvaluationCategory.CategoryName))
+              .ForMember(dest => dest.QuestionId, opt => opt.MapFrom(src => src.QuestionId))
+              .ForMember(dest => dest.EvaluationQuestion, opt => opt.MapFrom(src => src.EvaluationQuestion.Question))
+              .ForMember(dest => dest.WithNotes, opt => opt.MapFrom(src => src.WithNotes))
+              .ForMember(dest => dest.SurveyId, opt => opt.MapFrom(src => src.SurveyId))
+              .ForMember(dest => dest.EvaluationSurveyName, opt => opt.MapFrom(src => src.EvaluationSurvey.Name))
+              .ForMember(dest => dest.QuestionDegree, opt => opt.MapFrom(src => src.QuestionDegree));
+
+
+            CreateMap<GetEvaluationSurveyQuestions, EvaluationSurveyQuestions>()
+                  .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                  .ForMember(dest => dest.QuestionId, opt => opt.MapFrom(src => src.QuestionId))
+                  .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
+                  .ForMember(dest => dest.WithNotes, opt => opt.MapFrom(src => src.WithNotes))
+                  .ForMember(dest => dest.SurveyId, opt => opt.MapFrom(src => src.SurveyId))
+                  .ForMember(dest => dest.QuestionDegree, opt => opt.MapFrom(src => src.QuestionDegree))
+                   .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                     .ForMember(dest => dest.CreationDate, opt => opt.Ignore())
+                     .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                     .ForMember(dest => dest.ModificationDate, opt => opt.Ignore())
+                     .ForMember(dest => dest.ProjectID, opt => opt.Ignore());
+
+            CreateMap<SaveEvaluationSurveyQuestions, EvaluationSurveyQuestions>()
+           .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
+           .ForMember(dest => dest.QuestionId, opt => opt.MapFrom(src => src.QuestionId))
+           .ForMember(dest => dest.WithNotes, opt => opt.MapFrom(src => src.WithNotes))
+           .ForMember(dest => dest.SurveyId, opt => opt.MapFrom(src => src.SurveyId))
+
+           .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+           .ForMember(dest => dest.CreationDate, opt => opt.Ignore())
+           .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+           .ForMember(dest => dest.ModificationDate, opt => opt.Ignore())
+           .ForMember(dest => dest.Id, opt => opt.Ignore())
+           .ForMember(dest => dest.EvaluationQuestion, opt => opt.Ignore())
+           .ForMember(dest => dest.EvaluationCategory, opt => opt.Ignore())
+           .ForMember(dest => dest.EvaluationSurvey, opt => opt.Ignore())
+           .ForMember(dest => dest.ProjectID, opt => opt.Ignore());
+
             #endregion
 
 

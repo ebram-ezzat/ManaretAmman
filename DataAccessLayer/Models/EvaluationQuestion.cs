@@ -30,7 +30,8 @@ namespace DataAccessLayer.Models
         public  Project Project { get; set; }
 
 
-        public EvaluationCategory EvaluationCategory { get; set; } 
+        public EvaluationCategory EvaluationCategory { get; set; }
+        public ICollection<EvaluationSurveyQuestions> EvaluationSurveyQuestions { get; set; }
 
     }
 }

@@ -5,10 +5,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataAccessLayer.Contracts;
 
 namespace DataAccessLayer.Models
 {
-    public class EvaluationSurveyQuestions
+    public class EvaluationSurveyQuestions:IMustHaveProject
     {
         [Key]
         public int Id { get; set; }
@@ -37,5 +38,8 @@ namespace DataAccessLayer.Models
         [ForeignKey("EvaluationSurvey")]
         public int SurveyId { get; set; }
         public EvaluationSurvey EvaluationSurvey { get; set; }
+        [NotMapped]
+        public int ProjectID { get; set; }
+
     }
 }

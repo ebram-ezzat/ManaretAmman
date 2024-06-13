@@ -326,7 +326,7 @@ namespace ManaretAmman.Controllers.Employees
         #region Evaluation Survey questions
 
         [HttpPost("SaveEvaluationSurveyQuestions")]
-        public async Task<IApiResponse> SaveEvaluationSurveyQuestions(List<SaveEvaluationSurveyQuestions> LstQuestions)
+        public async Task<IApiResponse> SaveEvaluationSurveyQuestions([FromBody]List<SaveEvaluationSurveyQuestions> LstQuestions)
         {
             if (!ModelState.IsValid)
             {
@@ -340,7 +340,21 @@ namespace ManaretAmman.Controllers.Employees
             var result = await _employeeService.SaveEvaluationSurveyQuestions(LstQuestions);
             return ApiResponse<int>.Success("data has been saved succussfully", result);
         }
+        [HttpGet("GetEvaluationSurveyQuestions")]
+        public async Task<IApiResponse> GetEvaluationSurveyQuestions([FromQuery] GetEvaluationSurveyQuestions getEvaluationSurveyQuestions)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
 
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEvaluationSurveyQuestions(getEvaluationSurveyQuestions);
+            return ApiResponse<List<GetEvaluationSurveyQuestions>>.Success("data has been returned succussfully", result);
+        }
         #endregion
         #endregion
     }
