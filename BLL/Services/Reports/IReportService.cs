@@ -18,6 +18,8 @@ namespace BusinessLogicLayer.Services.Reports
         Task<object> GetEmployeeEarlyLeaveReport(GetEmployeeEarlyLeaveReportRequest getEmployeeEarlyLeaveReportRequest);
         Task<object> GetEmployeeAbsentsReport(GetEmployeeAbsentsReportRequest getEmployeeAbsentsReportRequest);
         Task<object> GetEmployeeAffairsServiceReport(GetEmployeeAffairsServiceReportRequest getEmployeeAffairsServiceReportRequest);
+        Task<object> GetEmployeeSaleriesReport(GetEmployeeSaleriesReportRequest getEmployeeSaleriesReportRequest);
+        Task<object> GetEmployeeBankConvertReport(GetEmployeeBankConvertReportRequest getEmployeeBankConvertReportRequest);
 
     }
 }

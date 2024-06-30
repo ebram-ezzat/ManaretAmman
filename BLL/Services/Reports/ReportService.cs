@@ -27,7 +27,7 @@ namespace BusinessLogicLayer.Services.Reports
         private readonly ILookupsService _lookupsService;
 
         public ReportService(IMapper mapper, IProjectProvider projectProvider, IAuthService authService, PayrolLogOnlyContext payrolLogOnlyContext,
-            IConfiguration configuration, IHostingEnvironment hostingEnvironment,ILookupsService lookupsService)
+            IConfiguration configuration, IHostingEnvironment hostingEnvironment, ILookupsService lookupsService)
         {
             _mapper = mapper;
             _projectProvider = projectProvider;
@@ -121,14 +121,14 @@ namespace BusinessLogicLayer.Services.Reports
         #region التقرير اليومى التفصيلى
         public async Task<object> GetEmployeeAttendanceDailyDetailedReport(GetEmployeeAttendanceDailyDetailedReportRequest getEmployeeAttendanceDailyDetailedReportRequest)
         {
-          
+
             return await GenerateReportAsync(
                getEmployeeAttendanceDailyDetailedReportRequest,
                "dbo.GetEmployeeAttendanceDaily",
                r => r.ReportType,
                (req, settings) => req.ReportType switch
                {
-                   (int)EnumReportType.Date => settings.DailyAttendanceReportDetails,                  
+                   (int)EnumReportType.Date => settings.DailyAttendanceReportDetails,
                    _ => null
                }
            );
@@ -208,7 +208,43 @@ namespace BusinessLogicLayer.Services.Reports
         }
         #endregion
 
+        #region تقرير الرواتب
+        public async Task<object> GetEmployeeSaleriesReport(GetEmployeeSaleriesReportRequest getEmployeeSaleriesReportRequest)
+        {
+            return await GenerateReportAsyncWithAddiationalParams(
+                 getEmployeeSaleriesReportRequest,
+                 "dbo.GetEmployeeSalaryReport",
+                 r => r.ReportType,
+                 (req, settings) => req.ReportType switch
+                 {
+                     (int)EnumReportType.Date => settings.SalaryReportAggregateName,
+                     (int)EnumReportType.Employee => settings.SalaryReportAggregateName,
+                     (int)EnumReportType.AllEmployees => settings.SalaryReportAggregateName,
+                     _ => null
+                 },
+                 BuildSalariesReportInputParams
+             );
 
+        }
+        #endregion
+        #region تقرير التحويل البنكى
+        public async Task<object> GetEmployeeBankConvertReport(GetEmployeeBankConvertReportRequest getEmployeeBankConvertReportRequest)
+        {
+            return await GenerateReportAsyncWithAddiationalParams(
+                getEmployeeBankConvertReportRequest,
+                "dbo.GetEmployeeSalaryReport",
+                r => r.ReportType,
+                (req, settings) => req.ReportType switch
+                {
+                    (int)EnumReportType.Date => settings.ReportBankConvertName,
+                    (int)EnumReportType.Employee => settings.ReportBankConvertName,
+                    (int)EnumReportType.AllEmployees => settings.ReportBankConvertName,
+                    _ => null
+                },
+                BuildSalariesReportInputParams
+            );
+        }
+        #endregion
 
         #region ReportGeneralFunctions
         private string GetReportPath(string reportArFullPath = null, string reportEnFullPath = null, string defaultFullPath = null)
@@ -281,7 +317,9 @@ namespace BusinessLogicLayer.Services.Reports
                    null;
         }
 
-      
+
+
+
 
         //private string GetReportPathFromAppSetting(string reportConfigName,string DefaultFullPath=null)
         //{
@@ -305,7 +343,55 @@ namespace BusinessLogicLayer.Services.Reports
         //    return string.IsNullOrEmpty(DefaultFullPath) ? null : basePath + Path.Combine(DefaultFullPath);
 
         //}
-        #endregion
 
+
+        private async Task<object> GenerateReportAsyncWithAddiationalParams<TRequest>(
+            TRequest request,
+            string storedProcedureName,
+            Func<TRequest, int> reportTypeSelector,
+            Func<TRequest, dynamic, string> reportNameSelector,
+            Func<TRequest, Dictionary<string, object>> buildInputParams) where TRequest : ReportBaseModel
+        {
+            var inputParams = buildInputParams(request);
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
+                .ExecuteReportStoredProcedureAsyncByADO(storedProcedureName, inputParams, null);
+
+            if (result == null || result.Rows.Count == 0)
+                return null;
+
+            var settingResult = await _lookupsService.GetSettings();
+            string reportName = reportNameSelector(request, settingResult);
+
+            string reportPath = GetReportPathIfValid(reportName);
+            if (string.IsNullOrEmpty(reportPath))
+                return null;
+
+            return request.IsExcel ?
+                   PublicHelper.BuildRdlcReportWithDataSourcExcelFormat(result, reportPath, "DsMain") :
+                   PublicHelper.BuildRdlcReportWithDataSourcPDFFormat(result, reportPath, "DsMain");
+        }
+
+        #endregion
+        #region ReportSalaries Functions
+        private Dictionary<string, object> BuildSalariesReportInputParams(GetEmployeeSaleriesReportRequest getEmployeeSaleriesReportRequest)
+        {
+            return new Dictionary<string, object>()
+            {
+                {"pEmployeeID",getEmployeeSaleriesReportRequest.EmployeeID??Convert.DBNull },               
+                {"pProjectID",_projectProvider.GetProjectId()},
+                {"pFlag",getEmployeeSaleriesReportRequest.Flag},
+                {"pLanguageID",_projectProvider.LangId()},               
+                {"pDepartmentID" ,getEmployeeSaleriesReportRequest.DepartmentID??Convert.DBNull},
+                {"pLoginUserID",_projectProvider.UserId()==-1?Convert.DBNull :_projectProvider.UserId()},
+                {"pIsAllEmployees",getEmployeeSaleriesReportRequest.IsAllEmployees},
+                {"pIsMinus",getEmployeeSaleriesReportRequest.IsMinus??Convert.DBNull},
+                {"pDailyWork",getEmployeeSaleriesReportRequest.DailyWork??Convert.DBNull},
+                {"pwithibanonly",getEmployeeSaleriesReportRequest.Withibanonly??Convert.DBNull },
+                 {"pCreatedBy",Convert.DBNull }
+            };
+        }
+
+     
+        #endregion
     }
 }
