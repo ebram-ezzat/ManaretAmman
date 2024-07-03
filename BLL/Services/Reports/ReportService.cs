@@ -377,6 +377,8 @@ namespace BusinessLogicLayer.Services.Reports
         {
             return new Dictionary<string, object>()
             {
+                {"pCurrentYearID",getEmployeeSaleriesReportRequest.CurrentYearID },
+                {"pCurrentMonthID",getEmployeeSaleriesReportRequest.CurrentMonthID },
                 {"pEmployeeID",getEmployeeSaleriesReportRequest.EmployeeID??Convert.DBNull },               
                 {"pProjectID",_projectProvider.GetProjectId()},
                 {"pFlag",getEmployeeSaleriesReportRequest.Flag},
@@ -386,7 +388,7 @@ namespace BusinessLogicLayer.Services.Reports
                 {"pIsAllEmployees",getEmployeeSaleriesReportRequest.IsAllEmployees},
                 {"pIsMinus",getEmployeeSaleriesReportRequest.IsMinus??Convert.DBNull},
                 {"pDailyWork",getEmployeeSaleriesReportRequest.DailyWork??Convert.DBNull},
-                {"pwithibanonly",getEmployeeSaleriesReportRequest.Withibanonly??Convert.DBNull },
+                {"pwithibanonly", getEmployeeSaleriesReportRequest.Withibanonly??Convert.DBNull },
                  {"pCreatedBy",Convert.DBNull }
             };
         }
