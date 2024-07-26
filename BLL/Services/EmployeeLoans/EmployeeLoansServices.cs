@@ -8,10 +8,13 @@ using BusinessLogicLayer.Services.Notification;
 using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO;
+using DataAccessLayer.DTO.EmployeeLeaves;
 using DataAccessLayer.DTO.EmployeeLoans;
 using DataAccessLayer.DTO.Notification;
+using DataAccessLayer.Identity;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using UnauthorizedAccessException = BusinessLogicLayer.Exceptions.UnauthorizedAccessException;
@@ -28,16 +31,18 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
         readonly INotificationsService _iNotificationsService;
         readonly int _userId;
         readonly int _projecId;
-        public EmployeeLoansService(IUnitOfWork unityOfWork, ILookupsService lookupsService, IMapper mapper, IProjectProvider projectProvider, IAuthService authService, INotificationsService iNotificationsService)
+        readonly DataAccessLayer.Models.PayrolLogOnlyContext _payrolLogOnlyContext;
+        public EmployeeLoansService(IUnitOfWork unityOfWork, ILookupsService lookupsService, IMapper mapper, IProjectProvider projectProvider, IAuthService authService, INotificationsService iNotificationsService, DataAccessLayer.Models.PayrolLogOnlyContext payrolLogOnlyContext)
         {
-            _unitOfWork     = unityOfWork;
+            _unitOfWork = unityOfWork;
             _lookupsService = lookupsService;
-            _mapper         = mapper;
+            _mapper = mapper;
             _projectProvider = projectProvider;
             _authService = authService;
             _iNotificationsService = iNotificationsService;
             _userId = _projectProvider.UserId();
             _projecId = _projectProvider.GetProjectId();
+            _payrolLogOnlyContext = payrolLogOnlyContext;
         }
         public async Task<EmployeeLoansOutput> Get(int id)
         {
@@ -65,61 +70,95 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             return result;
         }
 
-        public async Task<PagedResponse<EmployeeLoansOutput>> GetPage(PaginationFilter<EmployeeLoanFilter> filter)
+        public async Task<dynamic> GetPage(PaginationFilter<EmployeeLoanFilter> filter)
         {
             if (_userId == -1) throw new UnauthorizedAccessException("Incorrect userId");
             if (!_authService.IsValidUser(_userId)) throw new UnauthorizedAccessException("Incorrect userId");
-            int? employeeId = _authService.IsHr(_userId);
+            //int? employeeId = _authService.IsHr(_userId);
 
-            var query = from e in _unitOfWork.EmployeeRepository.PQuery()
-                        join lt in _unitOfWork.LookupsRepository.PQuery() on e.DepartmentID equals lt.ID into ltGroup
-                        from lt in ltGroup.DefaultIfEmpty()
-                        join el in _unitOfWork.EmployeeLoanRepository.PQuery() on e.EmployeeID equals el.EmployeeID
-                        where (lt.TableName == "Department" && lt.ColumnName == "DepartmentID") && e.ProjectID == _projecId && lt.ProjectID == _projecId && el.ProjectID == _projecId && (e.EmployeeID == employeeId || lt.EmployeeID == employeeId || employeeId == null)
-                        select new EmployeeLoan
-                        {
-                            Employee = e,
-                            EmployeeID = e.EmployeeID,
-                            ApprovalStatusID = el.ApprovalStatusID,
-                            EmployeeLoanID = el.EmployeeLoanID,
-                            loantypeid = el.loantypeid,
-                            ProjectID = el.ProjectID,
-                            LoanDate = el.LoanDate,
-                            LoanAmount=el.LoanAmount,
-                            Notes= el.Notes,
-                            StatusID=el.StatusID
+            //var query = from e in _unitOfWork.EmployeeRepository.PQuery()
+            //            join lt in _unitOfWork.LookupsRepository.PQuery() on e.DepartmentID equals lt.ID into ltGroup
+            //            from lt in ltGroup.DefaultIfEmpty()
+            //            join el in _unitOfWork.EmployeeLoanRepository.PQuery() on e.EmployeeID equals el.EmployeeID
+            //            where (lt.TableName == "Department" && lt.ColumnName == "DepartmentID") && e.ProjectID == _projecId && lt.ProjectID == _projecId && el.ProjectID == _projecId && (e.EmployeeID == employeeId || lt.EmployeeID == employeeId || employeeId == null)
+            //            select new EmployeeLoan
+            //            {
+            //                Employee = e,
+            //                EmployeeID = e.EmployeeID,
+            //                ApprovalStatusID = el.ApprovalStatusID,
+            //                EmployeeLoanID = el.EmployeeLoanID,
+            //                loantypeid = el.loantypeid,
+            //                ProjectID = el.ProjectID,
+            //                LoanDate = el.LoanDate,
+            //                LoanAmount=el.LoanAmount,
+            //                Notes= el.Notes,
+            //                StatusID=el.StatusID
 
-                        };
+            //            };
 
-         
-            if (filter.FilterCriteria != null)
-                query= ApplyFilter(query, filter.FilterCriteria);
 
-            var totalRecords = await query.CountAsync();
+            //if (filter.FilterCriteria != null)
+            //    query= ApplyFilter(query, filter.FilterCriteria);
 
-            var Loans = await query.Skip((filter.PageIndex - 1) * filter.Offset)
-                        .Take(filter.Offset).ToListAsync();
+            //var totalRecords = await query.CountAsync();
 
-            //var lookups = await _lookupsService.GetLookups(Constants.EmployeeLoans, Constants.LoanTypeID);
-            var approvals = await _lookupsService.GetLookups(Constants.Approvals, string.Empty);
+            //var Loans = await query.Skip((filter.PageIndex - 1) * filter.Offset)
+            //            .Take(filter.Offset).ToListAsync();
 
-            var result = Loans.Select(item => new EmployeeLoansOutput
+            ////var lookups = await _lookupsService.GetLookups(Constants.EmployeeLoans, Constants.LoanTypeID);
+            //var approvals = await _lookupsService.GetLookups(Constants.Approvals, string.Empty);
+
+            //var result = Loans.Select(item => new EmployeeLoansOutput
+            //{
+            //    ID             = item.EmployeeLoanID,
+            //    EmployeeID     = item.Employee.EmployeeID,
+            //    EmployeeName   = item.Employee.EmployeeName,
+            //    LoanDate       = item.LoanDate.IntToDateValue(),
+            //    LoanAmount     = item.LoanAmount  ,
+            //    ProjectID = item.ProjectID,
+            //    LoantypeId = item.loantypeid,
+            //    loantypeAr = item.loantypeid is not null? Constants.GetEmployeeLoanDictionary[item.loantypeid.Value].NameAr:null,
+            //    loantypeEn = item.loantypeid is not null ? Constants.GetEmployeeLoanDictionary[item.loantypeid.Value].NameEn : null,
+            //    ApprovalStatus = approvals.FirstOrDefault(e => e.ColumnValue == item.ApprovalStatusID.ToString())?.ColumnDescriptionAr,
+            //    Notes=item.Notes,
+            //    StatusID=item.StatusID
+            //}).ToList();
+
+            //return result.CreatePagedReponse(filter.PageIndex, filter.Offset, totalRecords);
+
+            var inputParams = new Dictionary<string, object>()
             {
-                ID             = item.EmployeeLoanID,
-                EmployeeID     = item.Employee.EmployeeID,
-                EmployeeName   = item.Employee.EmployeeName,
-                LoanDate       = item.LoanDate.IntToDateValue(),
-                LoanAmount     = item.LoanAmount  ,
-                ProjectID = item.ProjectID,
-                LoantypeId = item.loantypeid,
-                loantypeAr = item.loantypeid is not null? Constants.GetEmployeeLoanDictionary[item.loantypeid.Value].NameAr:null,
-                loantypeEn = item.loantypeid is not null ? Constants.GetEmployeeLoanDictionary[item.loantypeid.Value].NameEn : null,
-                ApprovalStatus = approvals.FirstOrDefault(e => e.ColumnValue == item.ApprovalStatusID.ToString())?.ColumnDescriptionAr,
-                Notes=item.Notes,
-                StatusID=item.StatusID
-            }).ToList();
+                
+                //{"pEmployeeLoanID",filter.FilterCriteria.EmployeeLoanID },
+                {"pEmployeeID",filter.FilterCriteria.EmployeeID },
+                {"pProjectID",_projectProvider.GetProjectId()},
+                {"pFromDate",filter.FilterCriteria.FromDate!=null?filter.FilterCriteria.FromDate.DateToIntValue():Convert.DBNull},
+                {"pToDate", filter.FilterCriteria.ToDate!=null ?filter.FilterCriteria.ToDate.DateToIntValue():Convert.DBNull },
+                {"pLanguageID",_projectProvider.LangId() },
+                {"pLoanTypeID",1 /*filter.FilterCriteria.LoanTypeId??Convert.DBNull*/ },
+                {"pFlag",1 },
+                {"pLoginUserID",_projectProvider.UserId()},
+                
+                {"pPageNo",filter.PageIndex },
+                {"pPageSize", filter.Offset},
+                
 
-            return result.CreatePagedReponse(filter.PageIndex, filter.Offset, totalRecords);
+            };
+            var outputParams = new Dictionary<string, object>() { { "prowcount", "int" } };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeLoanResult>("dbo.GetEmployeeLoan", inputParams, outputParams);
+            dynamic obj = new ExpandoObject();
+            if (outputValues.TryGetValue("prowcount", out var totalRecordsObj) && totalRecordsObj is int totalRecords)
+            {
+                var totalPages = ((double)totalRecords / (double)filter.Offset);
+                int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
+
+                obj.totalPages = roundedTotalPages;
+                obj.result = result;
+                obj.pageIndex = filter.PageIndex;
+                obj.offset = filter.Offset;
+            }
+
+            return obj;
         }
 
         private static IQueryable<EmployeeLoan> ApplyFilter(IQueryable<EmployeeLoan>  query, EmployeeLoanFilter criteria)
@@ -177,7 +216,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             return query; 
         }
 
-        public async Task Create(EmployeeLoansInput model)
+        public async Task<int> Create(EmployeeLoansInput model)
         {
 
             if (_userId == -1) throw new UnauthorizedAccessException("Incorrect userId");
@@ -186,19 +225,41 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             if (model == null)
                 throw new NotFoundException("recieved data is missed");
 
-            var LoanDate = model.LoanDate.DateToIntValue();
+            //var LoanDate = model.LoanDate.DateToIntValue();
 
-            model.LoanDate = null;
+            //model.LoanDate = null;
 
-            var employeeLoan = _mapper.Map<EmployeeLoan>(model);
+            //var employeeLoan = _mapper.Map<EmployeeLoan>(model);
 
-            employeeLoan.LoanDate    = LoanDate;
+            //employeeLoan.LoanDate    = LoanDate;
 
-            await _unitOfWork.EmployeeLoanRepository.PInsertAsync(employeeLoan);
+            //await _unitOfWork.EmployeeLoanRepository.PInsertAsync(employeeLoan);
 
-             await _unitOfWork.SaveAsync();
-            var insertedPKValue = employeeLoan.EmployeeLoanID;
-            await sendToNotification(employeeLoan.EmployeeID, insertedPKValue);
+            // await _unitOfWork.SaveAsync();
+            //var insertedPKValue = employeeLoan.EmployeeLoanID;
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID", model.EmployeeID },
+                { "pLoanDate", model.LoanDate.DateToIntValue() },
+                { "pLoanAmount", model.LoanAmount},
+                { "pNotes",model.Notes},
+                { "pCreatedBy",_projectProvider.UserId()},
+                { "pProjectID",_projectProvider.GetProjectId()},
+                { "ploantypeid",1},
+                { "pIsFirstLoan",1},
+                { "pIsPaid",0},
+            };
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+             {
+
+                { "pEmployeeLoanID",model.ID },
+                { "pError","int" },
+
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeLoan", inputParams, outputParams);
+            await sendToNotification(model.EmployeeID, result);
+            return (int)result;
+            
         }
 
         async Task sendToNotification(int employeeId, int PKID)
@@ -218,7 +279,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
         }
 
 
-        public async Task Update(EmployeeLoansUpdate employeeLoan)
+        public async Task<int> Update(EmployeeLoansUpdate employeeLoan)
         {
             if (_userId == -1) throw new UnauthorizedAccessException("Incorrect userId");
             if (!_authService.IsValidUser(_userId)) throw new UnauthorizedAccessException("Incorrect userId");
@@ -229,14 +290,36 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             if (Loan is null)
                 throw new NotFoundException("Data Not Found");
 
-            Loan.LoanDate = employeeLoan.LoanDate.DateToIntValue();
-            Loan.LoanAmount = employeeLoan.LoanAmount;
-            Loan.Notes = employeeLoan.Notes;
-            Loan.loantypeid = employeeLoan.LoantypeId;
+            //Loan.LoanDate = employeeLoan.LoanDate.DateToIntValue();
+            //Loan.LoanAmount = employeeLoan.LoanAmount;
+            //Loan.Notes = employeeLoan.Notes;
+            //Loan.loantypeid = employeeLoan.LoantypeId;
 
-            await _unitOfWork.EmployeeLoanRepository.UpdateAsync(Loan);
+            //await _unitOfWork.EmployeeLoanRepository.UpdateAsync(Loan);
 
-            await _unitOfWork.SaveAsync();
+            //await _unitOfWork.SaveAsync();
+
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID", employeeLoan.EmployeeID },
+                { "pLoanDate", employeeLoan.LoanDate.DateToIntValue() },
+                { "pLoanAmount", employeeLoan.LoanAmount},
+                { "pNotes",employeeLoan.Notes},
+                { "pCreatedBy",_projectProvider.UserId()},
+                { "pProjectID",_projectProvider.GetProjectId()},
+                { "ploantypeid",1},
+                { "pIsFirstLoan",1},
+                { "pIsPaid",0},
+            };
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+             {
+
+                { "pEmployeeLoanID",employeeLoan.ID },
+                { "pError","int" },
+
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeLoan", inputParams, outputParams);
+            return (int)result;
 
         }
 

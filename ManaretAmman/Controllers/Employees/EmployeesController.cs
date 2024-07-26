@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer.Services.Employees;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.Models;
+using LanguageExt.Common;
 using ManaretAmman.MiddleWare;
 using ManaretAmman.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -30,8 +31,11 @@ namespace ManaretAmman.Controllers.Employees
         [HttpPost("SaveAttendanceByUser")]
         public async Task<IApiResponse> SaveAttendanceByUser(SaveAttendance saveAttendance)
         {
-            await _employeeService.SaveAttendanceByUser(saveAttendance);
-
+            var result = await _employeeService.SaveAttendanceByUser(saveAttendance);
+            if(result==-3)
+            {
+                return ApiResponse.Failure(" An unexpected error on validation occurred ", new string[] { "The user does not have permission to log in from this device" });
+            }
             return ApiResponse.Success("data has been retrieved succussfully");
         }
         [HttpGet("Documents/GetEmployeePaper")]
