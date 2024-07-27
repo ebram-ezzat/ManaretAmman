@@ -70,6 +70,13 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse.Success();
         }
+        [HttpDelete]
+        public async Task<IApiResponse> UpdateScheduledLoans([FromQuery] DeleteSchededuledLoansInput deleteSchededuledLoansInput)
+        {
+            await _employeeService.DeleteScheduledLoans(deleteSchededuledLoansInput);
+
+            return ApiResponse.Success();
+        }
     }
 
 }

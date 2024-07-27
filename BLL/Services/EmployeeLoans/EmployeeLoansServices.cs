@@ -10,6 +10,7 @@ using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO;
 using DataAccessLayer.DTO.EmployeeLeaves;
 using DataAccessLayer.DTO.EmployeeLoans;
+using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.Notification;
 using DataAccessLayer.Identity;
 using DataAccessLayer.Models;
@@ -440,6 +441,32 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeLoan", inputParams, outputParams);
             }
             return 0;
+        }
+
+        public async Task<int> DeleteScheduledLoans(DeleteSchededuledLoansInput schededuledLoans)
+        {
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+            { "pEmployeeLoanID", schededuledLoans.EmployeeLoanID },
+            { "pLoanSerial", schededuledLoans.LoanSerial },
+            { "pEmployeeID", schededuledLoans.EmployeeID },
+            { "pProjectID", _projectProvider.GetProjectId() }
+
+          };
+
+
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" }, // Assuming the output parameter "pError" is of type int
+            
+        };
+
+            // Call the ExecuteStoredProcedureAsync function
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeeLoan", inputParams, outputParams);
+            int pErrorValue = (int)outputValues["pError"];
+
+
+            return pErrorValue;
         }
     }
 }
