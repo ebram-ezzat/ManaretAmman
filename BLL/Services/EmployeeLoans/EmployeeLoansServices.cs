@@ -481,7 +481,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             { "pLanguageID", _projectProvider.LangId() }, // Not nullable, no need for DB null check
             { "pFlag", getEmployeeLoan.Flag },
             {"pCreatedBy", getEmployeeLoan.CreatedBy?? Convert.DBNull},
-            {"pLoginUserID",_projectProvider.UserId() },
+            {"pLoginUserID",_projectProvider.UserId()==-1?Convert.DBNull:_projectProvider.UserId() },
             {"pPageNo" ,getEmployeeLoan.PageNo},
             {"pPageSize",getEmployeeLoan.PageSize }
         };
