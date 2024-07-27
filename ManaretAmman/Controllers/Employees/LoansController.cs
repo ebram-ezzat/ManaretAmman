@@ -63,14 +63,14 @@ namespace ManaretAmman.Controllers.Employees
         /// </summary>
         /// <param name="employees"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("CreateScheduledLoans")]
         public async Task<IApiResponse> CreateScheduledLoans([FromBody]SchededuledLoansInput employees)
         {
             await _employeeService.CreateScheduledLoans(employees);
 
             return ApiResponse.Success();
         }
-        [HttpPost]
+        [HttpPost("UpdateScheduledLoans")]
         public async Task<IApiResponse> UpdateScheduledLoans([FromBody] SchededuledLoansInput employees)
         {
             await _employeeService.UpdateScheduledLoans(employees);
@@ -84,7 +84,7 @@ namespace ManaretAmman.Controllers.Employees
         /// </summary>
         /// <param name="deleteSchededuledLoansInput"></param>
         /// <returns></returns>
-        [HttpDelete]
+        [HttpDelete("DeleteScheduledLoans")]
         public async Task<IApiResponse> DeleteScheduledLoans([FromQuery] DeleteSchededuledLoansInput deleteSchededuledLoansInput)
         {
             await _employeeService.DeleteScheduledLoans(deleteSchededuledLoansInput);
@@ -99,7 +99,7 @@ namespace ManaretAmman.Controllers.Employees
         /// <param name="getSchededuledLoansInput"></param>
         /// <returns></returns>
         [AddLanguageHeaderAttribute]
-        [HttpGet]
+        [HttpGet("GetScheduledLoans")]
         public async Task<IApiResponse> GetScheduledLoans([FromQuery] EmployeeLoanParameters getSchededuledLoansInput)
         {
             if (!ModelState.IsValid)
