@@ -59,7 +59,7 @@ namespace ManaretAmman.Controllers.Employees
         }
 
         /// <summary>
-        /// <para>{IsPaid} 0 : not Paid </para>
+        /// {IsPaid} 0 : not Paid 
         /// </summary>
         /// <param name="employees"></param>
         /// <returns></returns>
@@ -77,10 +77,11 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse.Success();
         }
+  
         /// <summary>
-        /// <para>{EmployeeLoanID} you can send this to delete one loan from popup</para>
-        /// <para>{LoanSerial} and {EmployeeID } or you can send this to delete all loans from Gird</para>
-        /// <para>{CanDelete} should be checked to returned from getAPi with value 1 to can delete </para>
+        /// {EmployeeLoanID} you can send this to delete one loan from popup ,
+        /// {LoanSerial} and {EmployeeID } or you can send this to delete all loans from Gird ,
+        /// {CanDelete} should be checked to returned from getAPi with value 1 to can delete 
         /// </summary>
         /// <param name="deleteSchededuledLoansInput"></param>
         /// <returns></returns>
@@ -93,8 +94,8 @@ namespace ManaretAmman.Controllers.Employees
         }
 
         /// <summary>        
-        /// <para>{Flag} is 1 </para>
-        /// <para>you can send {Accept-Language} Via header request to get the correct description "ar" For Arabic and "en" For English</para>
+        /// {Flag} is 1 ,
+        /// you can send {Accept-Language} Via header request to get the correct description "ar" For Arabic and "en" For English
         /// </summary>       
         /// <param name="getSchededuledLoansInput"></param>
         /// <returns></returns>
