@@ -77,10 +77,10 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse.Success();
         }
-  
+
         /// <summary>
-        /// {EmployeeLoanID} you can send this to delete one loan from popup ,
-        /// {LoanSerial} and {EmployeeID } or you can send this to delete all loans from Gird ,
+        /// {EmployeeLoanID} you can send this to delete one loan from popup ,or,
+        /// {LoanSerial} and {EmployeeID } you can send these to delete all loans from Gird ,
         /// {CanDelete} should be checked to returned from getAPi with value 1 to can delete 
         /// </summary>
         /// <param name="deleteSchededuledLoansInput"></param>
