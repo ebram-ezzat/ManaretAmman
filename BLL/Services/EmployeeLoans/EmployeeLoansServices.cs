@@ -468,5 +468,30 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
 
             return pErrorValue;
         }
+        public async Task<dynamic> GetScheduledLoan(EmployeeLoanParameters getEmployeeLoan)
+        {
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pEmployeeLoanID", getEmployeeLoan.EmployeeLoanID ?? Convert.DBNull },
+            { "pEmployeeID", getEmployeeLoan.EmployeeID ?? Convert.DBNull },
+            { "pProjectID", _projectProvider.GetProjectId() },  // Not nullable, no need for DB null check
+            { "pFromDate", getEmployeeLoan.FromDate==null ? Convert.DBNull:getEmployeeLoan.FromDate.DateToIntValue() },
+            { "pToDate", getEmployeeLoan.ToDate==null ? Convert.DBNull:getEmployeeLoan.ToDate.DateToIntValue() },
+            { "pLoanTypeID", getEmployeeLoan.LoanTypeID ?? Convert.DBNull },
+            { "pLanguageID", _projectProvider.LangId() }, // Not nullable, no need for DB null check
+            { "pFlag", getEmployeeLoan.Flag },
+            {"pCreatedBy", getEmployeeLoan.CreatedBy?? Convert.DBNull},
+            {"pLoginUserID",_projectProvider.UserId() },
+            {"pPageNo" ,getEmployeeLoan.PageNo},
+            {"pPageSize",getEmployeeLoan.PageSize }
+        };
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            {"prowcount","int" }
+        };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeLoanReturnResult>("dbo.GetEmployeeLoan", inputParams, outputParams);
+            return PublicHelper.CreateResultPaginationObject(getEmployeeLoan, result, outputValues); ;
+
+        }
     }
 }

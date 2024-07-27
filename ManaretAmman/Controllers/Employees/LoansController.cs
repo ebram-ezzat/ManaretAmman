@@ -2,6 +2,8 @@
 using BusinessLogicLayer.Services.EmployeeLoans;
 using DataAccessLayer.DTO;
 using DataAccessLayer.DTO.EmployeeLoans;
+using DataAccessLayer.DTO.Employees;
+using ManaretAmman.MiddleWare;
 using ManaretAmman.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -56,6 +58,11 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse.Success();
         }
 
+        /// <summary>
+        /// <para>{IsPaid} 0 : not Paid </para>
+        /// </summary>
+        /// <param name="employees"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IApiResponse> CreateScheduledLoans([FromBody]SchededuledLoansInput employees)
         {
@@ -70,12 +77,43 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse.Success();
         }
+        /// <summary>
+        /// <para>{EmployeeLoanID} you can send this to delete one loan from popup</para>
+        /// <para>{LoanSerial} and {EmployeeID } or you can send this to delete all loans from Gird</para>
+        /// <para>{CanDelete} should be checked to returned from getAPi with value 1 to can delete </para>
+        /// </summary>
+        /// <param name="deleteSchededuledLoansInput"></param>
+        /// <returns></returns>
         [HttpDelete]
         public async Task<IApiResponse> DeleteScheduledLoans([FromQuery] DeleteSchededuledLoansInput deleteSchededuledLoansInput)
         {
             await _employeeService.DeleteScheduledLoans(deleteSchededuledLoansInput);
 
             return ApiResponse.Success();
+        }
+
+        /// <summary>        
+        /// <para>{Flag} is 1 </para>
+        /// <para>you can send {Accept-Language} Via header request to get the correct description "ar" For Arabic and "en" For English</para>
+        /// </summary>       
+        /// <param name="getSchededuledLoansInput"></param>
+        /// <returns></returns>
+        [AddLanguageHeaderAttribute]
+        [HttpGet]
+        public async Task<IApiResponse> GetScheduledLoans([FromQuery] EmployeeLoanParameters getSchededuledLoansInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetScheduledLoan(getSchededuledLoansInput);
+
+            return ApiResponse<dynamic>.Success("data has been returned succussfully", result);
         }
     }
 
