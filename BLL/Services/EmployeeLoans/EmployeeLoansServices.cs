@@ -346,5 +346,64 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             return LoanDate.ConvertFromDateTimeToUnixTimestamp();
                
         }
+
+        public async Task<int> CreateScheduledLoans(List<EmployeeLoansInput> employees)
+        {
+            var first = employees.FirstOrDefault();
+            int serial = 0;
+            if(first is not null)
+            {
+                Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID", first.EmployeeID },
+                { "pLoanDate", first.LoanDate.DateToIntValue() },
+                { "pLoanAmount", first.LoanAmount},
+                { "pNotes",first.Notes},
+                { "pCreatedBy",_projectProvider.UserId()},
+                { "pProjectID",_projectProvider.GetProjectId()},
+                { "ploantypeid",1},
+                { "pIsFirstLoan",1},
+                { "pIsPaid",0},
+            };
+                Dictionary<string, object> outputParams = new Dictionary<string, object>
+             {
+
+                {"pEmployeeLoanID",first.ID },
+                {"pLoanSerial","int" },
+                { "pError","int" },
+
+            };
+                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeLoan", inputParams, outputParams);
+                if (outputValues.TryGetValue("pLoanSerial", out var value))
+                {
+                    serial = Convert.ToInt32(value);
+                  
+                }
+            }
+            foreach(var employee in employees.Skip(1)) {
+                Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID", first.EmployeeID },
+                { "pLoanDate", first.LoanDate.DateToIntValue() },
+                { "pLoanAmount",first.LoanAmount},
+                { "pNotes",first.Notes},
+                { "pCreatedBy",_projectProvider.UserId()},
+                { "pProjectID",_projectProvider.GetProjectId()},
+                { "ploantypeid",1},
+                { "pIsFirstLoan",0},
+                { "pIsPaid",0},
+            };
+                Dictionary<string, object> outputParams = new Dictionary<string, object>
+             {
+
+                {"pEmployeeLoanID",first.ID },
+                {"pLoanSerial",serial},
+                { "pError","int" },
+
+            };
+                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeLoan", inputParams, outputParams);
+            }
+            return serial;
+        }
     }
 }

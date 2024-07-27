@@ -16,9 +16,10 @@ namespace DataAccessLayer.DTO
         public decimal? LoanAmount { get; set; }
 
         [StringLength(200)]
-        public string? Notes { get; set; }
+        public string Notes { get; set; }
         public int? LoantypeId { get; set; }
 
         public int? LoanSerial { get; set; }
+        public int? IsPaid { get; set; }
     }
 }
