@@ -57,7 +57,7 @@ namespace ManaretAmman.Controllers.Employees
         }
 
         [HttpPost]
-        public async Task<IApiResponse> CreateScheduledLoans(List<EmployeeLoansInput> employees)
+        public async Task<IApiResponse> CreateScheduledLoans(SchededuledLoansInput employees)
         {
             await _employeeService.CreateScheduledLoans(employees);
 

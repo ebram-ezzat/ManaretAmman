@@ -11,7 +11,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
         Task Delete(int employeeLoanId);
         Task<EmployeeLoansOutput> Get(int id);
         Task<dynamic> GetPage(PaginationFilter<EmployeeLoanFilter> filter);
-        Task<int> CreateScheduledLoans(List<EmployeeLoansInput> employees);
+        Task<int> CreateScheduledLoans(SchededuledLoansInput employees);
 
     }
 }
