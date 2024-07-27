@@ -20,7 +20,7 @@ namespace DataAccessLayer.DTO
         public int? LoantypeId { get; set; }
 
         public int? LoanSerial { get; set; }
-        public int? IsPaid { get; set; }
+        public int? IsPaid { get; set; } = 0;
     }
     public class SchededuledLoansInput
     {

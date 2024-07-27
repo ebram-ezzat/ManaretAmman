@@ -13,6 +13,7 @@ using DataAccessLayer.DTO.EmployeeLoans;
 using DataAccessLayer.DTO.Notification;
 using DataAccessLayer.Identity;
 using DataAccessLayer.Models;
+using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
 using System.Dynamic;
 using System.Linq;
@@ -368,7 +369,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 { "pProjectID",_projectProvider.GetProjectId()},
                 { "ploantypeid",1},
                 { "pIsFirstLoan",1},
-                { "pIsPaid",0},
+                { "pIsPaid",first.IsPaid},
             };
                 Dictionary<string, object> outputParams = new Dictionary<string, object>
              {
@@ -389,14 +390,14 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 Dictionary<string, object> inputParams = new Dictionary<string, object>
             {
                 { "pEmployeeID", employees.EmployeeID },
-                { "pLoanDate", first.LoanDate.DateToIntValue() },
-                { "pLoanAmount",first.LoanAmount},
-                { "pNotes",first.Notes},
+                { "pLoanDate", employee.LoanDate.DateToIntValue() },
+                { "pLoanAmount",employee.LoanAmount},
+                { "pNotes",employee.Notes},
                 { "pCreatedBy",_projectProvider.UserId()},
                 { "pProjectID",_projectProvider.GetProjectId()},
                 { "ploantypeid",1},
                 { "pIsFirstLoan",0},
-                { "pIsPaid",0},
+                { "pIsPaid",employee.IsPaid},
             };
                 Dictionary<string, object> outputParams = new Dictionary<string, object>
              {
@@ -409,6 +410,36 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeLoan", inputParams, outputParams);
             }
             return serial;
+        }
+
+        public async Task<int> UpdateScheduledLoans(SchededuledLoansInput employees)
+        {
+            if (employees.TotalAmount != employees.EmployeeLoansInputs.Sum(x => x.LoanAmount))
+            {
+                throw new UnauthorizedAccessException("TotalAmount not equal the LoanAmount");
+
+            }
+            foreach (var employee in employees.EmployeeLoansInputs.Skip(1))
+            {
+                Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {                
+                { "pLoanDate", employee.LoanDate },
+                { "pLoanAmount",employee.LoanAmount},
+                { "pNotes",employee.Notes},
+                { "pCreatedBy",_projectProvider.UserId()},
+                { "pProjectID",_projectProvider.GetProjectId()},               
+                { "pIsPaid",employee.IsPaid},
+            };
+                Dictionary<string, object> outputParams = new Dictionary<string, object>
+             {
+
+                {"pEmployeeLoanID",employee.ID},                
+                { "pError","int" },
+
+            };
+                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeLoan", inputParams, outputParams);
+            }
+            return 0;
         }
     }
 }
