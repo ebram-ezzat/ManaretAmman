@@ -347,15 +347,20 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                
         }
 
-        public async Task<int> CreateScheduledLoans(List<EmployeeLoansInput> employees)
+        public async Task<int> CreateScheduledLoans(SchededuledLoansInput employees)
         {
-            var first = employees.FirstOrDefault();
+            if(employees.TotalAmount != employees.EmployeeLoansInputs.Sum(x=>x.LoanAmount))
+            {
+                throw new UnauthorizedAccessException("TotalAmount not equal the LoanAmount");
+
+            }
+            var first = employees.EmployeeLoansInputs.FirstOrDefault();
             int serial = 0;
             if(first is not null)
             {
                 Dictionary<string, object> inputParams = new Dictionary<string, object>
             {
-                { "pEmployeeID", first.EmployeeID },
+                { "pEmployeeID", employees.EmployeeID },
                 { "pLoanDate", first.LoanDate.DateToIntValue() },
                 { "pLoanAmount", first.LoanAmount},
                 { "pNotes",first.Notes},
@@ -380,10 +385,10 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                   
                 }
             }
-            foreach(var employee in employees.Skip(1)) {
+            foreach(var employee in employees.EmployeeLoansInputs.Skip(1)) {
                 Dictionary<string, object> inputParams = new Dictionary<string, object>
             {
-                { "pEmployeeID", first.EmployeeID },
+                { "pEmployeeID", employees.EmployeeID },
                 { "pLoanDate", first.LoanDate.DateToIntValue() },
                 { "pLoanAmount",first.LoanAmount},
                 { "pNotes",first.Notes},

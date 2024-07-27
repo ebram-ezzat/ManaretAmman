@@ -22,4 +22,10 @@ namespace DataAccessLayer.DTO
         public int? LoanSerial { get; set; }
         public int? IsPaid { get; set; }
     }
+    public class SchededuledLoansInput
+    {
+        public int TotalAmount { get; set; }
+        public int EmployeeID { get; set; }
+        public List<EmployeeLoansInput> EmployeeLoansInputs { get; set; }
+    }
 }
