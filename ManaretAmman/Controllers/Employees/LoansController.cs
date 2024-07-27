@@ -57,9 +57,16 @@ namespace ManaretAmman.Controllers.Employees
         }
 
         [HttpPost]
-        public async Task<IApiResponse> CreateScheduledLoans(SchededuledLoansInput employees)
+        public async Task<IApiResponse> CreateScheduledLoans([FromBody]SchededuledLoansInput employees)
         {
             await _employeeService.CreateScheduledLoans(employees);
+
+            return ApiResponse.Success();
+        }
+        [HttpPost]
+        public async Task<IApiResponse> UpdateScheduledLoans([FromBody] SchededuledLoansInput employees)
+        {
+            await _employeeService.UpdateScheduledLoans(employees);
 
             return ApiResponse.Success();
         }
