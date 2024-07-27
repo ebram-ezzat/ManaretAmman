@@ -489,7 +489,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
         {
             {"prowcount","int" }
         };
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeLoanReturnResult>("dbo.GetEmployeeLoan", inputParams, outputParams);
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeLoanResult>("dbo.GetEmployeeLoan", inputParams, outputParams);
             return PublicHelper.CreateResultPaginationObject(getEmployeeLoan, result, outputValues); ;
 
         }
