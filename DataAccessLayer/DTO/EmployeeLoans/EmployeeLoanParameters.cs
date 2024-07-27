@@ -11,8 +11,7 @@ namespace DataAccessLayer.DTO.EmployeeLoans
         public int? EmployeeLoanID { get; set; }
         public int? EmployeeID { get; set; }
         public DateTime? FromDate { get; set; }
-        public DateTime? ToDate { get; set; }
-        public int? LanguageID { get; set; }
+        public DateTime? ToDate { get; set; }       
         public int? LoanTypeID { get; set; }
         public int Flag { get; set; } = 1; // Default value is 1
         public int? CreatedBy { get; set; }
