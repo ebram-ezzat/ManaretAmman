@@ -107,7 +107,7 @@ namespace DataAccessLayer.Models
         public virtual DbSet<EvaluationCategory> EvaluationCategory { get; set; }
         public virtual DbSet<EvaluationQuestion> EvaluationQuestion { get; set; }
         public virtual DbSet<EvaluationSurveyQuestions> EvaluationSurveyQuestions { get; set; }
-
+        public virtual DbSet<EvaluationSurveySetup> EvaluationSurveySetup { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -977,7 +977,19 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<EvaluationSurveyQuestions>()
        .HasOne(e => e.EvaluationQuestion)
        .WithMany(c => c.EvaluationSurveyQuestions);
-       //.HasForeignKey(e => new { e.QuestionId }); // Configure the composite foreign key
+            //.HasForeignKey(e => new { e.QuestionId }); // Configure the composite foreign key
+
+            modelBuilder.Entity<EvaluationSurveySetup>(entity =>
+            {
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+
+            });
+
+
+            modelBuilder.Entity<EvaluationSurveySetup>()
+     .HasOne(e => e.EvaluationSurvey).WithMany(c=>c.EvaluationSurveySetup);
 
             OnModelCreatingGeneratedProcedures(modelBuilder);
             OnModelCreatingGeneratedFunctions(modelBuilder);

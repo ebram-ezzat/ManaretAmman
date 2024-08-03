@@ -559,5 +559,80 @@ internal class EmployeeService : IEmployeeService
         return result;
     }
 
+    public async Task<List<GetEvaluationSurveySetup>> GetEvaluationSurveySetup(GetEvaluationSurveySetup getEvaluationSurveySetup)
+    {
+        var filters = new List<Expression<Func<EvaluationSurveySetup, bool>>>
+        {
+            e => e.SurveyId==getEvaluationSurveySetup.SurveyId,
+            e=>e.StatusId==1//active
+        }
+        .Concat(getEvaluationSurveySetup.Id > 0 ? new[] { (Expression<Func<EvaluationSurveySetup, bool>>)(e => e.Id == getEvaluationSurveySetup.Id) } : Array.Empty<Expression<Func<EvaluationSurveySetup, bool>>>())
+         .ToList();
+        
+
+        var dataDb = await _unitOfWork.EvaluationSurveySetupRepository.GetWithListOfFilters(filters);
+        var result = _mapper.Map<List<GetEvaluationSurveySetup>>(dataDb);
+        return result;
+    }
+
+    public async Task<int> DeleteEvaluationSurveySetup(DeleteEvaluationSurveySetup deleteEvaluationSurveySetup)
+    {
+
+        int id = 0;
+        if (deleteEvaluationSurveySetup.Id > 0)
+        {
+            var dbObj = _unitOfWork.EvaluationSurveySetupRepository.GetFirstOrDefault(x => x.Id == deleteEvaluationSurveySetup.Id);
+            if (dbObj != null)
+            {
+                dbObj.StatusId = 0;//Not active 
+                dbObj.ModificationDate = DateTime.Now;
+                dbObj.ModifiedBy = _projectProvider.UserId();
+                await _unitOfWork.EvaluationSurveySetupRepository.PUpdateAsync(dbObj);
+                id = deleteEvaluationSurveySetup.Id;
+            }
+
+        }
+
+        await _unitOfWork.SaveAsync();
+
+        return id;
+    }
+
+    public async Task<int> SaveOrUpdateEvaluationSurveySetup(SaveEvaluationSurveySetup saveOrUpdateEvaluationSurveySetup)
+    {
+
+        int id = 0;
+        if (saveOrUpdateEvaluationSurveySetup.Id > 0)
+        {
+            var dbObj = _unitOfWork.EvaluationSurveySetupRepository.GetFirstOrDefault(x => x.Id == saveOrUpdateEvaluationSurveySetup.Id);
+
+            var mapedobj = _mapper.Map<EvaluationSurveySetup>(saveOrUpdateEvaluationSurveySetup);
+
+            dbObj.ToDate = mapedobj.ToDate;
+            dbObj.FromDate = mapedobj.FromDate;
+            dbObj.StatusId = mapedobj.StatusId;
+            dbObj.SurveyId = mapedobj.SurveyId;
+            dbObj.DepartmentIds = mapedobj.DepartmentIds;
+            dbObj.EmployeelevelIds = mapedobj.DepartmentIds;
+            dbObj.UsertypeData = mapedobj.UsertypeData;
+            dbObj.ModificationDate = DateTime.Now;
+            dbObj.ModifiedBy = _projectProvider.UserId();
+            await _unitOfWork.EvaluationSurveySetupRepository.PUpdateAsync(dbObj);
+            id = saveOrUpdateEvaluationSurveySetup.Id;
+        }
+        else
+        {
+            var evaluationSurveySetup = _mapper.Map<EvaluationSurveySetup>(saveOrUpdateEvaluationSurveySetup);
+            evaluationSurveySetup.CreationDate = DateTime.Now;
+            evaluationSurveySetup.CreatedBy = _projectProvider.UserId();
+            evaluationSurveySetup.ProjectID = _projectProvider.GetProjectId();
+
+            await _unitOfWork.EvaluationSurveySetupRepository.PInsertAsync(evaluationSurveySetup);
+            id = evaluationSurveySetup.Id;
+        }
+        await _unitOfWork.SaveAsync();
+
+        return id;
+    }
     #endregion
 }

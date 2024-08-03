@@ -20,6 +20,7 @@ namespace BusinessLogicLayer.UnitOfWork
 
         IRepository<EvaluationSurvey> EvaluationSurveyRepository { get; }
         IRepository<EvaluationSurveyQuestions> EvaluationSurveyQuestionsRepository { get; }
+        IRepository<EvaluationSurveySetup> EvaluationSurveySetupRepository { get; }
 
         void Save();
         Task SaveAsync();
