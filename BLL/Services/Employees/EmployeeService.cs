@@ -635,4 +635,75 @@ internal class EmployeeService : IEmployeeService
         return id;
     }
     #endregion
+
+    #region EmployeePenalty
+    public async Task<dynamic> GetEmployeePenalty(GetEmployeePenalty getEmployeePenalty)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pEmployeePenaltyID", getEmployeePenalty.EmployeePenaltyID ?? Convert.DBNull },
+            { "pEmployeeID", getEmployeePenalty.EmployeeID ?? Convert.DBNull },
+            { "pProjectID", _projectProvider.GetProjectId() },  // Not nullable, no need for DB null check
+            { "pFromDate", getEmployeePenalty.FromDate==null ? Convert.DBNull:getEmployeePenalty.FromDate.DateToIntValue() },
+            { "pToDate", getEmployeePenalty.ToDate==null ? Convert.DBNull:getEmployeePenalty.ToDate.DateToIntValue() },
+            { "pStatusID", getEmployeePenalty.StatusID ?? Convert.DBNull },
+            { "pLanguageID", _projectProvider.LangId() }, // Not nullable, no need for DB null check
+            { "pPenaltyID", getEmployeePenalty.PenaltyID ?? Convert.DBNull },
+            { "pLoginUserID",_projectProvider.UserId() },
+            { "pPageNo" ,getEmployeePenalty.PageNo },
+            { "pPageSize",getEmployeePenalty.PageSize }
+        };
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            {"prowcount","int" }
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeePenaltyResponse>("dbo.GetEmployeePenalty", inputParams, outputParams);
+        return PublicHelper.CreateResultPaginationObject(getEmployeePenalty, result, outputValues); ;
+
+    }
+
+    public async Task<int> SaveEmployeePenalty(SaveEmployeePenalty saveEmployeePenalty)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeePenaltyID", saveEmployeePenalty.EmployeePenaltyID??Convert.DBNull },
+                { "pEmployeeID", saveEmployeePenalty.EmployeeID??Convert.DBNull },
+                { "pPenaltyID", saveEmployeePenalty.PenaltyID??Convert.DBNull },
+                { "pDayCount", saveEmployeePenalty.DayCount??Convert.DBNull },
+                { "pPenaltyDate", saveEmployeePenalty.PenaltyDate==null?Convert.DBNull:saveEmployeePenalty.PenaltyDate.DateToIntValue() },
+                { "pReasonDesc", saveEmployeePenalty.ReasonDesc??Convert.DBNull },
+                { "pCreatedBy", _projectProvider.UserId() },
+                { "pStatusID", saveEmployeePenalty.StatusID??Convert.DBNull },
+                { "pAppliedPenaltyCategoryTypeID", saveEmployeePenalty.AppliedPenaltyCategoryTypeID ??Convert.DBNull}
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeePenalty", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+
+    public async Task<int> UpdateEmployeePenalty(SaveEmployeePenalty updateEmployeePenalty)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeePenaltyID", updateEmployeePenalty.EmployeePenaltyID??Convert.DBNull },
+                { "pEmployeeID", updateEmployeePenalty.EmployeeID??Convert.DBNull },
+                { "pStatusID", updateEmployeePenalty.StatusID?? 1 },
+                { "pCreatedBy", _projectProvider.UserId() },
+                { "pStatusID", updateEmployeePenalty.StatusID??Convert.DBNull }
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.UpdateEmployeePenalty", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+    #endregion
 }

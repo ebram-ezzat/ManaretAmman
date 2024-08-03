@@ -251,27 +251,27 @@ namespace BusinessLogicLayer.Services.Reports
         {
             var basePath = _hostingEnvironment.ContentRootPath;
             var languageId = _projectProvider.LangId();
-           
+
             // Select the report path based on the language
             string selectedPath = languageId switch
             {
                 (int)EnumLangId.En => reportEnFullPath,
                 (int)EnumLangId.Ar => reportArFullPath,
-                _=>null
+                _ => null
             };
 
             // Return the combined path, using the default path if no specific language path is provided
             if (!string.IsNullOrEmpty(selectedPath))
             {
                 //return basePath + Path.Combine(selectedPath);
-                 return Path.Combine(basePath, selectedPath.Replace("/", Path.DirectorySeparatorChar.ToString()));
+                return Path.Combine(basePath, selectedPath.Replace("/", Path.DirectorySeparatorChar.ToString()));
             }
             return !string.IsNullOrEmpty(defaultFullPath) ? Path.Combine(basePath, defaultFullPath.Replace("/", Path.DirectorySeparatorChar.ToString())) : null;
         }
 
-        private Dictionary<string,object> BuildBaseReportInputParams(ReportBaseFields reportBaseFields)
+        private Dictionary<string, object> BuildBaseReportInputParams(ReportBaseFields reportBaseFields)
         {
-            return  new Dictionary<string, object>()
+            return new Dictionary<string, object>()
             {
                 {"pEmployeeID",reportBaseFields.EmployeeID??Convert.DBNull },
                 {"pFromDate",reportBaseFields.FromDate==null?Convert.DBNull:reportBaseFields.FromDate.DateToIntValue() },
@@ -290,25 +290,25 @@ namespace BusinessLogicLayer.Services.Reports
             TRequest request,
             string storedProcedureName,
             Func<TRequest, int> reportTypeSelector,
-            Func<TRequest, dynamic, string> reportNameSelector) where TRequest:ReportBaseFields // New selector function for dynamic report names
+            Func<TRequest, dynamic, string> reportNameSelector) where TRequest : ReportBaseFields // New selector function for dynamic report names
         {
-                var inputParams = BuildBaseReportInputParams(request);
-                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
-                    .ExecuteReportStoredProcedureAsyncByADO(storedProcedureName, inputParams, null);
+            var inputParams = BuildBaseReportInputParams(request);
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
+                .ExecuteReportStoredProcedureAsyncByADO(storedProcedureName, inputParams, null);
 
-                if (result == null || result.Rows.Count == 0)
-                    return null;
+            if (result == null || result.Rows.Count == 0)
+                return null;
 
-                var settingResult = await _lookupsService.GetSettings();
-                string reportName = reportNameSelector(request, settingResult); // Use the new selector function
+            var settingResult = await _lookupsService.GetSettings();
+            string reportName = reportNameSelector(request, settingResult); // Use the new selector function
 
-                string reportPath = GetReportPathIfValid(reportName);
-                if (string.IsNullOrEmpty(reportPath))
-                    return null;
+            string reportPath = GetReportPathIfValid(reportName);
+            if (string.IsNullOrEmpty(reportPath))
+                return null;
 
-                return request.IsExcel ?
-                       PublicHelper.BuildRdlcReportWithDataSourcExcelFormat(result, reportPath, "DsMain") :
-                       PublicHelper.BuildRdlcReportWithDataSourcPDFFormat(result, reportPath, "DsMain");
+            return request.IsExcel ?
+                   PublicHelper.BuildRdlcReportWithDataSourcExcelFormat(result, reportPath, "DsMain") :
+                   PublicHelper.BuildRdlcReportWithDataSourcPDFFormat(result, reportPath, "DsMain");
         }
         private string GetReportPathIfValid(string reportName)
         {
@@ -379,10 +379,10 @@ namespace BusinessLogicLayer.Services.Reports
             {
                 {"pCurrentYearID",getEmployeeSaleriesReportRequest.CurrentYearID },
                 {"pCurrentMonthID",getEmployeeSaleriesReportRequest.CurrentMonthID },
-                {"pEmployeeID",getEmployeeSaleriesReportRequest.EmployeeID??Convert.DBNull },               
+                {"pEmployeeID",getEmployeeSaleriesReportRequest.EmployeeID??Convert.DBNull },
                 {"pProjectID",_projectProvider.GetProjectId()},
                 {"pFlag",getEmployeeSaleriesReportRequest.Flag},
-                {"pLanguageID",_projectProvider.LangId()},               
+                {"pLanguageID",_projectProvider.LangId()},
                 {"pDepartmentID" ,getEmployeeSaleriesReportRequest.DepartmentID??Convert.DBNull},
                 {"pLoginUserID",_projectProvider.UserId()==-1?Convert.DBNull :_projectProvider.UserId()},
                 {"pIsAllEmployees",getEmployeeSaleriesReportRequest.IsAllEmployees},
@@ -392,8 +392,34 @@ namespace BusinessLogicLayer.Services.Reports
                  {"pCreatedBy",Convert.DBNull }
             };
         }
+        #endregion
 
-     
+        #region تقرير عقوبات الموظفين
+
+        public async Task<object> GetEmployeePenaltyReport(GetEmployeePenaltyReport getEmployeePenaltyReport)
+        {
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"pEmployeePenaltyID",getEmployeePenaltyReport.EmployeePenaltyID },
+                {"pEmployeeID",getEmployeePenaltyReport.EmployeeID??Convert.DBNull },
+                {"pProjectID",_projectProvider.GetProjectId() },
+                {"pLanguageID",_projectProvider.LangId() },
+                {"pPenaltyID", getEmployeePenaltyReport.PenaltyID},
+                {"pDepartmentID", getEmployeePenaltyReport.DepartmentID},
+                {"pLoginUserID",_projectProvider.UserId()}
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
+              .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeePenaltyReport", inputParams, null);
+            if (result == null || result.Rows.Count == 0)
+                return null;
+            string reportPath = GetReportPathIfValid("GetEmployeePenaltyReport");
+            if (string.IsNullOrEmpty(reportPath))
+                return null;
+
+            return getEmployeePenaltyReport.IsExcel ?
+                     PublicHelper.BuildRdlcReportWithDataSourcExcelFormat(result, reportPath, "DsMain") :
+                     PublicHelper.BuildRdlcReportWithDataSourcPDFFormat(result, reportPath, "DsMain");
+        }
         #endregion
     }
 }

@@ -427,5 +427,62 @@ namespace ManaretAmman.Controllers.Employees
         }
         #endregion
         #endregion
+
+        #region EmployeePenalty
+        /// <summary>
+        /// you can send {Accept-Language} Via header request to get the correct description "ar" For Arabic and "en" For English
+        /// </summary>
+        /// <param name="getEmployeePenalty"></param>
+        /// <returns></returns>
+        [AddLanguageHeaderAttribute]
+        [HttpGet("GetEmployeePenalty")]
+        public async Task<IApiResponse> GetEmployeePenalty([FromQuery] GetEmployeePenalty getEmployeePenalty)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeePenalty(getEmployeePenalty);
+
+            return ApiResponse<dynamic>.Success("data has been returned succussfully", result);
+        }
+
+        [HttpPost("SaveEmployeePenalty")]
+        public async Task<IApiResponse> SaveEmployeePenalty(SaveEmployeePenalty saveEmployeePenalty)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveEmployeePenalty(saveEmployeePenalty);
+            return ApiResponse.Success("data has been saved succussfully");
+        }
+
+        [HttpPost("UpdateEmployeePenalty")]
+        public async Task<IApiResponse> UpdateEmployeePenalty(SaveEmployeePenalty UpdateEmployeePenalty)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.UpdateEmployeePenalty(UpdateEmployeePenalty);
+            return ApiResponse.Success("data has been saved succussfully");
+        }
+        #endregion
     }
 }

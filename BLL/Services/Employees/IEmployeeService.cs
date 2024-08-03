@@ -28,6 +28,10 @@ public interface IEmployeeService
     Task<int> DeleteEvaluationSurvey(DeleteEvalualtionSurvey deleteEvalualtionServey);
     Task<int> SaveEvaluationSurveyQuestions(List<SaveEvaluationSurveyQuestions> LstQuestions);
     Task<List<GetEvaluationSurveyQuestions>> GetEvaluationSurveyQuestions(GetEvaluationSurveyQuestions getEvaluationSurveyQuestions);
+    Task<dynamic> GetEmployeePenalty(GetEmployeePenalty getEmployeePenalty);
+    Task<int> SaveEmployeePenalty(SaveEmployeePenalty saveEmployeePenalty);
+    Task<int> UpdateEmployeePenalty(SaveEmployeePenalty saveEmployeePenalty);
+
     Task<List<GetEvaluationSurveySetup>> GetEvaluationSurveySetup(GetEvaluationSurveySetup getEvaluationSurveySetup);
     Task<int> DeleteEvaluationSurveySetup(DeleteEvaluationSurveySetup deleteEvaluationSurveySetup);
     Task<int> SaveOrUpdateEvaluationSurveySetup(SaveEvaluationSurveySetup saveOrUpdateEvaluationSurveySetup);

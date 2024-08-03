@@ -20,6 +20,7 @@ namespace BusinessLogicLayer.Services.Reports
         Task<object> GetEmployeeAffairsServiceReport(GetEmployeeAffairsServiceReportRequest getEmployeeAffairsServiceReportRequest);
         Task<object> GetEmployeeSaleriesReport(GetEmployeeSaleriesReportRequest getEmployeeSaleriesReportRequest);
         Task<object> GetEmployeeBankConvertReport(GetEmployeeBankConvertReportRequest getEmployeeBankConvertReportRequest);
+        Task<object> GetEmployeePenaltyReport(GetEmployeePenaltyReport getEmployeePenaltyReport);
 
     }
 }

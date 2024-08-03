@@ -168,7 +168,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<EmployeeVacationResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<EmployeeLeaveResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<EmployeeLoanResult>().HasNoKey().ToView(null);
-
+            modelBuilder.Entity<EmployeeScheduledLoanResult>().HasNoKey().ToView(null);
         }
     }
 

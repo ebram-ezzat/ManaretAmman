@@ -42,3 +42,23 @@ public class EmployeeLoanResult
     public DateTime? vv_Loandate { get; set; }
     public string Acceptstatus { get; set; }
 }
+
+public class EmployeeScheduledLoanResult
+{
+    public int? EmployeeID { get; set; }
+    public string EmployeeName { get; set; }
+    public int? EmployeeNumber { get; set; }
+    public int? LoanDate { get; set; }
+    public decimal? TotalAmount { get; set; }
+    public decimal? RemainAmount { get; set; }
+    public string Notes { get; set; }
+    public string LoanTypeDesc { get; set; }
+    public int? LoanTypeID { get; set; }
+    public decimal? AllScheduledLoan { get; set; }
+    public decimal? MonthlyLoan { get; set; }
+    public int? candelete { get; set; }
+    public int? LoanSerial { get; set; }
+    public int? EnableDelete { get; set; }
+    public string acceptstatus { get; set; }
+    public DateTime? v_laonDate { get; set; }
+}

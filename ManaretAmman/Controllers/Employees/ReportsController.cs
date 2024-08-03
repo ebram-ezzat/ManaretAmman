@@ -347,5 +347,29 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<object>.Success("data has been retrieved succussfully", result);
         }
         #endregion
+
+        #region تقرير عقوبات الموظفين
+        [AddLanguageHeader]
+        [HttpGet("GetEmployeePenaltyReport")]
+        public async Task<IApiResponse> GetEmployeePenaltyReport([FromQuery] GetEmployeePenaltyReport getEmployeePenaltyReport)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _reportService.GetEmployeePenaltyReport(getEmployeePenaltyReport);
+
+            if (result == null)
+                return ApiResponse<object>.Failure("No data", null);
+
+
+            return ApiResponse<object>.Success("data has been retrieved succussfully", result);
+        }
+        #endregion
     }
 }
