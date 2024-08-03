@@ -64,7 +64,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 LoanDate = Loan.LoanDate.IntToDateValue(),
                 LoanAmount = Loan.LoanAmount,
                 ProjectID = Loan.ProjectID,
-                LoantypeId=Loan.loantypeid,
+                LoantypeId = Loan.loantypeid,
                 loantypeAr = Loan.loantypeid is not null ? Constants.GetEmployeeLoanDictionary[Loan.loantypeid.Value].NameAr : null,
                 loantypeEn = Loan.loantypeid is not null ? Constants.GetEmployeeLoanDictionary[Loan.loantypeid.Value].NameEn : null
             };
@@ -140,10 +140,10 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 {"pLoanTypeID",1 /*filter.FilterCriteria.LoanTypeId??Convert.DBNull*/ },
                 {"pFlag",1 },
                 {"pLoginUserID",_projectProvider.UserId()},
-                
+
                 {"pPageNo",filter.PageIndex },
                 {"pPageSize", filter.Offset},
-                
+
 
             };
             var outputParams = new Dictionary<string, object>() { { "prowcount", "int" } };
@@ -163,7 +163,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             return obj;
         }
 
-        private static IQueryable<EmployeeLoan> ApplyFilter(IQueryable<EmployeeLoan>  query, EmployeeLoanFilter criteria)
+        private static IQueryable<EmployeeLoan> ApplyFilter(IQueryable<EmployeeLoan> query, EmployeeLoanFilter criteria)
         {
 
             if (criteria == null)
@@ -215,7 +215,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 var lambda = Expression.Lambda<Func<EmployeeLoan, bool>>(combinedExpression, parameter);
                 query = query.Where(lambda);
             }
-            return query; 
+            return query;
         }
 
         public async Task<int> Create(EmployeeLoansInput model)
@@ -261,7 +261,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeLoan", inputParams, outputParams);
             await sendToNotification(model.EmployeeID, result);
             return (int)result;
-            
+
         }
 
         async Task sendToNotification(int employeeId, int PKID)
@@ -276,7 +276,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 Id = PKID,
                 ApprovalPageID = 3,
                 PrevilageType = _authService.GetUserType(_userId, employeeId)
-        };
+            };
             await _iNotificationsService.AcceptOrRejectNotificationsAsync(model);
         }
 
@@ -325,7 +325,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
 
         }
 
-        public async Task Delete( int employeeLoanId)
+        public async Task Delete(int employeeLoanId)
         {
             if (_userId == -1) throw new UnauthorizedAccessException("Incorrect userId");
             if (!_authService.IsValidUser(_userId)) throw new UnauthorizedAccessException("Incorrect userId");
@@ -343,22 +343,22 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
 
         }
 
-        private  int? GetLoanTimingInputs(DateTime? LoanDate)
+        private int? GetLoanTimingInputs(DateTime? LoanDate)
         {
             return LoanDate.ConvertFromDateTimeToUnixTimestamp();
-               
+
         }
 
         public async Task<int> CreateScheduledLoans(SchededuledLoansInput employees)
         {
-            if(employees.TotalAmount != employees.EmployeeLoansInputs.Sum(x=>x.LoanAmount))
+            if (employees.TotalAmount != employees.EmployeeLoansInputs.Sum(x => x.LoanAmount))
             {
                 throw new UnauthorizedAccessException("TotalAmount not equal the LoanAmount");
 
             }
             var first = employees.EmployeeLoansInputs.FirstOrDefault();
             int serial = 0;
-            if(first is not null)
+            if (first is not null)
             {
                 Dictionary<string, object> inputParams = new Dictionary<string, object>
             {
@@ -368,7 +368,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 { "pNotes",first.Notes},
                 { "pCreatedBy",_projectProvider.UserId()},
                 { "pProjectID",_projectProvider.GetProjectId()},
-                { "ploantypeid",1},
+                { "ploantypeid",2},
                 { "pIsFirstLoan",1},
                 { "pIsPaid",first.IsPaid},
             };
@@ -384,10 +384,11 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 if (outputValues.TryGetValue("pLoanSerial", out var value))
                 {
                     serial = Convert.ToInt32(value);
-                  
+
                 }
             }
-            foreach(var employee in employees.EmployeeLoansInputs.Skip(1)) {
+            foreach (var employee in employees.EmployeeLoansInputs.Skip(1))
+            {
                 Dictionary<string, object> inputParams = new Dictionary<string, object>
             {
                 { "pEmployeeID", employees.EmployeeID },
@@ -396,7 +397,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 { "pNotes",employee.Notes},
                 { "pCreatedBy",_projectProvider.UserId()},
                 { "pProjectID",_projectProvider.GetProjectId()},
-                { "ploantypeid",1},
+                { "ploantypeid",2},
                 { "pIsFirstLoan",0},
                 { "pIsPaid",employee.IsPaid},
             };
@@ -423,18 +424,18 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             foreach (var employee in employees.EmployeeLoansInputs.Skip(1))
             {
                 Dictionary<string, object> inputParams = new Dictionary<string, object>
-            {                
+            {
                 { "pLoanDate", employee.LoanDate },
                 { "pLoanAmount",employee.LoanAmount},
                 { "pNotes",employee.Notes},
                 { "pCreatedBy",_projectProvider.UserId()},
-                { "pProjectID",_projectProvider.GetProjectId()},               
+                { "pProjectID",_projectProvider.GetProjectId()},
                 { "pIsPaid",employee.IsPaid},
             };
                 Dictionary<string, object> outputParams = new Dictionary<string, object>
              {
 
-                {"pEmployeeLoanID",employee.ID},                
+                {"pEmployeeLoanID",employee.ID},
                 { "pError","int" },
 
             };
@@ -477,9 +478,9 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             { "pProjectID", _projectProvider.GetProjectId() },  // Not nullable, no need for DB null check
             { "pFromDate", getEmployeeLoan.FromDate==null ? Convert.DBNull:getEmployeeLoan.FromDate.DateToIntValue() },
             { "pToDate", getEmployeeLoan.ToDate==null ? Convert.DBNull:getEmployeeLoan.ToDate.DateToIntValue() },
-            { "pLoanTypeID", getEmployeeLoan.LoanTypeID ?? Convert.DBNull },
+            { "pLoanTypeID", 2/*getEmployeeLoan.LoanTypeID ?? Convert.DBNull*/ },
             { "pLanguageID", _projectProvider.LangId() }, // Not nullable, no need for DB null check
-            { "pFlag", getEmployeeLoan.Flag },
+            { "pFlag", 3/*getEmployeeLoan.Flag*/ },
             {"pCreatedBy", getEmployeeLoan.CreatedBy?? Convert.DBNull},
             {"pLoginUserID",_projectProvider.UserId()==-1?Convert.DBNull:_projectProvider.UserId() },
             {"pPageNo" ,getEmployeeLoan.PageNo},
@@ -489,9 +490,9 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
         {
             {"prowcount","int" }
         };
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeLoanResult>("dbo.GetEmployeeLoan", inputParams, outputParams);
-            return PublicHelper.CreateResultPaginationObject(getEmployeeLoan, result, outputValues); ;
 
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeScheduledLoanResult>("dbo.GetEmployeeLoan", inputParams, outputParams);
+            return PublicHelper.CreateResultPaginationObject(getEmployeeLoan, result, outputValues);
         }
     }
 }
