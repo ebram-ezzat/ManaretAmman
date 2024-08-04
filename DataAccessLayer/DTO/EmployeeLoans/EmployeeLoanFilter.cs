@@ -9,7 +9,7 @@ public class EmployeeLoanFilter
     public int? LoanTypeId { get; set; }
     public DateTime? FromDate { get; set; }
     public DateTime? ToDate { get; set; }
-    public string LoanSerial { get; set; }
+    public int? LoanSerial { get; set; }
 }
 
 public class EmployeeLoanResult

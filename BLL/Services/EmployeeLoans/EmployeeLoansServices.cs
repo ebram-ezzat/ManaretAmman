@@ -142,8 +142,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 {"pLoginUserID",_projectProvider.UserId()},
 
                 {"pPageNo",filter.PageIndex },
-                {"pPageSize", filter.Offset},
-                {"pLoanSerial" , filter.FilterCriteria.LoanSerial != "" ? filter.FilterCriteria.LoanSerial:Convert.DBNull }
+                {"pPageSize", filter.Offset}
 
 
             };
@@ -481,11 +480,12 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             { "pToDate", getEmployeeLoan.ToDate==null ? Convert.DBNull:getEmployeeLoan.ToDate.DateToIntValue() },
             { "pLoanTypeID", 2/*getEmployeeLoan.LoanTypeID ?? Convert.DBNull*/ },
             { "pLanguageID", _projectProvider.LangId() }, // Not nullable, no need for DB null check
-            { "pFlag", 3/*getEmployeeLoan.Flag*/ },
+            { "pFlag", 3 /*getEmployeeLoan.Flag*/ },
             {"pCreatedBy", getEmployeeLoan.CreatedBy?? Convert.DBNull},
             {"pLoginUserID",_projectProvider.UserId()==-1?Convert.DBNull:_projectProvider.UserId() },
             {"pPageNo" ,getEmployeeLoan.PageNo},
-            {"pPageSize",getEmployeeLoan.PageSize }
+            {"pPageSize",getEmployeeLoan.PageSize },
+            {"pLoanSerial" , getEmployeeLoan.LoanSerial != null ? getEmployeeLoan.LoanSerial:Convert.DBNull }
         };
             Dictionary<string, object> outputParams = new Dictionary<string, object>
         {
