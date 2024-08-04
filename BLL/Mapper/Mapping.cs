@@ -6,6 +6,7 @@ using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeVacations;
 using DataAccessLayer.DTO.Notification;
 using DataAccessLayer.Models;
+using System.Text.Json;
 
 namespace BusinessLogicLayer.Mapper
 {
@@ -150,6 +151,45 @@ namespace BusinessLogicLayer.Mapper
            .ForMember(dest => dest.EvaluationCategory, opt => opt.Ignore())
            .ForMember(dest => dest.EvaluationSurvey, opt => opt.Ignore())
            .ForMember(dest => dest.ProjectID, opt => opt.Ignore());
+
+
+            CreateMap<EvaluationSurveySetup, GetEvaluationSurveySetup>()
+                     .ForMember(dest => dest.DepartmentIds, opt => opt.MapFrom<DepartmentIdsResolver>())
+            .ForMember(dest => dest.EmployeelevelIds, opt => opt.MapFrom<EmployeelevelIdsResolver>())
+            .ForMember(dest => dest.UsertypeData, opt => opt.MapFrom<UserTypeDataResolver>())
+             .ForMember(dest => dest.SurveyId, opt => opt.MapFrom(src => src.SurveyId))
+            .ForMember(dest => dest.StatusId, opt => opt.MapFrom(src => src.StatusId))
+            .ForMember(dest => dest.FromDate, opt => opt.MapFrom(src => src.FromDate))
+            .ForMember(dest => dest.ToDate, opt => opt.MapFrom(src => src.ToDate))
+             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+
+               .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => src.CreationDate))
+                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
+                .ForMember(dest => dest.ModificationDate, opt => opt.MapFrom(src => src.ModificationDate))
+                 .ReverseMap()
+            .ForMember(dest => dest.DepartmentIds, opt => opt.MapFrom<DepartmentIdsStringResolver>())
+            .ForMember(dest => dest.EmployeelevelIds, opt => opt.MapFrom<EmployeelevelIdsStringResolver>())
+            .ForMember(dest => dest.UsertypeData, opt => opt.MapFrom<UserTypeDataJsonResolver>())
+            ;
+
+
+            CreateMap<SaveEvaluationSurveySetup, EvaluationSurveySetup>()
+                            .ForMember(dest => dest.DepartmentIds, opt => opt.MapFrom(src => string.Join(",", src.DepartmentIds)))
+            .ForMember(dest => dest.EmployeelevelIds, opt => opt.MapFrom(src => string.Join(",", src.EmployeelevelIds)))
+            .ForMember(dest => dest.UsertypeData, opt => opt.MapFrom<UsertypeDataStringResolver>())
+            .ForMember(dest => dest.SurveyId, opt => opt.MapFrom(src=>src.SurveyId))
+            .ForMember(dest => dest.StatusId, opt => opt.MapFrom(src => src.StatusId))
+            .ForMember(dest => dest.FromDate, opt => opt.MapFrom(src => src.FromDate))
+            .ForMember(dest => dest.ToDate, opt => opt.MapFrom(src => src.ToDate))
+
+               .ForMember(dest => dest.ProjectID, opt => opt.Ignore())
+               .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreationDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModificationDate, opt => opt.Ignore())
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+            ;
 
             #endregion
 

@@ -32,4 +32,7 @@ public interface IEmployeeService
     Task<int> SaveEmployeePenalty(SaveEmployeePenalty saveEmployeePenalty);
     Task<int> UpdateEmployeePenalty(SaveEmployeePenalty saveEmployeePenalty);
 
+    Task<List<GetEvaluationSurveySetup>> GetEvaluationSurveySetup(GetEvaluationSurveySetup getEvaluationSurveySetup);
+    Task<int> DeleteEvaluationSurveySetup(DeleteEvaluationSurveySetup deleteEvaluationSurveySetup);
+    Task<int> SaveOrUpdateEvaluationSurveySetup(SaveEvaluationSurveySetup saveOrUpdateEvaluationSurveySetup);
 }
