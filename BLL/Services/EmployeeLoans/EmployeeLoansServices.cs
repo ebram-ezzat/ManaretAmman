@@ -143,6 +143,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
 
                 {"pPageNo",filter.PageIndex },
                 {"pPageSize", filter.Offset},
+                {"pLoanSerial" , filter.FilterCriteria.LoanSerial != "" ? filter.FilterCriteria.LoanSerial:Convert.DBNull }
 
 
             };
