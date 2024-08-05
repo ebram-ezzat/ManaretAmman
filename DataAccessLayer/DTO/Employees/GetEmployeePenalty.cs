@@ -29,7 +29,7 @@ namespace DataAccessLayer.DTO.Employees
         public DateTime? ModificationDate { get; set; }
         public string PenaltyDesc { get; set; }
         public string EmployeeName { get; set; }
-        public string EmployeeNumber { get; set; }
+        public int? EmployeeNumber { get; set; }
         public int? StatusID { get; set; }
         public string StatusDesc { get; set; }
         public int? EnableDelete { get; set; }
