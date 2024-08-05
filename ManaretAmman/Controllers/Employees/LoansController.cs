@@ -94,7 +94,7 @@ namespace ManaretAmman.Controllers.Employees
         }
 
         /// <summary>        
-        /// {Flag} is 1 ,
+        /// {Flag} is 3 in get, 1 in edit
         /// you can send {Accept-Language} Via header request to get the correct description "ar" For Arabic and "en" For English
         /// </summary>       
         /// <param name="getSchededuledLoansInput"></param>
