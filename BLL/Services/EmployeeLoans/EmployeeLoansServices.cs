@@ -425,7 +425,8 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             {
                 Dictionary<string, object> inputParams = new Dictionary<string, object>
             {
-                { "pLoanDate", employee.LoanDate },
+                {"pEmployeeID", employee.EmployeeID},
+                { "pLoanDate", employee.LoanDate.DateToIntValue() },
                 { "pLoanAmount",employee.LoanAmount},
                 { "pNotes",employee.Notes},
                 { "pCreatedBy",_projectProvider.UserId()},
