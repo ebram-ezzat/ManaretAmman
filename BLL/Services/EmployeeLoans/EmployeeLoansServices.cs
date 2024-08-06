@@ -421,7 +421,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 throw new UnauthorizedAccessException("TotalAmount not equal the LoanAmount");
 
             }
-            foreach (var employee in employees.EmployeeLoansInputs.Skip(1))
+            foreach (var employee in employees.EmployeeLoansInputs)
             {
                 Dictionary<string, object> inputParams = new Dictionary<string, object>
             {
