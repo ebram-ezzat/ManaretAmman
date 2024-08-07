@@ -692,16 +692,19 @@ internal class EmployeeService : IEmployeeService
             {
                 { "pEmployeePenaltyID", updateEmployeePenalty.EmployeePenaltyID??Convert.DBNull },
                 { "pEmployeeID", updateEmployeePenalty.EmployeeID??Convert.DBNull },
-                { "pStatusID", updateEmployeePenalty.StatusID?? 1 },
+                { "pPenaltyID", updateEmployeePenalty.PenaltyID??Convert.DBNull },
+                { "pDayCount", updateEmployeePenalty.DayCount??Convert.DBNull },
+                { "pPenaltyDate", updateEmployeePenalty.PenaltyDate==null?Convert.DBNull:updateEmployeePenalty.PenaltyDate.DateToIntValue() },
+                { "pReasonDesc", updateEmployeePenalty.ReasonDesc??Convert.DBNull },
                 { "pCreatedBy", _projectProvider.UserId() },
-                { "pStatusID", updateEmployeePenalty.StatusID??Convert.DBNull }
+                { "pStatusID", updateEmployeePenalty.StatusID?? 1 },
             };
 
         Dictionary<string, object> outputParams = new Dictionary<string, object>
         {
             { "pError","int" },
         };
-        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.UpdateEmployeePenalty", inputParams, outputParams);
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeePenalty", inputParams, outputParams);
         int pErrorValue = (int)outputValues["pError"];
         return pErrorValue;
     }

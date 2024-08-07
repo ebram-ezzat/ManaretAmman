@@ -349,6 +349,15 @@ namespace ManaretAmman.Controllers.Employees
         #endregion
 
         #region تقرير عقوبات الموظفين
+        /// <summary>
+        ///  تقرير عقوبات الموظفين
+        /// 
+        /// </summary>  
+        /// <remarks>
+        /// <para>you should send {Accept-Language} Via header request to get the correct description  "ar" For Arabic and "en" For English,</para>
+        /// <para>you should send {UserId} Via header,</para>
+        /// </remarks>
+        /// <returns></returns>
         [AddLanguageHeader]
         [HttpGet("GetEmployeePenaltyReport")]
         public async Task<IApiResponse> GetEmployeePenaltyReport([FromQuery] GetEmployeePenaltyReport getEmployeePenaltyReport)
