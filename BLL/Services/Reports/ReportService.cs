@@ -404,9 +404,7 @@ namespace BusinessLogicLayer.Services.Reports
                 {"pEmployeeID",getEmployeePenaltyReport.EmployeeID??Convert.DBNull },
                 {"pProjectID",_projectProvider.GetProjectId() },
                 {"pLanguageID",_projectProvider.LangId() },
-                {"pPenaltyID", getEmployeePenaltyReport.PenaltyID},
-                {"pDepartmentID", getEmployeePenaltyReport.DepartmentID},
-                {"pLoginUserID",_projectProvider.UserId()}
+                {"pPenaltyID", getEmployeePenaltyReport.PenaltyID}
             };
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
               .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeePenaltyReport", inputParams, null);
