@@ -431,12 +431,14 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 { "pNotes",employee.Notes},
                 { "pCreatedBy",_projectProvider.UserId()},
                 { "pProjectID",_projectProvider.GetProjectId()},
+                { "ploantypeid",2},
                 { "pIsPaid",employee.IsPaid},
             };
                 Dictionary<string, object> outputParams = new Dictionary<string, object>
              {
 
                 {"pEmployeeLoanID",employee.ID},
+                 {"pLoanSerial",employee.LoanSerial},
                 { "pError","int" },
 
             };
