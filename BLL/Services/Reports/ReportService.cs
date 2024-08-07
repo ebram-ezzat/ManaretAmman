@@ -410,7 +410,7 @@ namespace BusinessLogicLayer.Services.Reports
               .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeePenaltyReport", inputParams, null);
             if (result == null || result.Rows.Count == 0)
                 return null;
-            string reportPath = GetReportPathIfValid("GetEmployeePenaltyReport");
+            string reportPath = GetReportPathIfValid("EmployeePenalty");
             if (string.IsNullOrEmpty(reportPath))
                 return null;
 
