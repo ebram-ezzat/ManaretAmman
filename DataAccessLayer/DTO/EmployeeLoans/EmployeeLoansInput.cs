@@ -21,6 +21,7 @@ namespace DataAccessLayer.DTO
 
         public int? LoanSerial { get; set; }
         public int? IsPaid { get; set; } = 0;
+        public int? IsFirst { get; set; }
     }
     public class SchededuledLoansInput
     {

@@ -432,6 +432,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 { "pCreatedBy",_projectProvider.UserId()},
                 { "pProjectID",_projectProvider.GetProjectId()},
                 { "ploantypeid",2},
+                { "pIsFirstLoan",employee.IsFirst},
                 { "pIsPaid",employee.IsPaid},
             };
                 Dictionary<string, object> outputParams = new Dictionary<string, object>
@@ -501,7 +502,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             }
             else //get Scheduled Loans
             {
-                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeLoanResult>("dbo.GetEmployeeLoan", inputParams, outputParams);
+                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeScheduledPaymentsLoanResult>("dbo.GetEmployeeLoan", inputParams, outputParams);
                 return PublicHelper.CreateResultPaginationObject(getEmployeeLoan, result, outputValues);
             }
             

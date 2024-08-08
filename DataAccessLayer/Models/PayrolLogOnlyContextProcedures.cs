@@ -170,7 +170,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<EmployeeLoanResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<EmployeeScheduledLoanResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeePenaltyResponse>().HasNoKey().ToView(null);
-            
+            modelBuilder.Entity<EmployeeScheduledPaymentsLoanResult>().HasNoKey().ToView(null);
         }
     }
 
