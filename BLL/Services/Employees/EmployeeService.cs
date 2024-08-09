@@ -708,5 +708,23 @@ internal class EmployeeService : IEmployeeService
         int pErrorValue = (int)outputValues["pError"];
         return pErrorValue;
     }
+
+    public async Task<int> ChangeStatusEmployeePenalty(SaveEmployeePenalty updateEmployeePenalty)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeePenaltyID", updateEmployeePenalty.EmployeePenaltyID??Convert.DBNull },
+                { "pEmployeeID", updateEmployeePenalty.EmployeeID??Convert.DBNull },
+                { "pStatusID", updateEmployeePenalty.StatusID?? 1 },
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.UpdateEmployeePenalty", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
     #endregion
 }

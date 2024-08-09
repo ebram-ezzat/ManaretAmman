@@ -95,4 +95,5 @@ public class EmployeeScheduledPaymentsLoanResult
     public DateTime? vv_Loandate { get; set; }
     public string Acceptstatus { get; set; }
     public int? IsFirst { get; set; }
+    public int? LoanSerial { get; set; }
 }
