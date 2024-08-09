@@ -715,7 +715,8 @@ internal class EmployeeService : IEmployeeService
             {
                 { "pEmployeePenaltyID", updateEmployeePenalty.EmployeePenaltyID??Convert.DBNull },
                 { "pEmployeeID", updateEmployeePenalty.EmployeeID??Convert.DBNull },
-                { "pStatusID", updateEmployeePenalty.StatusID?? 1 },
+                { "pCreatedBy", _projectProvider.UserId() },
+                { "pStatusID", updateEmployeePenalty.StatusID?? 1 },        
             };
 
         Dictionary<string, object> outputParams = new Dictionary<string, object>
