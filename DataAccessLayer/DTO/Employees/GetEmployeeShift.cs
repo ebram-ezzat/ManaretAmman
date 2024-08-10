@@ -16,7 +16,7 @@ namespace DataAccessLayer.DTO.Employees
         public int? EmployeeID { get; set; }
         public int? ShiftID { get; set; }
         public int? CreatedBy { get; set; }
-        public int? CreationDate { get; set; }
+        public DateTime? CreationDate { get; set; }
         public string ShiftName { get; set; }
         public int? IsChecked { get; set; }
     }
