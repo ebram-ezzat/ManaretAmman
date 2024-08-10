@@ -737,12 +737,8 @@ internal class EmployeeService : IEmployeeService
             { "pProjectID", _projectProvider.GetProjectId() },
             { "pEmployeeID", getEmployeeShifts.EmployeeID ?? Convert.DBNull },
         };
-        //Dictionary<string, object> outputParams = new Dictionary<string, object>
-        //{
-        //    {"prowcount","int" }
-        //};
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeShiftsResponse>("dbo.GetEmployeeShiftCheck", inputParams, null);
-        return PublicHelper.CreateResultPaginationObject(getEmployeeShifts, result, outputValues); ;
+        return result;
 
     }
 
