@@ -734,14 +734,14 @@ internal class EmployeeService : IEmployeeService
     {
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
+            { "pProjectID", _projectProvider.GetProjectId() },
             { "pEmployeeID", getEmployeeShifts.EmployeeID ?? Convert.DBNull },
-            { "pProjectID", _projectProvider.GetProjectId() }
         };
-        Dictionary<string, object> outputParams = new Dictionary<string, object>
-        {
-            {"prowcount","int" }
-        };
-        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeShiftsResponse>("dbo.GetEmployeeShiftCheck", inputParams, outputParams);
+        //Dictionary<string, object> outputParams = new Dictionary<string, object>
+        //{
+        //    {"prowcount","int" }
+        //};
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeShiftsResponse>("dbo.GetEmployeeShiftCheck", inputParams, null);
         return PublicHelper.CreateResultPaginationObject(getEmployeeShifts, result, outputValues); ;
 
     }
