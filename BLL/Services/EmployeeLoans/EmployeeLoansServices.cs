@@ -419,31 +419,55 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             if (employees.TotalAmount != employees.EmployeeLoansInputs.Sum(x => x.LoanAmount))
             {
                 throw new UnauthorizedAccessException("TotalAmount not equal the LoanAmount");
-
             }
-            foreach (var employee in employees.EmployeeLoansInputs)
-            {
-                Dictionary<string, object> inputParams = new Dictionary<string, object>
-            {
-                {"pEmployeeID", employee.EmployeeID},
-                { "pLoanDate", employee.LoanDate.DateToIntValue() },
-                { "pLoanAmount",employee.LoanAmount},
-                { "pNotes",employee.Notes},
-                { "pCreatedBy",_projectProvider.UserId()},
-                { "pProjectID",_projectProvider.GetProjectId()},
-                { "ploantypeid",2},
-                { "pIsFirstLoan",employee.IsFirst},
-                { "pIsPaid",employee.IsPaid},
-            };
-                Dictionary<string, object> outputParams = new Dictionary<string, object>
-             {
 
-                {"pEmployeeLoanID",employee.ID},
-                 {"pLoanSerial",employee.LoanSerial},
-                { "pError","int" },
+            var FirstEmp = employees.EmployeeLoansInputs.FirstOrDefault(x => x.IsFirst == 1);
+            if(FirstEmp == null)
+            {
+                throw new UnauthorizedAccessException("is First Loan Not Exists");
+            }
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+                {
+                    {"pEmployeeID", FirstEmp.EmployeeID},
+                    { "pLoanDate", FirstEmp.LoanDate.DateToIntValue() },
+                    { "pLoanAmount",FirstEmp.LoanAmount},
+                    { "pNotes",FirstEmp.Notes},
+                    { "pCreatedBy",_projectProvider.UserId()},
+                    { "pProjectID",_projectProvider.GetProjectId()},
+                    { "ploantypeid",2},
+                    { "pIsFirstLoan",FirstEmp.IsFirst},
+                    { "pIsPaid",FirstEmp.IsPaid},
+                };
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+                {
+                    {"pLoanSerial",FirstEmp.LoanSerial},
+                    { "pError","int" },
 
-            };
-                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeLoan", inputParams, outputParams);
+                };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeLoan", inputParams, outputParams);
+
+
+            foreach (var employee in employees.EmployeeLoansInputs.Where(x=>x.IsFirst == 0))
+            {
+                Dictionary<string, object> inputParamss = new Dictionary<string, object>
+                {
+                    {"pEmployeeID", employee.EmployeeID},
+                    { "pLoanDate", employee.LoanDate.DateToIntValue() },
+                    { "pLoanAmount",employee.LoanAmount},
+                    { "pNotes",employee.Notes},
+                    { "pCreatedBy",_projectProvider.UserId()},
+                    { "pProjectID",_projectProvider.GetProjectId()},
+                    { "ploantypeid",2},
+                    { "pIsFirstLoan",employee.IsFirst},
+                    { "pIsPaid",employee.IsPaid},
+                };
+                Dictionary<string, object> outputParamss = new Dictionary<string, object>
+                {
+                    {"pLoanSerial",employee.LoanSerial},
+                    { "pError","int" },
+
+                };
+                var (reslt, outputVales) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeLoan", inputParamss, outputParamss);
             }
             return 0;
         }
@@ -489,7 +513,8 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
             {"pLoginUserID",_projectProvider.UserId()==-1?Convert.DBNull:_projectProvider.UserId() },
             {"pPageNo" ,getEmployeeLoan.PageNo},
             {"pPageSize",getEmployeeLoan.PageSize },
-            {"pLoanSerial" , getEmployeeLoan.LoanSerial != null ? getEmployeeLoan.LoanSerial:Convert.DBNull }
+            {"pLoanSerial" , getEmployeeLoan.LoanSerial != null ? getEmployeeLoan.LoanSerial:Convert.DBNull },
+            {"pDepartmentID", getEmployeeLoan.DepartmentID ?? Convert.DBNull}
           };
             Dictionary<string, object> outputParams = new Dictionary<string, object>
           {

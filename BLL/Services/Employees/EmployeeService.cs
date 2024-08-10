@@ -728,4 +728,40 @@ internal class EmployeeService : IEmployeeService
         return pErrorValue;
     }
     #endregion
+
+    #region employeeShifts
+    public async Task<dynamic> GetEmployeeShifts(GetEmployeeShifts getEmployeeShifts)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pEmployeeID", getEmployeeShifts.EmployeeID ?? Convert.DBNull },
+            { "pProjectID", _projectProvider.GetProjectId() }
+        };
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            {"prowcount","int" }
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeShiftsResponse>("dbo.GetEmployeeShiftCheck", inputParams, outputParams);
+        return PublicHelper.CreateResultPaginationObject(getEmployeeShifts, result, outputValues); ;
+
+    }
+
+    public async Task<int> SaveEmployeeShifts(GetEmployeeShifts saveEmployeeShifts)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID", saveEmployeeShifts.EmployeeID??Convert.DBNull },
+                { "pShiftID", saveEmployeeShifts.ShiftID??Convert.DBNull },
+                { "pCreatedBy", _projectProvider.UserId() }
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeShiftCheck", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+    #endregion
 }

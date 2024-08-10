@@ -36,4 +36,6 @@ public interface IEmployeeService
     Task<int> DeleteEvaluationSurveySetup(DeleteEvaluationSurveySetup deleteEvaluationSurveySetup);
     Task<int> SaveOrUpdateEvaluationSurveySetup(SaveEvaluationSurveySetup saveOrUpdateEvaluationSurveySetup);
     Task<int> ChangeStatusEmployeePenalty(SaveEmployeePenalty updateEmployeePenalty);
+    Task<dynamic> GetEmployeeShifts(GetEmployeeShifts getEmployeeShifts);
+    Task<int> SaveEmployeeShifts(GetEmployeeShifts saveEmployeeShifts);
 }

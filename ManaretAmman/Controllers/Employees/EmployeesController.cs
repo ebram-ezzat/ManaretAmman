@@ -500,5 +500,47 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse.Success("data has been saved succussfully");
         }
         #endregion
+
+        #region  employeeShifts
+
+        /// <summary>
+        /// you can send {Accept-Language} Via header request to get the correct description "ar" For Arabic and "en" For English
+        /// </summary>
+        /// <param name="getEmployeeShiftCheck"></param>
+        /// <returns></returns>
+        [AddLanguageHeaderAttribute]
+        [HttpGet("GetEmployeeShifts")]
+        public async Task<IApiResponse> GetEmployeeShifts([FromQuery] GetEmployeeShifts getEmployeeShift)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeShifts(getEmployeeShift);
+
+            return ApiResponse<dynamic>.Success("data has been returned succussfully", result);
+        }
+
+        [HttpPost("SaveEmployeeShiftCheck")]
+        public async Task<IApiResponse> SaveEmployeeShiftCheck(GetEmployeeShifts saveEmployeeShifts)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveEmployeeShifts(saveEmployeeShifts);
+            return ApiResponse.Success("data has been saved succussfully");
+        }
+        #endregion
     }
 }
