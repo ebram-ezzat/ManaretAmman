@@ -8,7 +8,7 @@ namespace DataAccessLayer.DTO.Employees
 {
     public class GetEmployeeShifts : PageModel
     {
-        public int? EmployeeID { get; set; }
+        public string EmployeeID { get; set; }
         public string ShiftID { get; set; }
     }
     public class GetEmployeeShiftsResponse
