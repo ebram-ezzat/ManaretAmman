@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.Services.Employees;
+using DataAccessLayer.DTO.EmployeeAttendance;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.Models;
 using LanguageExt.Common;
@@ -540,6 +541,59 @@ namespace ManaretAmman.Controllers.Employees
             }
             var result = await _employeeService.SaveEmployeeShifts(saveEmployeeShifts);
             return ApiResponse.Success("data has been saved succussfully");
+        }
+        #endregion
+
+        #region Employee Attandance Table (شاشة جدول الحضور )
+        [HttpGet("GetEmployeeAttandanceShift")]
+        public async Task<IApiResponse> GetEmployeeAttandanceShift([FromQuery] GetEmployeeAttandanceShiftInput getEmployeeAttandanceShiftInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeAttandanceShift(getEmployeeAttandanceShiftInput);
+
+            return ApiResponse<List<GetEmployeeAttandanceShiftOutput>>.Success("data has been returned succussfully", result);
+        }
+
+        [HttpDelete("DeleteEmployeeAttandanceShift")]
+        public async Task<IApiResponse> DeleteEmployeeAttandanceShift([FromQuery] DeleteEmployeeAttandanceShifts deleteEmployeeAttandanceShifts)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.DeleteEmployeeAttandanceShifts(deleteEmployeeAttandanceShifts);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
+
+        [HttpPost("SaveEmployeeAttandanceShift")]
+        public async Task<IApiResponse> SaveEmployeeAttandanceShift([FromBody] SaveEmployeeAttandanceShiftInput saveEmployeeAttandanceShiftInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveEmployeeAttandanceShifts(saveEmployeeAttandanceShiftInput);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
         }
         #endregion
     }

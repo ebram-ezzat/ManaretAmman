@@ -7,6 +7,7 @@ using BusinessLogicLayer.Services.Auth;
 using BusinessLogicLayer.Services.Lookups;
 using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
+using DataAccessLayer.DTO.EmployeeAttendance;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.Locations;
 using DataAccessLayer.Models;
@@ -758,6 +759,71 @@ internal class EmployeeService : IEmployeeService
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeShiftCheck", inputParams, outputParams);
         int pErrorValue = (int)outputValues["pError"];
         return pErrorValue;
+    }
+
+
+    #endregion
+    #region Employee Attandance Table (شاشة جدول الحضور )
+    public async Task<List<GetEmployeeAttandanceShiftOutput>> GetEmployeeAttandanceShift(GetEmployeeAttandanceShiftInput getEmployeeAttandanceShiftInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pEmployeeID", getEmployeeAttandanceShiftInput.EmployeeID ?? Convert.DBNull },
+            { "pEmployeeShiftID", getEmployeeAttandanceShiftInput.EmployeeShiftID ?? Convert.DBNull },
+            { "pFromDate", getEmployeeAttandanceShiftInput.FromDate!=null?getEmployeeAttandanceShiftInput.FromDate.DateToIntValue() : Convert.DBNull },
+            { "pToDate", getEmployeeAttandanceShiftInput.ToDate!=null?getEmployeeAttandanceShiftInput.ToDate.DateToIntValue() : Convert.DBNull },
+            { "pCreatedBy", getEmployeeAttandanceShiftInput.CreatedBy?? Convert.DBNull },
+            { "pLoginUserID",  _projectProvider.UserId()},
+
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeAttandanceShiftOutput>("dbo.GetEmployeeShifts", inputParams, null);
+        return result;
+    }
+
+    public async Task<int> DeleteEmployeeAttandanceShifts(DeleteEmployeeAttandanceShifts deleteEmployeeAttandanceShifts)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeShiftID", deleteEmployeeAttandanceShifts.EmployeeShiftID},
+               
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeeShifts", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+
+    public async Task<int> SaveEmployeeAttandanceShifts(SaveEmployeeAttandanceShiftInput saveEmployeeAttandanceShiftInput)
+    {
+        int employeeShiftId = 0;
+        foreach(var item in saveEmployeeAttandanceShiftInput.EmployeeIDs)
+        {
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID", item},
+                {"pShiftID",saveEmployeeAttandanceShiftInput.ShiftID??Convert.DBNull },
+                {"pFromDate",saveEmployeeAttandanceShiftInput.FromDate!=null?saveEmployeeAttandanceShiftInput.FromDate.DateToIntValue():Convert.DBNull  },
+                {"pToDate",saveEmployeeAttandanceShiftInput.ToDate!=null?saveEmployeeAttandanceShiftInput.ToDate.DateToIntValue():Convert.DBNull  },
+                {"pCreatedBy",_projectProvider.UserId() },
+                {"pProjectID",_projectProvider.GetProjectId() }
+
+
+            };
+
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+           {
+            { "pError","int" },
+             {"pEmployeeShiftID","int" }
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeShifts", inputParams, outputParams);
+            employeeShiftId = (int)outputValues["pEmployeeShiftID"];
+        }
+        return employeeShiftId;
     }
     #endregion
 }

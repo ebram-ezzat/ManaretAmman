@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.DTO.Employees;
+﻿using DataAccessLayer.DTO.EmployeeAttendance;
+using DataAccessLayer.DTO.Employees;
 using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services.Employees;
@@ -38,4 +39,8 @@ public interface IEmployeeService
     Task<int> ChangeStatusEmployeePenalty(SaveEmployeePenalty updateEmployeePenalty);
     Task<dynamic> GetEmployeeShifts(GetEmployeeShifts getEmployeeShifts);
     Task<int> SaveEmployeeShifts(GetEmployeeShifts saveEmployeeShifts);
+    Task<List<GetEmployeeAttandanceShiftOutput>> GetEmployeeAttandanceShift(GetEmployeeAttandanceShiftInput getEmployeeAttandanceShiftInput);
+    Task<int> DeleteEmployeeAttandanceShifts(DeleteEmployeeAttandanceShifts deleteEmployeeAttandanceShifts);
+    Task<int> SaveEmployeeAttandanceShifts(SaveEmployeeAttandanceShiftInput saveEmployeeAttandanceShiftInput);
+
 }
