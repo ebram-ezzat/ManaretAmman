@@ -613,7 +613,7 @@ internal class EmployeeService : IEmployeeService
             dbObj.StatusId = mapedobj.StatusId;
             dbObj.SurveyId = mapedobj.SurveyId;
             dbObj.DepartmentIds = mapedobj.DepartmentIds;
-            dbObj.EmployeelevelIds = mapedobj.DepartmentIds;
+            dbObj.EmployeelevelIds = mapedobj.EmployeelevelIds;
             dbObj.UsertypeData = mapedobj.UsertypeData;
             dbObj.ModificationDate = DateTime.Now;
             dbObj.ModifiedBy = _projectProvider.UserId();
