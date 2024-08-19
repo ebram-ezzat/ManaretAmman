@@ -17,10 +17,8 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         [Range(1, int.MaxValue, ErrorMessage = "The ShiftID must be bigger than 0")]
         public int? ShiftID { get; set; }
         [Required(ErrorMessage = "The FromDate is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "The FromDate must be bigger than 0")]
         public DateTime? FromDate { get; set; }
         [Required(ErrorMessage = "The ToDate is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "The ToDate must be bigger than 0")]
         public DateTime? ToDate { get; set; }
         //public int? CreatedBy { get; set; }
         //public int IsCalledFromOtherSP { get; set; } = 0; // Default value

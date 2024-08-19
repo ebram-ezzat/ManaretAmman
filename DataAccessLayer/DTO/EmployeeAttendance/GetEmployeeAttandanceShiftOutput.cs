@@ -18,9 +18,9 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public int? ModifiedBy { get; set; }
         public DateTime? ModificationDate { get; set; }
         public int? ProjectID { get; set; }
-        public string EmployeeNumber { get; set; }
+        public int? EmployeeNumber { get; set; }
         public string EmployeeName { get; set; }
-        public bool? EnableDelete { get; set; }
+        public int? EnableDelete { get; set; }
         public string ShiftName { get; set; }
         public DateTime? v_FromDate { get; set; }
         public DateTime? v_ToDate { get; set; }

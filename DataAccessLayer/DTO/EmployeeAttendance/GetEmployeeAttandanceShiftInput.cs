@@ -11,9 +11,9 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
     {
         public int? EmployeeShiftID { get; set; }
         public int? EmployeeID { get; set; }
-        [Required(ErrorMessage = "The FromDate is required.")]
+       // [Required(ErrorMessage = "The FromDate is required.")]
         public DateTime? FromDate { get; set; }
-        [Required(ErrorMessage = "The ToDate is required.")]
+        //[Required(ErrorMessage = "The ToDate is required.")]
 
         public DateTime? ToDate { get; set; }
         public int? CreatedBy { get; set; }
