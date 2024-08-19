@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.DTO.EmployeeAttendance;
 using DataAccessLayer.DTO.Employees;
+using DataAccessLayer.DTO.EmployeeTransaction;
 using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services.Employees;
@@ -42,5 +43,8 @@ public interface IEmployeeService
     Task<List<GetEmployeeAttandanceShiftOutput>> GetEmployeeAttandanceShift(GetEmployeeAttandanceShiftInput getEmployeeAttandanceShiftInput);
     Task<int> DeleteEmployeeAttandanceShifts(DeleteEmployeeAttandanceShifts deleteEmployeeAttandanceShifts);
     Task<int> SaveEmployeeAttandanceShifts(SaveEmployeeAttandanceShiftInput saveEmployeeAttandanceShiftInput);
+    Task<List<GetEmployeeTransactionOutput>> GetEmployeeTransaction(GetEmployeeTransactionInput getEmployeeTransactionInput);
+    Task<int> DeleteEmployeeTransaction(DeleteEmployeeTransaction deleteEmployeeTransaction);
+    Task<int> SaveEmployeeTransaction(SaveEmployeeTransaction saveEmployeeTransaction);
 
 }

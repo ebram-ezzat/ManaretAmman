@@ -29,5 +29,17 @@ namespace ManaretAmman.Controllers.Employees
                 return ApiResponse<List<GetEmployeeBalanceReportResult>>.Failure( res,null); }
             return ApiResponse<List<GetEmployeeBalanceReportResult>>.Success(result);
         }
+        [HttpPost("GetActiveYearBalance")]
+        public async Task<IApiResponse> GetActiveYearBalance(EmployeeBalancesInput balanceData)
+        {
+            var result = await balanceService.GetActiveYearBalance(balanceData);
+            if (result == null || result.Count == 0)
+            {
+                List<GetEmployeeBalanceReportResult> res = new List<GetEmployeeBalanceReportResult>();
+                res.Add(new GetEmployeeBalanceReportResult());
+                return ApiResponse<List<GetEmployeeBalanceReportResult>>.Failure(res, null);
+            }
+            return ApiResponse<List<GetEmployeeBalanceReportResult>>.Success(result);
         }
+    }
 }

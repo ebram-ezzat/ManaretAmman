@@ -9,6 +9,7 @@ using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.EmployeeAttendance;
 using DataAccessLayer.DTO.Employees;
+using DataAccessLayer.DTO.EmployeeTransaction;
 using DataAccessLayer.DTO.Locations;
 using DataAccessLayer.Models;
 using LanguageExt;
@@ -547,7 +548,7 @@ internal class EmployeeService : IEmployeeService
             e => e.SurveyId==getEvaluationSurveyQuestions.SurveyId
         }
       .Concat(getEvaluationSurveyQuestions.CategoryId > 0 ? new[] { (Expression<Func<EvaluationSurveyQuestions, bool>>)(e => e.CategoryId == getEvaluationSurveyQuestions.CategoryId) } : Array.Empty<Expression<Func<EvaluationSurveyQuestions, bool>>>())
-        .Concat(getEvaluationSurveyQuestions.Id > 0 ? new[] { (Expression<Func<EvaluationSurveyQuestions, bool>>)(e => e.Id == getEvaluationSurveyQuestions.Id) } : Array.Empty<Expression<Func<EvaluationSurveyQuestions, bool>>>())     
+        .Concat(getEvaluationSurveyQuestions.Id > 0 ? new[] { (Expression<Func<EvaluationSurveyQuestions, bool>>)(e => e.Id == getEvaluationSurveyQuestions.Id) } : Array.Empty<Expression<Func<EvaluationSurveyQuestions, bool>>>())
          .ToList();
         // Include related data (optional)
         // Prepare the includes
@@ -569,7 +570,7 @@ internal class EmployeeService : IEmployeeService
         }
         .Concat(getEvaluationSurveySetup.Id > 0 ? new[] { (Expression<Func<EvaluationSurveySetup, bool>>)(e => e.Id == getEvaluationSurveySetup.Id) } : Array.Empty<Expression<Func<EvaluationSurveySetup, bool>>>())
          .ToList();
-        
+
 
         var dataDb = await _unitOfWork.EvaluationSurveySetupRepository.GetWithListOfFilters(filters);
         var result = _mapper.Map<List<GetEvaluationSurveySetup>>(dataDb);
@@ -717,7 +718,7 @@ internal class EmployeeService : IEmployeeService
                 { "pEmployeePenaltyID", updateEmployeePenalty.EmployeePenaltyID??Convert.DBNull },
                 { "pEmployeeID", updateEmployeePenalty.EmployeeID??Convert.DBNull },
                 { "pCreatedBy", _projectProvider.UserId() },
-                { "pStatusID", updateEmployeePenalty.StatusID?? 1 },        
+                { "pStatusID", updateEmployeePenalty.StatusID?? 1 },
             };
 
         Dictionary<string, object> outputParams = new Dictionary<string, object>
@@ -786,7 +787,7 @@ internal class EmployeeService : IEmployeeService
         Dictionary<string, object> inputParams = new Dictionary<string, object>
             {
                 { "pEmployeeShiftID", deleteEmployeeAttandanceShifts.EmployeeShiftID},
-               
+
             };
 
         Dictionary<string, object> outputParams = new Dictionary<string, object>
@@ -801,7 +802,7 @@ internal class EmployeeService : IEmployeeService
     public async Task<int> SaveEmployeeAttandanceShifts(SaveEmployeeAttandanceShiftInput saveEmployeeAttandanceShiftInput)
     {
         int employeeShiftId = 0;
-        foreach(var item in saveEmployeeAttandanceShiftInput.EmployeeIDs)
+        foreach (var item in saveEmployeeAttandanceShiftInput.EmployeeIDs)
         {
             Dictionary<string, object> inputParams = new Dictionary<string, object>
             {
@@ -824,6 +825,73 @@ internal class EmployeeService : IEmployeeService
             employeeShiftId = (int)outputValues["pEmployeeShiftID"];
         }
         return employeeShiftId;
+    }
+    #endregion
+
+    #region Employee Transaction
+
+    public async Task<List<GetEmployeeTransactionOutput>> GetEmployeeTransaction(GetEmployeeTransactionInput getEmployeeTransactionInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pEmployeeTransactionID", getEmployeeTransactionInput.EmployeeTransactionID ?? Convert.DBNull },
+            { "pEmployeeID", getEmployeeTransactionInput.EmployeeID ?? Convert.DBNull },
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pFromDate", getEmployeeTransactionInput.FromDate!=null?getEmployeeTransactionInput.FromDate.DateToIntValue() : Convert.DBNull },
+            { "pToDate", getEmployeeTransactionInput.ToDate!=null?getEmployeeTransactionInput.ToDate.DateToIntValue() : Convert.DBNull },
+            {"pFlag",1 },
+            { "pTransactionTypeID", getEmployeeTransactionInput.TransactionTypeID ?? Convert.DBNull },
+            { "pLanguageID", _projectProvider.LangId() },
+            { "pCreatedBy", _projectProvider.UserId() },
+
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeTransactionOutput>("dbo.GetEmployeeTransaction", inputParams, null);
+        return result;
+    }
+
+    public async Task<int> DeleteEmployeeTransaction(DeleteEmployeeTransaction deleteEmployeeTransaction)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeTransactionID", deleteEmployeeTransaction.EmployeeTransactionID},
+                { "pProjectID", _projectProvider.GetProjectId() },
+
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeeTransaction", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+
+    public async Task<int> SaveEmployeeTransaction(SaveEmployeeTransaction saveEmployeeTransaction)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeTransactionID", saveEmployeeTransaction.EmployeeTransactionID??Convert.DBNull },
+                { "pEmployeeID", saveEmployeeTransaction.EmployeeID??Convert.DBNull },
+               { "pTransactionDate", saveEmployeeTransaction.TransactionDate!=null?saveEmployeeTransaction.TransactionDate.DateToIntValue() : Convert.DBNull },
+               { "pTransactionTypeID", saveEmployeeTransaction.TransactionTypeID??Convert.DBNull },
+               { "pTransactionInMinutes", saveEmployeeTransaction.TransactionInMinutes??Convert.DBNull },
+               { "pNotes", saveEmployeeTransaction.Notes??Convert.DBNull },
+               { "pCreatedBy", _projectProvider.UserId() },
+               { "pBySystem", saveEmployeeTransaction.BySystem??Convert.DBNull },
+               { "pRelatedToDate", saveEmployeeTransaction.RelatedToDate??Convert.DBNull },
+               { "pProjectID",  _projectProvider.GetProjectId() },
+               { "pByPayroll", saveEmployeeTransaction.ByPayroll??Convert.DBNull },
+
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeTransaction", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
     }
     #endregion
 }

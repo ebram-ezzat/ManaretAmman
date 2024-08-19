@@ -6,6 +6,8 @@ namespace BusinessLogicLayer.Services.Balance
     public interface IBalanceService
     {
         Task<List<GetEmployeeBalanceReportResult>> Get(EmployeeBalancesInput balanceData);
-       
+        Task<List<GetEmployeeBalanceReportResult>> GetActiveYearBalance(EmployeeBalancesInput balanceData);
+
+
     }
 }
