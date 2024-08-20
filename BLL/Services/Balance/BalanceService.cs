@@ -44,7 +44,7 @@ namespace BusinessLogicLayer.Services.Balance
             if (!_authService.IsValidUser(_userId)) throw new UnauthorizedAccessException("Incorrect userId");
 
             var settingResult = await _lookupsService.GetSettings();
-            var result = await _payrolLogOnlyContext.GetProcedures().GetEmployeeBalanceReportAsync(balanceData.EmployeeID, settingResult.ActiveYear, balanceData.ProjectID, 1, 0, null, null, null);
+            var result = await _payrolLogOnlyContext.GetProcedures().GetEmployeeBalanceReportAsync(balanceData.EmployeeID, settingResult.ActiveYear, _projecId, 1, 0, null, null, null);
 
             return result;
         }

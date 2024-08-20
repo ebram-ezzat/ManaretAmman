@@ -33,12 +33,12 @@ namespace ManaretAmman.Controllers.Employees
         public async Task<IApiResponse> GetActiveYearBalance(EmployeeBalancesInput balanceData)
         {
             var result = await balanceService.GetActiveYearBalance(balanceData);
-            if (result == null || result.Count == 0)
-            {
-                List<GetEmployeeBalanceReportResult> res = new List<GetEmployeeBalanceReportResult>();
-                res.Add(new GetEmployeeBalanceReportResult());
-                return ApiResponse<List<GetEmployeeBalanceReportResult>>.Failure(res, null);
-            }
+            //if (result == null || result.Count == 0)
+            //{
+            //    List<GetEmployeeBalanceReportResult> res = new List<GetEmployeeBalanceReportResult>();
+            //    res.Add(new GetEmployeeBalanceReportResult());
+            //    return ApiResponse<List<GetEmployeeBalanceReportResult>>.Failure(res, null);
+            //}
             return ApiResponse<List<GetEmployeeBalanceReportResult>>.Success(result);
         }
     }
