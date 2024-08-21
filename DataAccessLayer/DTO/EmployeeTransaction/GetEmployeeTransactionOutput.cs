@@ -16,9 +16,9 @@ namespace DataAccessLayer.DTO.EmployeeTransaction
         public int? TransactionInMinutes { get; set; }
         public string Notes { get; set; }
         public int? CreatedBy { get; set; }
-        public int? CreationDate { get; set; }
+        public DateTime? CreationDate { get; set; }
         public int? ModifiedBy { get; set; }
-        public int? ModificationDate { get; set; }
+        public DateTime? ModificationDate { get; set; }
         public int? BySystem { get; set; }
         public int? RelatedToDate { get; set; }
         public int? ProjectID { get; set; }
