@@ -92,6 +92,15 @@ public class VacationsController : ControllerBase
     [HttpGet("GetOfficialVacation")]
     public async Task<IApiResponse> GetOfficialVacation([FromQuery] OfficialVacationGetInput officialVacationGetInput)
     {
+        if (!ModelState.IsValid)
+        {
+            // Model validation failed based on data annotations including your custom validation
+            // Retrieve error messages
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage);
+
+            return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+        }
         var result = await _employeeService.GetOfficialVacation(officialVacationGetInput);
 
         return ApiResponse<object>.Success("data has been retrieved succussfully", result);
