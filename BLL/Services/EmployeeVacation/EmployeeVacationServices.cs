@@ -11,6 +11,7 @@ using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeVacations;
+using DataAccessLayer.DTO.Locations;
 using DataAccessLayer.DTO.Notification;
 using DataAccessLayer.DTO.Permissions;
 using DataAccessLayer.Identity;
@@ -435,6 +436,73 @@ namespace BusinessLogicLayer.Services.EmployeeVacations
                    ToDate: model.FromDate.ConvertFromDateTimeToUnixTimestamp()
                    );
         }
+        #region العطل الرسمية 
+        public async Task<int> DeleteOfficialVacation(DeleteOfficialVacation deleteOfficialVacation)
+        {
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                {"pHolidayID", deleteOfficialVacation.HolidayId},
+                {"pProjectID", _projectProvider.GetProjectId()},
 
+            };
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+             {
+
+                { "pError","int" },
+
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteHoliday", inputParams, outputParams);
+            int pErrorValue = (int)outputValues["pError"];
+
+
+            return result;
+        }
+
+        public async Task<int> SaveOfficialVacation(OfficialVacationSaveData officialVacationSaveData)
+        {
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                {"pHolidayTypeID", officialVacationSaveData.HolidayTypeID},
+                {"pProjectID", _projectProvider.GetProjectId()},
+                {"pNotes",officialVacationSaveData.Notes??Convert.DBNull },
+                {"pCreatedBy", _projectProvider.UserId()},
+                {"pFromDate",officialVacationSaveData.FromDate !=null? officialVacationSaveData.FromDate.DateToIntValue():Convert.DBNull},
+                {"pToDate",officialVacationSaveData.ToDate !=null? officialVacationSaveData.ToDate.DateToIntValue():Convert.DBNull}
+
+            };
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+             {
+                {"pHolidayID",officialVacationSaveData.HolidayID.HasValue && officialVacationSaveData.HolidayID.Value>0?officialVacationSaveData.HolidayID.Value:"int" },
+                {"pError","int" },
+
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveHoliday", inputParams, outputParams);
+            int pErrorValue = (int)outputValues["pError"];
+
+
+            return result;
+        }
+
+        public async Task<object> GetOfficialVacation(OfficialVacationGetInput officialVacationGetInput)
+        {
+            var inputParams = new Dictionary<string, object>
+            {
+                { "pHolidayID", officialVacationGetInput.HolidayID??Convert.DBNull },
+                { "pProjectID", _projectProvider.GetProjectId() },
+                { "pFromDate", officialVacationGetInput.FromDate!=null?officialVacationGetInput.FromDate.DateToIntValue():Convert.DBNull },
+                { "pToDate", officialVacationGetInput.ToDate!=null?officialVacationGetInput.ToDate.DateToIntValue():Convert.DBNull },
+                { "pLoginUserID", _projectProvider.UserId() },
+                { "pPageNo", officialVacationGetInput.PageNo },
+                { "pPageSize", officialVacationGetInput.PageSize },
+           
+            };
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+            {
+                { "prowcount","int"}
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<OfficialVacationGetOutput>("dbo.GetHoliday", inputParams, outputParams);
+            return PublicHelper.CreateResultPaginationObject(officialVacationGetInput, result, outputValues);
+        }
+        #endregion
     }
 }

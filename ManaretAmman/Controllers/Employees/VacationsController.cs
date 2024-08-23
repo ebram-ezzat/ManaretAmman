@@ -2,6 +2,7 @@
 using BusinessLogicLayer.Services.EmployeeVacations;
 using DataAccessLayer.DTO;
 using DataAccessLayer.DTO.EmployeeVacations;
+using DataAccessLayer.DTO.Locations;
 using ManaretAmman.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -56,5 +57,45 @@ public class VacationsController : ControllerBase
         await _employeeService.Delete(employeeVacationId);
         return ApiResponse.Success();
     }
+
+    #region العطل الرسمية 
+    [HttpDelete("DeleteOfficialVacation")]
+    public async Task<IApiResponse> DeleteOfficialVacation([FromQuery]DeleteOfficialVacation deleteOfficialVacation)
+    {
+        if (!ModelState.IsValid)
+        {
+            // Model validation failed based on data annotations including your custom validation
+            // Retrieve error messages
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage);
+
+            return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+        }
+        await _employeeService.DeleteOfficialVacation(deleteOfficialVacation);
+        return ApiResponse.Success();
+    }
+    [HttpPost("SaveOrUpdateOfficialVacation")]
+    public async Task<IApiResponse> SaveOrUpdateOfficialVacation([FromBody] OfficialVacationSaveData officialVacationSaveData)
+    {
+        if (!ModelState.IsValid)
+        {
+            // Model validation failed based on data annotations including your custom validation
+            // Retrieve error messages
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage);
+
+            return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+        }
+        await _employeeService.SaveOfficialVacation(officialVacationSaveData);
+        return ApiResponse.Success();
+    }
+    [HttpGet("GetOfficialVacation")]
+    public async Task<IApiResponse> GetOfficialVacation([FromQuery] OfficialVacationGetInput officialVacationGetInput)
+    {
+        var result = await _employeeService.GetOfficialVacation(officialVacationGetInput);
+
+        return ApiResponse<object>.Success("data has been retrieved succussfully", result);
+    }
+    #endregion
 }
 
