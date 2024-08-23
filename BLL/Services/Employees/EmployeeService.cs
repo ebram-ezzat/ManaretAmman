@@ -842,7 +842,9 @@ internal class EmployeeService : IEmployeeService
             {"pFlag",1 },
             { "pTransactionTypeID", getEmployeeTransactionInput.TransactionTypeID ?? Convert.DBNull },
             { "pLanguageID", _projectProvider.LangId() },
-            { "pCreatedBy", _projectProvider.UserId() },
+            { "pLoginUserID", _projectProvider.UserId() },
+            { "pDepartmentID", getEmployeeTransactionInput.DepartmentID ?? Convert.DBNull },
+            
 
         };
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeTransactionOutput>("dbo.GetEmployeeTransaction", inputParams, null);

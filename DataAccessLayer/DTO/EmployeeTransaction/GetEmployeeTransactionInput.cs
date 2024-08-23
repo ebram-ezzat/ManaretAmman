@@ -14,5 +14,6 @@ namespace DataAccessLayer.DTO.EmployeeTransaction
         public DateTime? ToDate { get; set; }
         public int? Flag { get; set; }
         public int? TransactionTypeID { get; set; }
+        public int? DepartmentID { get; set; }
     }
 }
