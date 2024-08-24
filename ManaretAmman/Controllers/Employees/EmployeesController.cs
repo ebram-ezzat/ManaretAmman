@@ -2,6 +2,7 @@
 using DataAccessLayer.DTO.EmployeeAttendance;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeTransaction;
+using DataAccessLayer.DTO.EmployeeVacations;
 using DataAccessLayer.Models;
 using LanguageExt.Common;
 using ManaretAmman.MiddleWare;
@@ -651,6 +652,103 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<int>.Success("data has been returned succussfully", result);
         }
 
+        #endregion
+        #region Employee Allownances (شاشة علاوات الموظفين)
+        [AddLanguageHeader]
+        [HttpGet("GetEmployeeAllowancesMainScreen")]
+        public async Task<IApiResponse> GetEmployeeAllowancesMainScreen([FromQuery] GetEmployeeAllowancesInput getEmployeeAllowancesInput)
+        {
+            if (!(getEmployeeAllowancesInput.Flag==1) )
+            {
+
+                var errors = new List<string>()
+                {
+                    "Flag Property should be 1 ",
+                };
+
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeAllowancesMainScreen(getEmployeeAllowancesInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+        [AddLanguageHeader]
+        [HttpGet("GetEmployeeAllowancesPopup")]
+        public async Task<IApiResponse> GetEmployeeAllowancesPopup([FromQuery] GetEmployeeAllowancesInput getEmployeeAllowancesInput)
+        {
+            if (!(getEmployeeAllowancesInput.AllowanceID.HasValue || getEmployeeAllowancesInput.AllowanceID.Value > 0 || getEmployeeAllowancesInput.Flag == 2))
+            {
+
+                var errors = new List<string>()
+                {
+                    "Flag Property should be 2 and AllowanceID Property Should Has Value",
+                };
+
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeAllowancesPopupScreen(getEmployeeAllowancesInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+
+        [HttpDelete("DeleteEmployeeAllowances")]
+        public async Task<IApiResponse> DeleteEmployeeAllowances([FromQuery] DeleteEmployeeAllowances deleteEmployeeAllowances)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.DeleteEmployeeAllowances(deleteEmployeeAllowances);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
+        [HttpPost("UpdateEmployeeAllowances")]
+        public async Task<IApiResponse> UpdateEmployeeAllowances([FromQuery] UpdateEmployeeAllowances updateEmployeeAllowances)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.UpdateEmployeeAllowances(updateEmployeeAllowances);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
+        [HttpPost("SaveEmployeeAllowances")]
+        public async Task<IApiResponse> SaveEmployeeAllowances([FromQuery] SaveEmployeeAllowances saveEmployeeAllowances)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveEmployeeAllowances(saveEmployeeAllowances);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
+        [HttpGet("GetEmployeeAllowancesDeductionDDL")]
+        public async Task<IApiResponse> GetEmployeeAllowancesDeductionDDL([FromQuery] GetAllowanceDeductionInput getAllowanceDeductionInput)
+        {
+           
+            var result = await _employeeService.GetEmployeeAllowancesDeductionDDL(getAllowanceDeductionInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
         #endregion
     }
 }
