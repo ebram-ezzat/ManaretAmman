@@ -102,6 +102,7 @@ namespace ManaretAmman.Controllers.Employees
         }
         #region شاشة خدمات شوون الموظفين
         /// <summary>
+        /// .شاشة خدمات شوون الموظفين,
         /// You can use this API For Insert or Update
         /// </summary>
         /// <remarks>
@@ -547,6 +548,11 @@ namespace ManaretAmman.Controllers.Employees
         #endregion
 
         #region Employee Attandance Table (شاشة جدول الحضور )
+        /// <summary>
+        /// Employee Attandance Table (شاشة جدول الحضور )
+        /// </summary>
+        /// <param name="getEmployeeAttandanceShiftInput"></param>
+        /// <returns></returns>
         [HttpGet("GetEmployeeAttandanceShift")]
         public async Task<IApiResponse> GetEmployeeAttandanceShift([FromQuery] GetEmployeeAttandanceShiftInput getEmployeeAttandanceShiftInput)
         {
@@ -654,6 +660,11 @@ namespace ManaretAmman.Controllers.Employees
 
         #endregion
         #region Employee Allownances (شاشة علاوات الموظفين)
+        /// <summary>
+        /// Employee Allownances (شاشة علاوات الموظفين)
+        /// </summary>
+        /// <param name="getEmployeeAllowancesInput"></param>
+        /// <returns></returns>
         [AddLanguageHeader]
         [HttpGet("GetEmployeeAllowancesMainScreen")]
         public async Task<IApiResponse> GetEmployeeAllowancesMainScreen([FromQuery] GetEmployeeAllowancesInput getEmployeeAllowancesInput)
