@@ -711,7 +711,8 @@ namespace ManaretAmman.Controllers.Employees
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
             var result = await _employeeService.CalculateEmployeeSalary(calculateEmployeeSalary);
-
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
         #endregion
         #region Employee Allownances (شاشة علاوات الموظفين)
         /// <summary>
