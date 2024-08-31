@@ -10,7 +10,7 @@ namespace DataAccessLayer.DTO.Employees
     {
         public int? EmployeeID { get; set; }                
         public string EmployeeName { get; set; }                
-        public string EmployeeNumber { get; set; }             
+        public int? EmployeeNumber { get; set; }             
         public decimal? Amount { get; set; }                    
         public int? StartDate { get; set; }                  
         public int? EndDate { get; set; }                        
