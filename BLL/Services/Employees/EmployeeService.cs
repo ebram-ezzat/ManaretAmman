@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.Execution;
 using BusinessLogicLayer.Common;
 using BusinessLogicLayer.Exceptions;
 using BusinessLogicLayer.Extensions;
@@ -9,24 +8,17 @@ using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.EmployeeAttendance;
 using DataAccessLayer.DTO.Employees;
+using DataAccessLayer.DTO.EmployeeSalary;
 using DataAccessLayer.DTO.EmployeeTransaction;
 using DataAccessLayer.DTO.EmployeeVacations;
 using DataAccessLayer.DTO.Locations;
 using DataAccessLayer.Models;
 using LanguageExt;
-using LanguageExt.ClassInstances.Const;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.ReportingServices.Interfaces;
 using System.Data;
 using System.Dynamic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Net;
-using System.Reflection;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using UnauthorizedAccessException = BusinessLogicLayer.Exceptions.UnauthorizedAccessException;
 
 namespace BusinessLogicLayer.Services.Employees;
@@ -896,6 +888,95 @@ internal class EmployeeService : IEmployeeService
         int pErrorValue = (int)outputValues["pError"];
         return pErrorValue;
     }
+    #endregion
+
+    #region Employee Salary
+
+    public async Task<List<GetEmployeeSalaryOutput>> GetEmployeeSalary(GetEmployeeSalaryInput getEmployeeSalaryInput)
+    {
+        Dictionary<string, object> inputParams;
+        if (getEmployeeSalaryInput.TypeID == 0)
+        {//getAll
+             inputParams = new Dictionary<string, object>
+            {
+                { "pProjectID", _projectProvider.GetProjectId() },
+                //{ "pEmployeeID", getEmployeeSalaryInput.EmployeeID ?? Convert.DBNull },
+                { "pStatusID", getEmployeeSalaryInput.StatusID ?? Convert.DBNull },
+                { "pTypeID", 0 },
+                { "pCurrentYearID", getEmployeeSalaryInput.CurrentMonthID ?? Convert.DBNull },
+                { "pCurrentMonthID", getEmployeeSalaryInput.CurrentMonthID ?? Convert.DBNull },
+                { "pLanguageID", _projectProvider.LangId() },
+                { "pDepartmentID", getEmployeeSalaryInput.DepartmentID ?? Convert.DBNull },
+                { "pDailyWork", 0 },
+                { "ploginuserid", _projectProvider.UserId() },
+            };
+        }
+        else
+        {//details
+             inputParams = new Dictionary<string, object>
+            {
+                { "pProjectID", _projectProvider.GetProjectId() },
+                { "pEmployeeID", getEmployeeSalaryInput.EmployeeID ?? Convert.DBNull },
+                { "pStatusID", getEmployeeSalaryInput.StatusID ?? Convert.DBNull },
+                //{ "pTypeID", getEmployeeSalaryInput.TypeID ?? Convert.DBNull },
+                { "pCurrentYearID", getEmployeeSalaryInput.CurrentMonthID ?? Convert.DBNull },
+                { "pCurrentMonthID", getEmployeeSalaryInput.CurrentMonthID ?? Convert.DBNull },
+                { "pLanguageID", _projectProvider.LangId() },
+                { "pDepartmentID", getEmployeeSalaryInput.DepartmentID ?? Convert.DBNull },
+                //{ "pDailyWork", getEmployeeSalaryInput.DailyWork ?? Convert.DBNull },
+                { "ploginuserid", _projectProvider.UserId() },
+            };
+        }
+        
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeSalaryOutput>("dbo.GetEmployeeSalary", inputParams, null);
+        return result;
+    }
+
+    public async Task<int> DeleteCancelSalary(DeleteCancelSalary deleteCancelSalary)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID", deleteCancelSalary.EmployeeID??Convert.DBNull },
+                { "pProjectID",  _projectProvider.GetProjectId() },
+                { "pCurrentMonthID",  deleteCancelSalary.CurrentMonthID??Convert.DBNull },
+                { "pCurrentYearID",  deleteCancelSalary.CurrentYearID??Convert.DBNull },
+                { "pDepartmentID",  deleteCancelSalary.DepartmentID??Convert.DBNull },
+                { "pDailyWork",  deleteCancelSalary.DailyWork??Convert.DBNull },
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeeSalary", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+
+    public async Task<int> CalculateEmployeeSalary(CalculateEmployeeSalary calculateEmployeeSalary)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pProjectID",  _projectProvider.GetProjectId() },
+                { "pEmployeeID", calculateEmployeeSalary.EmployeeID??Convert.DBNull },
+                { "pCurrentMonthID",  calculateEmployeeSalary.CurrentMonthID??Convert.DBNull },
+                { "pCurrentYearID",  calculateEmployeeSalary.CurrentYearID??Convert.DBNull },
+                { "pFromDate", calculateEmployeeSalary.FromDate!=null?calculateEmployeeSalary.FromDate.DateToIntValue() : Convert.DBNull },
+                { "pToDate", calculateEmployeeSalary.ToDate!=null?calculateEmployeeSalary.ToDate.DateToIntValue() : Convert.DBNull },
+                { "pCreatedBy", _projectProvider.UserId() },
+                { "pDepartmentID",  calculateEmployeeSalary.DepartmentID??Convert.DBNull },
+                { "pDailyWork",  calculateEmployeeSalary.DailyWork??Convert.DBNull },
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.CalculateEmployeeSalary", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+    
 
 
     #endregion

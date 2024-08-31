@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.DTO.EmployeeAttendance;
 using DataAccessLayer.DTO.Employees;
+using DataAccessLayer.DTO.EmployeeSalary;
 using DataAccessLayer.DTO.EmployeeTransaction;
 using System.Threading.Tasks;
 
@@ -53,5 +54,8 @@ public interface IEmployeeService
     Task<int> SaveEmployeeAllowances(SaveEmployeeAllowances saveEmployeeAllowances);
     Task<dynamic> GetEmployeeAllowancesDeductionDDL(GetAllowanceDeductionInput getAllowanceDeductionInput);
 
+    Task<List<GetEmployeeSalaryOutput>> GetEmployeeSalary(GetEmployeeSalaryInput getEmployeeSalaryInput);
+    Task<int> DeleteCancelSalary(DeleteCancelSalary deleteCancelSalary);
+    Task<int> CalculateEmployeeSalary(CalculateEmployeeSalary calculateEmployeeSalary);
 
 }

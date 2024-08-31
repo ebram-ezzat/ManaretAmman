@@ -4,6 +4,7 @@ using DataAccessLayer.DTO.EmployeeAttendance;
 using DataAccessLayer.DTO.EmployeeLeaves;
 using DataAccessLayer.DTO.EmployeeLoans;
 using DataAccessLayer.DTO.Employees;
+using DataAccessLayer.DTO.EmployeeSalary;
 using DataAccessLayer.DTO.EmployeeTransaction;
 using DataAccessLayer.DTO.EmployeeVacations;
 using DataAccessLayer.DTO.Locations;
@@ -183,6 +184,8 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<GetAllowanceDeductionOutput>().HasNoKey().ToView(null);
             
 
+            modelBuilder.Entity<GetEmployeeTransactionOutput>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GetEmployeeSalaryOutput>().HasNoKey().ToView(null);
         }
     }
 

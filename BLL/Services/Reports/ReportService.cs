@@ -419,5 +419,66 @@ namespace BusinessLogicLayer.Services.Reports
                      PublicHelper.BuildRdlcReportWithDataSourcPDFFormat(result, reportPath, "DsMain");
         }
         #endregion
+
+        #region  تقرير الرواتب وتقرير العلاوات والاقتطاعات
+
+        public async Task<object> GetEmpSalaryReport(GetEmployeeSalaryReport getEmployeeSalaryReport)
+        {
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"pProjectID",_projectProvider.GetProjectId() },
+                 {"pCurrentYearID",getEmployeeSalaryReport.CurrentYearID??Convert.DBNull },
+                 {"pCurrentMonthID",getEmployeeSalaryReport.CurrentMonthID??Convert.DBNull },
+                 {"pEmployeeID",getEmployeeSalaryReport.EmployeeID??Convert.DBNull },
+                 {"pIsAllEmployees",getEmployeeSalaryReport.IsAllEmployees },
+                 {"pWithDetail",1 },
+                 {"pFlag", getEmployeeSalaryReport.Flag??Convert.DBNull},
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
+              .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeeSalaryReport", inputParams, null);
+            if (result == null || result.Rows.Count == 0)
+                return null;
+            string reportPath = getEmployeeSalaryReport.Flag == 1 ? GetReportPathIfValid("SalarySlipReportName")
+                : GetReportPathIfValid("EmployeeSalaryDetails");
+            if (string.IsNullOrEmpty(reportPath))
+                return null;
+
+            return getEmployeeSalaryReport.IsExcel ?
+                     PublicHelper.BuildRdlcReportWithDataSourcExcelFormat(result, reportPath, "DsMain") :
+                     PublicHelper.BuildRdlcReportWithDataSourcPDFFormat(result, reportPath, "DsMain");
+        }
+
+        #endregion
+
+        #region  تقرير العلاوات وتقرير الاقتطاعات
+
+        public async Task<object> GetAllowancesDeductionsReport(GetEmployeeSalaryReport getEmployeeSalaryReport)
+        {
+            var inputParams = new Dictionary<string, object>()
+            {
+                {"pProjectID",_projectProvider.GetProjectId() },
+                 {"pCurrentYearID",getEmployeeSalaryReport.CurrentYearID??Convert.DBNull },
+                 {"pCurrentMonthID",getEmployeeSalaryReport.CurrentMonthID??Convert.DBNull },
+                 {"pIsAllEmployees",0 },
+                 {"pWithDetail",1 },
+                 {"pFlag", 1},
+                 {"pDailyWork", 0},
+                 {"pTypeID", getEmployeeSalaryReport.TypeID??Convert.DBNull},
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
+              .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeeSalaryReport", inputParams, null);
+            if (result == null || result.Rows.Count == 0)
+                return null;
+            string reportPath = getEmployeeSalaryReport.TypeID == 3 ? GetReportPathIfValid("EmployeeDeduction")
+                : GetReportPathIfValid("EmployeeAllowance");
+            if (string.IsNullOrEmpty(reportPath))
+                return null;
+
+            return getEmployeeSalaryReport.IsExcel ?
+                     PublicHelper.BuildRdlcReportWithDataSourcExcelFormat(result, reportPath, "DsMain") :
+                     PublicHelper.BuildRdlcReportWithDataSourcPDFFormat(result, reportPath, "DsMain");
+        }
+
+        #endregion
     }
 }
