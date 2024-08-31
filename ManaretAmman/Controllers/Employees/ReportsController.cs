@@ -380,5 +380,80 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<object>.Success("data has been retrieved succussfully", result);
         }
         #endregion
+
+        #region  تقرير الرواتب وتقرير العلاوات والاقتطاعات
+
+        /// <summary>
+        /// تقرير الرواتب 
+        /// 
+        /// </summary>  
+        /// <remarks>
+        /// <para>you should send {Accept-Language} Via header request to get the correct description  "ar" For Arabic and "en" For English,</para>
+        /// <para>you should send {UserId} Via header,</para>
+        /// <para>{Flag} here is 3 with Allowances and deductions and 1 with Employee Salary</para>
+        /// <para> {IsAllEmployees} is 1 in all employees salary, otherwise is 0</para>
+        /// </remarks>
+        /// <param name="getEmployeeSalaryReport"></param>
+        /// <returns></returns>
+        [AddLanguageHeader]
+        [HttpGet("GetEmployeeSalaryReport ")]
+        public async Task<IApiResponse> GetEmployeeSalaryReport([FromQuery] GetEmployeeSalaryReport getEmployeeSalaryReport)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _reportService.GetEmpSalaryReport(getEmployeeSalaryReport);
+
+            if (result == null)
+                return ApiResponse<object>.Failure("No data", null);
+
+
+            return ApiResponse<object>.Success("data has been retrieved succussfully", result);
+        }
+
+        #endregion
+
+        #region تقرير العلاوات وتقرير الاقتطاعات 
+
+        /// <summary>
+        ///  تقرير العلاوات وتقرير الاقتطاعات 
+        /// 
+        /// </summary>  
+        /// <remarks>
+        /// <para>you should send {Accept-Language} Via header request to get the correct description  "ar" For Arabic and "en" For English,</para>
+        /// <para>you should send {UserId} Via header,</para>
+        /// <para>{TypeID} here is 3 with deductions and 2 with Allowances</para>
+        /// </remarks>
+        /// <param name="getAllowancesDeductionsReport"></param>
+        /// <returns></returns>
+        [AddLanguageHeader]
+        [HttpGet("GetAllowancesDeductionsReport ")]
+        public async Task<IApiResponse> GetAllowancesDeductionsReport([FromQuery] GetEmployeeSalaryReport getAllowancesDeductionsReport)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _reportService.GetAllowancesDeductionsReport(getAllowancesDeductionsReport);
+
+            if (result == null)
+                return ApiResponse<object>.Failure("No data", null);
+
+
+            return ApiResponse<object>.Success("data has been retrieved succussfully", result);
+        }
+
+        #endregion
     }
 }

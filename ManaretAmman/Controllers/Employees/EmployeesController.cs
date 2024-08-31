@@ -1,8 +1,10 @@
 ﻿using BusinessLogicLayer.Services.Employees;
 using DataAccessLayer.DTO.EmployeeAttendance;
 using DataAccessLayer.DTO.Employees;
+using DataAccessLayer.DTO.EmployeeSalary;
 using DataAccessLayer.DTO.EmployeeTransaction;
 using DataAccessLayer.Models;
+using LanguageExt.ClassInstances;
 using LanguageExt.Common;
 using ManaretAmman.MiddleWare;
 using ManaretAmman.Models;
@@ -651,6 +653,60 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<int>.Success("data has been returned succussfully", result);
         }
 
+        #endregion
+
+        #region Employee Salary
+
+        [HttpGet("GetEmployeeSalary")]
+        public async Task<IApiResponse> GetEmployeeSalary([FromQuery] GetEmployeeSalaryInput getEmployeeSalaryInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeSalary(getEmployeeSalaryInput);
+
+            return ApiResponse<List<GetEmployeeSalaryOutput>>.Success("data has been returned succussfully", result);
+        }
+
+        [HttpDelete("DeleteCancelSalary")]
+        public async Task<IApiResponse> DeleteCancelSalary([FromBody] DeleteCancelSalary deleteCancelSalary)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.DeleteCancelSalary(deleteCancelSalary);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
+
+        [HttpPost("CalculateEmployeeSalary")]
+        public async Task<IApiResponse> CalculateEmployeeSalary([FromBody] CalculateEmployeeSalary calculateEmployeeSalary)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.CalculateEmployeeSalary(calculateEmployeeSalary);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
         #endregion
     }
 }

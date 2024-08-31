@@ -21,6 +21,8 @@ namespace BusinessLogicLayer.Services.Reports
         Task<object> GetEmployeeSaleriesReport(GetEmployeeSaleriesReportRequest getEmployeeSaleriesReportRequest);
         Task<object> GetEmployeeBankConvertReport(GetEmployeeBankConvertReportRequest getEmployeeBankConvertReportRequest);
         Task<object> GetEmployeePenaltyReport(GetEmployeePenaltyReport getEmployeePenaltyReport);
+        Task<object> GetEmpSalaryReport(GetEmployeeSalaryReport getEmployeeSalaryReport);
+        Task<object> GetAllowancesDeductionsReport(GetEmployeeSalaryReport getEmployeeSalaryReport);
 
     }
 }
