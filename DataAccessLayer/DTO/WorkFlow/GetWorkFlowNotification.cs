@@ -10,7 +10,7 @@ namespace DataAccessLayer.DTO.WorkFlow
     public class GetWorkFlowNotificationInput
     {
         [Required(ErrorMessage = "NotificationSetupID is Required")]
-        [Range(1, int.MaxValue,ErrorMessage = "NotificationSetupID Should be bigger than 0" )]
+        //[Range(1, int.MaxValue,ErrorMessage = "NotificationSetupID Should be bigger than 0" )]
         public int NotificationSetupID { get; set; }
         public int UserTypeID { get; set; }
 
