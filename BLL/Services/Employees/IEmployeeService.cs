@@ -47,6 +47,13 @@ public interface IEmployeeService
     Task<List<GetEmployeeTransactionOutput>> GetEmployeeTransaction(GetEmployeeTransactionInput getEmployeeTransactionInput);
     Task<int> DeleteEmployeeTransaction(DeleteEmployeeTransaction deleteEmployeeTransaction);
     Task<int> SaveEmployeeTransaction(SaveEmployeeTransaction saveEmployeeTransaction);
+    Task<dynamic> GetEmployeeAllowancesMainScreen(GetEmployeeAllowancesInput getEmployeeAllowancesInput);
+    Task<dynamic> GetEmployeeAllowancesPopupScreen(GetEmployeeAllowancesInput getEmployeeAllowancesInput);
+    Task<int> DeleteEmployeeAllowances(DeleteEmployeeAllowances deleteEmployeeAllowances);
+    Task<int> UpdateEmployeeAllowances(UpdateEmployeeAllowances updateEmployeeAllowances);
+    Task<int> SaveEmployeeAllowances(SaveEmployeeAllowances saveEmployeeAllowances);
+    Task<dynamic> GetEmployeeAllowancesDeductionDDL(GetAllowanceDeductionInput getAllowanceDeductionInput);
+
     Task<List<GetEmployeeSalaryOutput>> GetEmployeeSalary(GetEmployeeSalaryInput getEmployeeSalaryInput);
     Task<int> DeleteCancelSalary(DeleteCancelSalary deleteCancelSalary);
     Task<int> CalculateEmployeeSalary(CalculateEmployeeSalary calculateEmployeeSalary);
