@@ -307,8 +307,8 @@ namespace BusinessLogicLayer.Services.WorkFlow
             // Prepare input parameters
             var inputParams = new Dictionary<string, object>()
             {
-                {"pNotificationSetupID", getWorkFlowNotificationInput.NotificationSetupID },
-                {"pUserTypeID", getWorkFlowNotificationInput.UserTypeID },
+                {"pNotificationSetupID", getWorkFlowNotificationInput.NotificationSetupID != 0 ? getWorkFlowNotificationInput.NotificationSetupID : Convert.DBNull },
+                {"pUserTypeID", getWorkFlowNotificationInput.UserTypeID != 0 ? getWorkFlowNotificationInput.UserTypeID : Convert.DBNull },
                 {"pFlag",getWorkFlowNotificationInput.Flag},
                 {"pLanguageID",getWorkFlowNotificationInput.LanguageID}
 
