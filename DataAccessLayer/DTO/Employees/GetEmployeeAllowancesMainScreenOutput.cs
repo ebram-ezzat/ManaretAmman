@@ -16,7 +16,7 @@ namespace DataAccessLayer.DTO.Employees
         public int? EndDate { get; set; }                        
         public decimal? Amount { get; set; }                     
         public decimal? AllowanceAmount { get; set; }              
-        public int? CalculateWithOvertime { get; set; }           
+      // public int? CalculateWithOvertime { get; set; }           
         public string WithOverTimeDesc { get; set; }             
         public int? CalculatedWithOverTime { get; set; }         
         public string EmployeeName { get; set; }                  
