@@ -623,7 +623,7 @@ namespace ManaretAmman.Controllers.Employees
             }
             var result = await _employeeService.GetEmployeeTransaction(getEmployeeTransactionInput);
 
-            return ApiResponse<List<GetEmployeeTransactionOutput>>.Success("data has been returned succussfully", result);
+            return ApiResponse<dynamic>.Success("data has been returned succussfully", result);
         }
 
         [HttpDelete("DeleteEmployeeTransaction")]
