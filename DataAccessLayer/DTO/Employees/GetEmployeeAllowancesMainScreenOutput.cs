@@ -20,7 +20,7 @@ namespace DataAccessLayer.DTO.Employees
         public string WithOverTimeDesc { get; set; }             
         public int? CalculatedWithOverTime { get; set; }         
         public string EmployeeName { get; set; }                  
-        public string EmployeeNumber { get; set; }               
+        public int? EmployeeNumber { get; set; }               
         public DateTime? v_StartDate { get; set; }               
         public DateTime? v_EndDate { get; set; }                  
     }
