@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.DTO.EmployeeTransaction
 {
-    public class GetEmployeeTransactionInput
+    public class GetEmployeeTransactionInput : PageModel 
     {
         public int? EmployeeTransactionID { get; set; }
         public int? EmployeeID { get; set; }
