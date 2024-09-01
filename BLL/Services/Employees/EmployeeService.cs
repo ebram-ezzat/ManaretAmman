@@ -653,7 +653,7 @@ internal class EmployeeService : IEmployeeService
             {"prowcount","int" }
         };
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeePenaltyResponse>("dbo.GetEmployeePenalty", inputParams, outputParams);
-        return PublicHelper.CreateResultPaginationObject(getEmployeePenalty, result, outputValues); ;
+        return PublicHelper.CreateResultPaginationObject(getEmployeePenalty, result, outputValues);
 
     }
 
@@ -823,7 +823,7 @@ internal class EmployeeService : IEmployeeService
 
     #region Employee Transaction
 
-    public async Task<List<GetEmployeeTransactionOutput>> GetEmployeeTransaction(GetEmployeeTransactionInput getEmployeeTransactionInput)
+    public async Task<dynamic> GetEmployeeTransaction(GetEmployeeTransactionInput getEmployeeTransactionInput)
     {
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
@@ -843,7 +843,7 @@ internal class EmployeeService : IEmployeeService
 
         };
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeTransactionOutput>("dbo.GetEmployeeTransaction", inputParams, null);
-        return result;
+        return PublicHelper.CreateResultPaginationObject(getEmployeeTransactionInput, result, outputValues);
     }
 
     public async Task<int> DeleteEmployeeTransaction(DeleteEmployeeTransaction deleteEmployeeTransaction)

@@ -44,7 +44,7 @@ public interface IEmployeeService
     Task<List<GetEmployeeAttandanceShiftOutput>> GetEmployeeAttandanceShift(GetEmployeeAttandanceShiftInput getEmployeeAttandanceShiftInput);
     Task<int> DeleteEmployeeAttandanceShifts(DeleteEmployeeAttandanceShifts deleteEmployeeAttandanceShifts);
     Task<int> SaveEmployeeAttandanceShifts(SaveEmployeeAttandanceShiftInput saveEmployeeAttandanceShiftInput);
-    Task<List<GetEmployeeTransactionOutput>> GetEmployeeTransaction(GetEmployeeTransactionInput getEmployeeTransactionInput);
+    Task<dynamic> GetEmployeeTransaction(GetEmployeeTransactionInput getEmployeeTransactionInput);
     Task<int> DeleteEmployeeTransaction(DeleteEmployeeTransaction deleteEmployeeTransaction);
     Task<int> SaveEmployeeTransaction(SaveEmployeeTransaction saveEmployeeTransaction);
     Task<dynamic> GetEmployeeAllowancesMainScreen(GetEmployeeAllowancesInput getEmployeeAllowancesInput);
