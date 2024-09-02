@@ -842,7 +842,12 @@ internal class EmployeeService : IEmployeeService
 
 
         };
-        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeTransactionOutput>("dbo.GetEmployeeTransaction", inputParams, null);
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            {"prowcount","int" }
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeTransactionOutput>("dbo.GetEmployeeTransaction", inputParams, outputParams);
         return PublicHelper.CreateResultPaginationObject(getEmployeeTransactionInput, result, outputValues);
     }
 

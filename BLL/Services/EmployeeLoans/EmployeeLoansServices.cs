@@ -259,7 +259,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
 
             };
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeLoan", inputParams, outputParams);
-            await sendToNotification(model.EmployeeID, result);
+            //await sendToNotification(model.EmployeeID, result);
             return (int)result;
 
         }
