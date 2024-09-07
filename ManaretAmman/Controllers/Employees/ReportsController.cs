@@ -396,7 +396,7 @@ namespace ManaretAmman.Controllers.Employees
         /// <param name="getEmployeeSalaryReport"></param>
         /// <returns></returns>
         [AddLanguageHeader]
-        [HttpGet("GetEmployeeSalaryReport ")]
+        [HttpGet("GetEmployeeMonthlySalaryReport")]
         public async Task<IApiResponse> GetEmployeeSalaryReport([FromQuery] GetEmployeeSalaryReport getEmployeeSalaryReport)
         {
             if (!ModelState.IsValid)
@@ -433,7 +433,7 @@ namespace ManaretAmman.Controllers.Employees
         /// <param name="getAllowancesDeductionsReport"></param>
         /// <returns></returns>
         [AddLanguageHeader]
-        [HttpGet("GetAllowancesDeductionsReport ")]
+        [HttpGet("GetAllowancesDeductionsReport")]
         public async Task<IApiResponse> GetAllowancesDeductionsReport([FromQuery] GetEmployeeSalaryReport getAllowancesDeductionsReport)
         {
             if (!ModelState.IsValid)
