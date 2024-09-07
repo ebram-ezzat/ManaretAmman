@@ -33,5 +33,6 @@ namespace DataAccessLayer.DTO.EmployeeSalary
         public int? IsPublish { get; set; }
         public string emailcontent { get; set; }
         public string emailsubject { get; set; }
+        public DateTime? V_CalculationDate { get; set; }
     }
 }
