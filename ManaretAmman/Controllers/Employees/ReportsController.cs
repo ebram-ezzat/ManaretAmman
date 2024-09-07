@@ -384,7 +384,7 @@ namespace ManaretAmman.Controllers.Employees
         #region  تقرير الرواتب وتقرير العلاوات والاقتطاعات
 
         /// <summary>
-        /// تقرير الرواتب 
+        /// تقرير الرواتب وتقرير العلاوات والاقتطاعات 
         /// 
         /// </summary>  
         /// <remarks>
