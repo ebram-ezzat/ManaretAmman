@@ -1118,5 +1118,113 @@ internal class EmployeeService : IEmployeeService
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetAllowanceDeductionOutput>("dbo.GetAllowance_deduction", inputParams, null);
         return result;
     }
+
+
     #endregion
+    #region Adding Employess(شاشة اضافة موظفين )
+    public async Task<dynamic> GetEmployees(GetEmployeesInput getEmployeesInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pStatusID", getEmployeesInput.StatusID ?? Convert.DBNull },
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pEmployeeID", getEmployeesInput.EmployeeID ?? Convert.DBNull },           
+            { "pDepartmentID", getEmployeesInput.DepartmentID ?? Convert.DBNull },
+            { "pCreatedBy", getEmployeesInput.CreatedBy ?? Convert.DBNull },
+            { "psupervisorid", getEmployeesInput.SupervisorID ?? Convert.DBNull },
+            { "pSearch", getEmployeesInput.Search ?? Convert.DBNull },
+            { "pYearID", getEmployeesInput.YearID ?? Convert.DBNull },
+            { "pLoginUserID", _projectProvider.UserId()},
+            { "pPageNo", getEmployeesInput.PageNo },
+            { "pPageSize", getEmployeesInput.PageSize },
+
+        };
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "prowcount","int" },
+        };
+
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeesOutput>("dbo.GetEmployees", inputParams, outputParams);
+        return PublicHelper.CreateResultPaginationObject(getEmployeesInput, result, outputValues);
+    }
+
+    public async Task<int> SaveOrUpdateEmployee(SaveOrUpdateEmployeeAllData saveOrUpdateEmployeeAllData)
+    {
+        int employerId = await SaveOrUpdateEmployeeMainInFormation(saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeInFormation);
+        if(employerId < 1)
+        {
+            throw new Exception("error on saveing employee main information data");
+        }
+
+        return employerId;
+    }
+    private async Task<int> SaveOrUpdateEmployeeMainInFormation(SaveOrUpdateEmployeeInFormation saveOrUpdateEmployeeInFormation)
+    {
+        if (saveOrUpdateEmployeeInFormation !=null)
+        {
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pEmployeeName", saveOrUpdateEmployeeInFormation.EmployeeName ?? Convert.DBNull },
+            { "pEmployeeNumber", saveOrUpdateEmployeeInFormation.EmployeeNumber ?? Convert.DBNull },
+            { "pStatusID", saveOrUpdateEmployeeInFormation.StatusID ?? Convert.DBNull },
+            { "pSettingID", saveOrUpdateEmployeeInFormation.SettingID ?? Convert.DBNull },
+            { "pCreatedBy", _projectProvider.UserId()<1 ? Convert.DBNull: _projectProvider.UserId()},
+            { "pNationalId", saveOrUpdateEmployeeInFormation.NationalId ?? Convert.DBNull },
+            { "pSocialNumber", saveOrUpdateEmployeeInFormation.SocialNumber ?? Convert.DBNull },
+            { "pCareerNumber", saveOrUpdateEmployeeInFormation.CareerNumber ?? Convert.DBNull },
+            { "pJobTitleName", saveOrUpdateEmployeeInFormation.JobTitleName ?? Convert.DBNull },
+            { "pBirthDate", saveOrUpdateEmployeeInFormation.BirthDate.DateToIntValue() ?? Convert.DBNull }, // Assuming DateToIntValue() exists for date conversions
+            { "pGenderID", saveOrUpdateEmployeeInFormation.GenderID ?? Convert.DBNull },
+            { "pNationalityID", saveOrUpdateEmployeeInFormation.NationalityID ?? Convert.DBNull },
+            { "pMobileNo", saveOrUpdateEmployeeInFormation.MobileNo ?? Convert.DBNull },
+            { "pEmailNo", saveOrUpdateEmployeeInFormation.EmailNo ?? Convert.DBNull },
+            { "pMaritalStatusID", saveOrUpdateEmployeeInFormation.MaritalStatusID ?? Convert.DBNull },
+            { "pEmergencyCallName", saveOrUpdateEmployeeInFormation.EmergencyCallName ?? Convert.DBNull },
+            { "pEmergencyCallMobile", saveOrUpdateEmployeeInFormation.EmergencyCallMobile ?? Convert.DBNull },
+            { "pAccountNo", saveOrUpdateEmployeeInFormation.AccountNo ?? Convert.DBNull },
+            { "pIBAN", saveOrUpdateEmployeeInFormation.IBAN ?? Convert.DBNull },
+            { "pBankID", saveOrUpdateEmployeeInFormation.BankID ?? Convert.DBNull },
+            { "pBranchID", saveOrUpdateEmployeeInFormation.BranchID ?? Convert.DBNull },
+            { "pEmployeeImage", saveOrUpdateEmployeeInFormation.EmployeeImage ?? Convert.DBNull },
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pHasBreak", saveOrUpdateEmployeeInFormation.HasBreak ?? Convert.DBNull },
+            { "pStartDate", saveOrUpdateEmployeeInFormation.StartDate.DateToIntValue() ?? Convert.DBNull }, // Assuming DateToIntValue() exists
+            { "pDepartmentID", saveOrUpdateEmployeeInFormation.DepartmentID ?? Convert.DBNull },
+            { "pUserName", saveOrUpdateEmployeeInFormation.UserName ?? Convert.DBNull },
+            { "pPassword", saveOrUpdateEmployeeInFormation.Password ?? Convert.DBNull },
+            { "pSSNType", saveOrUpdateEmployeeInFormation.SSNType ?? Convert.DBNull },
+            { "pIsDynamicShift", saveOrUpdateEmployeeInFormation.IsDynamicShift ?? Convert.DBNull },
+            { "pEmployeeNameEn", saveOrUpdateEmployeeInFormation.EmployeeNameEn ?? Convert.DBNull },
+            { "pIsMilitary", saveOrUpdateEmployeeInFormation.IsMilitary ?? Convert.DBNull },
+            { "pJobTitleID", saveOrUpdateEmployeeInFormation.JobTitleID ?? Convert.DBNull },
+            { "pSectionID", saveOrUpdateEmployeeInFormation.SectionID ?? Convert.DBNull },
+            { "pEmergencyCallMobile2", saveOrUpdateEmployeeInFormation.EmergencyCallMobile2 ?? Convert.DBNull },
+            { "pEmergencyCallName2", saveOrUpdateEmployeeInFormation.EmergencyCallName2 ?? Convert.DBNull },
+            { "pDateForMozawleh", saveOrUpdateEmployeeInFormation.DateForMozawleh.DateToIntValue() ?? Convert.DBNull },
+            { "pcompanynameid", saveOrUpdateEmployeeInFormation.CompanyNameID ?? Convert.DBNull },
+        };
+
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+                {
+                    { "pEmployeeID", saveOrUpdateEmployeeInFormation.EmployeeID.HasValue &&saveOrUpdateEmployeeInFormation.EmployeeID.Value>0? saveOrUpdateEmployeeInFormation.EmployeeID.Value:"int" }, // OUTPUT
+                    { "pError", "int" } // OUTPUT
+                };
+
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployee", inputParams, outputParams);
+
+            int pErrorValue = (int)outputValues["pError"];
+            if (pErrorValue > 0)
+            {
+                if (saveOrUpdateEmployeeInFormation.EmployeeID.HasValue && saveOrUpdateEmployeeInFormation.EmployeeID.Value > 0)
+                {
+                    return saveOrUpdateEmployeeInFormation.EmployeeID.Value;
+                }
+                return (int)outputValues["pEmployeeID"];
+            }
+            return pErrorValue;
+        }
+        return -1;
+    }
+    #endregion
+
 }

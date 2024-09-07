@@ -57,5 +57,8 @@ public interface IEmployeeService
     Task<List<GetEmployeeSalaryOutput>> GetEmployeeSalary(GetEmployeeSalaryInput getEmployeeSalaryInput);
     Task<int> DeleteCancelSalary(DeleteCancelSalary deleteCancelSalary);
     Task<int> CalculateEmployeeSalary(CalculateEmployeeSalary calculateEmployeeSalary);
+    Task<dynamic> GetEmployees(GetEmployeesInput getEmployeesInput);
+    Task<int> SaveOrUpdateEmployee(SaveOrUpdateEmployeeAllData saveOrUpdateEmployeeAllData);
+
 
 }

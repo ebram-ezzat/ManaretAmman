@@ -186,6 +186,7 @@ namespace DataAccessLayer.Models
 
             modelBuilder.Entity<GetEmployeeTransactionOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeSalaryOutput>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GetEmployeesOutput>().HasNoKey().ToView(null);
         }
     }
 

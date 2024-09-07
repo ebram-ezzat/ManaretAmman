@@ -816,5 +816,36 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
         }
         #endregion
+        #region Adding Employess(شاشة اضافة موظفين )
+        /// <summary>
+        /// Adding Employess (شاشة اضافة الموظفين)
+        /// </summary>
+        /// <param name="getEmployeeInput"></param>
+        /// <returns></returns>
+        [HttpGet("GetEmployees")]
+        public async Task<IApiResponse> GetEmployees([FromQuery] GetEmployeesInput getEmployeeInput)
+        {
+            
+            var result = await _employeeService.GetEmployees(getEmployeeInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+        [HttpPost("SaveOrUpdateEmployee")]
+        public async Task<IApiResponse> SaveOrUpdateEmployee([FromBody] SaveOrUpdateEmployeeAllData saveOrUpdateEmployeeAllData)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveOrUpdateEmployee(saveOrUpdateEmployeeAllData);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
+        #endregion
     }
 }
