@@ -910,7 +910,7 @@ internal class EmployeeService : IEmployeeService
                 //{ "pEmployeeID", getEmployeeSalaryInput.EmployeeID ?? Convert.DBNull },
                 { "pStatusID", getEmployeeSalaryInput.StatusID ?? Convert.DBNull },
                 { "pTypeID", 0 },
-                { "pCurrentYearID", getEmployeeSalaryInput.CurrentMonthID ?? Convert.DBNull },
+                { "pCurrentYearID", getEmployeeSalaryInput.CurrentYearID ?? Convert.DBNull },
                 { "pCurrentMonthID", getEmployeeSalaryInput.CurrentMonthID ?? Convert.DBNull },
                 { "pLanguageID", _projectProvider.LangId() },
                 { "pDepartmentID", getEmployeeSalaryInput.DepartmentID ?? Convert.DBNull },

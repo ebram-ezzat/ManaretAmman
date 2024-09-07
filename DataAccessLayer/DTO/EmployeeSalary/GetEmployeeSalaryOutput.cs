@@ -13,14 +13,14 @@ namespace DataAccessLayer.DTO.EmployeeSalary
         public int? CurrentMonthID { get; set; }
         public int? TypeID { get; set; }
         public int? SubTypeID { get; set; }
-        public int? Amount { get; set; }
-        public DateTime? FromDate { get; set; }
-        public DateTime? ToDate { get; set; }
+        public decimal? Amount { get; set; }
+        public int? FromDate { get; set; }
+        public int? ToDate { get; set; }
         public int? StatusID { get; set; }
-        public DateTime? CalculationDate { get; set; }
+        public int? CalculationDate { get; set; }
         public int? AdditionalInWork { get; set; }
         public int? AdditionalInHoliday { get; set; }
-        public int? morninglate { get; set; }
+        public decimal? morninglate { get; set; }
         public int? workingdays { get; set; }
         public int? monthdays { get; set; }
         public int? missingcheckin { get; set; }
