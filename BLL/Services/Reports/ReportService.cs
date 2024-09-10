@@ -438,8 +438,10 @@ namespace BusinessLogicLayer.Services.Reports
               .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeeSalaryReport", inputParams, null);
             if (result == null || result.Rows.Count == 0)
                 return null;
-            string reportPath = getEmployeeSalaryReport.Flag == 1 ? GetReportPathIfValid("SalarySlipReportName")
-                : GetReportPathIfValid("EmployeeSalaryDetails");
+
+            var settingResult = await _lookupsService.GetSettings();
+            string reportPath = getEmployeeSalaryReport.Flag == 1 ? GetReportPathIfValid(settingResult.SalarySlipReportName)
+                : GetReportPathIfValid("EmployeeAllowance");
             if (string.IsNullOrEmpty(reportPath))
                 return null;
 
@@ -469,8 +471,10 @@ namespace BusinessLogicLayer.Services.Reports
               .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeeSalaryReport", inputParams, null);
             if (result == null || result.Rows.Count == 0)
                 return null;
-            string reportPath = getEmployeeSalaryReport.TypeID == 3 ? GetReportPathIfValid("EmployeeDeduction")
-                : GetReportPathIfValid("EmployeeAllowance");
+
+            var settingResult = await _lookupsService.GetSettings();
+            string reportPath = getEmployeeSalaryReport.TypeID == 3 ? GetReportPathIfValid(settingResult.EmployeeDeduction)
+                : GetReportPathIfValid(settingResult.EmployeeAllowance);
             if (string.IsNullOrEmpty(reportPath))
                 return null;
 

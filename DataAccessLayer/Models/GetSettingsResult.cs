@@ -142,6 +142,8 @@ namespace DataAccessLayer.Models
         public string DailyLateReportName { get; set; }
         public string DailyAdditionalWorkReportName { get; set; }
         public string CompanyNationalID { get; set; }
-       // public string HRServiceReportName { get; set; }
+        public string EmployeeDeduction { get; set; }
+        public string EmployeeAllowance { get; set; }
+        // public string HRServiceReportName { get; set; }
     }
 }
