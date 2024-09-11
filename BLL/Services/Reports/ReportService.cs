@@ -441,7 +441,7 @@ namespace BusinessLogicLayer.Services.Reports
 
             var settingResult = await _lookupsService.GetSettings();
             string reportPath = getEmployeeSalaryReport.Flag == 1 ? GetReportPathIfValid(settingResult.SalarySlipReportName)
-                : GetReportPathIfValid("EmployeeAllowance");
+                : GetReportPathIfValid(settingResult.EmployeeSalaryDetails);
             if (string.IsNullOrEmpty(reportPath))
                 return null;
 

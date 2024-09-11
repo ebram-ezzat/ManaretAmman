@@ -144,6 +144,7 @@ namespace DataAccessLayer.Models
         public string CompanyNationalID { get; set; }
         public string EmployeeDeduction { get; set; }
         public string EmployeeAllowance { get; set; }
+        public string EmployeeSalaryDetails { get; set; }
         // public string HRServiceReportName { get; set; }
     }
 }
