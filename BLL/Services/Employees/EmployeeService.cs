@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Dynamic;
+using System.Linq;
 using System.Linq.Expressions;
 using UnauthorizedAccessException = BusinessLogicLayer.Exceptions.UnauthorizedAccessException;
 
@@ -902,9 +903,7 @@ internal class EmployeeService : IEmployeeService
     public async Task<List<GetEmployeeSalaryOutput>> GetEmployeeSalary(GetEmployeeSalaryInput getEmployeeSalaryInput)
     {
         Dictionary<string, object> inputParams;
-        if (getEmployeeSalaryInput.TypeID == 0)
-        {//getAll
-             inputParams = new Dictionary<string, object>
+        inputParams = new Dictionary<string, object>
             {
                 { "pProjectID", _projectProvider.GetProjectId() },
                 //{ "pEmployeeID", getEmployeeSalaryInput.EmployeeID ?? Convert.DBNull },
@@ -917,10 +916,14 @@ internal class EmployeeService : IEmployeeService
                 { "pDailyWork", 0 },
                 { "ploginuserid", _projectProvider.UserId() },
             };
-        }
-        else
-        {//details
-             inputParams = new Dictionary<string, object>
+
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeSalaryOutput>("dbo.GetEmployeeSalary", inputParams, null);
+        return result;
+    }
+    public async Task<GetEmployeeSalaryDetailsOutput> GetEmployeeSalaryDetails(GetEmployeeSalaryInput getEmployeeSalaryInput)
+    {
+        Dictionary<string, object> inputParams;
+            inputParams = new Dictionary<string, object>
             {
                 { "pProjectID", _projectProvider.GetProjectId() },
                 { "pEmployeeID", getEmployeeSalaryInput.EmployeeID ?? Convert.DBNull },
@@ -933,10 +936,21 @@ internal class EmployeeService : IEmployeeService
                 //{ "pDailyWork", getEmployeeSalaryInput.DailyWork ?? Convert.DBNull },
                 { "ploginuserid", _projectProvider.UserId() },
             };
-        }
-        
+
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeSalaryOutput>("dbo.GetEmployeeSalary", inputParams, null);
-        return result;
+        GetEmployeeSalaryDetailsOutput DetailsOutput = new GetEmployeeSalaryDetailsOutput();
+        DetailsOutput.NetSalary = result.Where(x => x.SubTypeID == 0 && x.TypeID == 1).Sum(x => x.Amount);
+        DetailsOutput.OverTime = result.Where(x => x.SubTypeID == -101 && x.TypeID == 2).Sum(x => x.Amount);
+        DetailsOutput.advances = result.Where(x => x.SubTypeID == 0 && x.TypeID == 4).Sum(x => x.Amount);
+        DetailsOutput.advances = result.Where(x => x.TypeID == 0).Sum(x => x.Amount);
+        DetailsOutput.AllowancesTable = result.Where(x => x.TypeID == 2 && x.SubTypeID != 0 && x.SubTypeID != 101)
+        .Select(x => Tuple.Create(x.SUBTYpeDesc, x.Amount))
+        .ToList();
+
+        DetailsOutput.DeductionsTable = result.Where(x => x.SubTypeID != 0 && x.TypeID == 3)
+       .Select(x => Tuple.Create(x.SUBTYpeDesc, x.Amount))
+       .ToList();
+        return DetailsOutput;
     }
 
     public async Task<int> DeleteCancelSalary(DeleteCancelSalary deleteCancelSalary)
@@ -983,7 +997,7 @@ internal class EmployeeService : IEmployeeService
         int pErrorValue = (int)outputValues["pError"];
         return pErrorValue;
     }
-    
+
 
 
     #endregion
@@ -1005,18 +1019,18 @@ internal class EmployeeService : IEmployeeService
             { "pLoginUserID", _projectProvider.UserId()},
             { "pPageNo", getEmployeeAllowancesInput.PageNo },
             { "pPageSize", getEmployeeAllowancesInput.PageSize },
-           
+
         };
         Dictionary<string, object> outputParams = new Dictionary<string, object>
         {
             { "prowcount","int" },
         };
-     
+
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeAllowancesMainScreenOutput>("dbo.GetEmployeeAllowances", inputParams, outputParams);
         return PublicHelper.CreateResultPaginationObject(getEmployeeAllowancesInput, result, outputValues);
     }
 
-    public  async Task<dynamic> GetEmployeeAllowancesPopupScreen(GetEmployeeAllowancesInput getEmployeeAllowancesInput)
+    public async Task<dynamic> GetEmployeeAllowancesPopupScreen(GetEmployeeAllowancesInput getEmployeeAllowancesInput)
     {
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
@@ -1108,12 +1122,12 @@ internal class EmployeeService : IEmployeeService
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
             { "pAllowanceID", getAllowanceDeductionInput.AllowanceID ?? Convert.DBNull },
-            { "pProjectID", _projectProvider.GetProjectId() },          
+            { "pProjectID", _projectProvider.GetProjectId() },
             { "pNatureID", getAllowanceDeductionInput.NatureID },
             { "pSearch", getAllowanceDeductionInput.Search }
 
         };
-       
+
 
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetAllowanceDeductionOutput>("dbo.GetAllowance_deduction", inputParams, null);
         return result;
@@ -1128,7 +1142,7 @@ internal class EmployeeService : IEmployeeService
         {
             { "pStatusID", getEmployeesInput.StatusID ?? Convert.DBNull },
             { "pProjectID", _projectProvider.GetProjectId() },
-            { "pEmployeeID", getEmployeesInput.EmployeeID ?? Convert.DBNull },           
+            { "pEmployeeID", getEmployeesInput.EmployeeID ?? Convert.DBNull },
             { "pDepartmentID", getEmployeesInput.DepartmentID ?? Convert.DBNull },
             { "pCreatedBy", getEmployeesInput.CreatedBy ?? Convert.DBNull },
             { "psupervisorid", getEmployeesInput.SupervisorID ?? Convert.DBNull },
@@ -1151,7 +1165,7 @@ internal class EmployeeService : IEmployeeService
     public async Task<int> SaveOrUpdateEmployee(SaveOrUpdateEmployeeAllData saveOrUpdateEmployeeAllData)
     {
         int employerId = await SaveOrUpdateEmployeeMainInFormation(saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeInFormation);
-        if(employerId < 1)
+        if (employerId < 1)
         {
             throw new Exception("error on saveing employee main information data");
         }
@@ -1160,7 +1174,7 @@ internal class EmployeeService : IEmployeeService
     }
     private async Task<int> SaveOrUpdateEmployeeMainInFormation(SaveOrUpdateEmployeeInFormation saveOrUpdateEmployeeInFormation)
     {
-        if (saveOrUpdateEmployeeInFormation !=null)
+        if (saveOrUpdateEmployeeInFormation != null)
         {
             Dictionary<string, object> inputParams = new Dictionary<string, object>
         {

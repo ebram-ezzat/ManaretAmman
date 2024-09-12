@@ -55,6 +55,7 @@ public interface IEmployeeService
     Task<dynamic> GetEmployeeAllowancesDeductionDDL(GetAllowanceDeductionInput getAllowanceDeductionInput);
 
     Task<List<GetEmployeeSalaryOutput>> GetEmployeeSalary(GetEmployeeSalaryInput getEmployeeSalaryInput);
+    Task<GetEmployeeSalaryDetailsOutput> GetEmployeeSalaryDetails(GetEmployeeSalaryInput getEmployeeSalaryInput);
     Task<int> DeleteCancelSalary(DeleteCancelSalary deleteCancelSalary);
     Task<int> CalculateEmployeeSalary(CalculateEmployeeSalary calculateEmployeeSalary);
     Task<dynamic> GetEmployees(GetEmployeesInput getEmployeesInput);

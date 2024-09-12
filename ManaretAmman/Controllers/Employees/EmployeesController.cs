@@ -681,6 +681,23 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<List<GetEmployeeSalaryOutput>>.Success("data has been returned succussfully", result);
         }
 
+        [HttpGet("GetEmployeeSalaryDetails")]
+        public async Task<IApiResponse> GetEmployeeSalaryDetails([FromQuery] GetEmployeeSalaryInput getEmployeeSalaryInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeSalaryDetails(getEmployeeSalaryInput);
+
+            return ApiResponse<GetEmployeeSalaryDetailsOutput>.Success("data has been returned succussfully", result);
+        }
+
         [HttpDelete("DeleteCancelSalary")]
         public async Task<IApiResponse> DeleteCancelSalary([FromBody] DeleteCancelSalary deleteCancelSalary)
         {
