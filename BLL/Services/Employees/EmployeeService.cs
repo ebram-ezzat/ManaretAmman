@@ -939,10 +939,10 @@ internal class EmployeeService : IEmployeeService
 
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeSalaryOutput>("dbo.GetEmployeeSalary", inputParams, null);
         GetEmployeeSalaryDetailsOutput DetailsOutput = new GetEmployeeSalaryDetailsOutput();
-        DetailsOutput.NetSalary = result.Where(x => x.SubTypeID == 0 && x.TypeID == 1).Sum(x => x.Amount);
+        DetailsOutput.BasicSalary = result.Where(x => x.SubTypeID == 0 && x.TypeID == 1).Sum(x => x.Amount);
         DetailsOutput.OverTime = result.Where(x => x.SubTypeID == -101 && x.TypeID == 2).Sum(x => x.Amount);
         DetailsOutput.advances = result.Where(x => x.SubTypeID == 0 && x.TypeID == 4).Sum(x => x.Amount);
-        DetailsOutput.advances = result.Where(x => x.TypeID == 0).Sum(x => x.Amount);
+        DetailsOutput.NetSalary = result.Where(x => x.TypeID == 0).Sum(x => x.Amount);
         DetailsOutput.AllowancesTable = result.Where(x => x.TypeID == 2 && x.SubTypeID != 0 && x.SubTypeID != 101)
         .Select(x => Tuple.Create(x.SUBTYpeDesc, x.Amount))
         .ToList();
