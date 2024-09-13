@@ -60,6 +60,7 @@ public interface IEmployeeService
     Task<int> CalculateEmployeeSalary(CalculateEmployeeSalary calculateEmployeeSalary);
     Task<dynamic> GetEmployees(GetEmployeesInput getEmployeesInput);
     Task<int> SaveOrUpdateEmployee(SaveOrUpdateEmployeeAllData saveOrUpdateEmployeeAllData);
+    Task<int> DeleteEmployeeWithRelatedData(DeleteEmployeeWithRelatedData deleteEmployeeWithRelatedDate);
 
 
 }

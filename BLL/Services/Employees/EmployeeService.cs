@@ -1161,14 +1161,74 @@ internal class EmployeeService : IEmployeeService
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeesOutput>("dbo.GetEmployees", inputParams, outputParams);
         return PublicHelper.CreateResultPaginationObject(getEmployeesInput, result, outputValues);
     }
+    public async Task<int> DeleteEmployeeWithRelatedData(DeleteEmployeeWithRelatedData deleteEmployeeWithRelatedDate)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID", deleteEmployeeWithRelatedDate.EmployeeId},
 
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        //حذف العلاوات
+        var (resultAllowances, outputValuesAllowances) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeeAllowances", inputParams, outputParams);
+        int pErrorValueAllowances = (int)outputValuesAllowances["pError"];
+        if (pErrorValueAllowances < 1)
+        {
+            throw new Exception("error on delete employee Allowances(العلاوات) information data");
+        }       
+        //حذف الاقطاعات
+        var (resultDeductions, outputValuesDeductions) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeeDeductions", inputParams, outputParams);
+        int pErrorValueDeductions = (int)outputValuesDeductions["pError"];
+        if (pErrorValueDeductions < 1)
+        {
+            throw new Exception("error on delete employee Deductions(الاقتطاعات) information data");
+        }
+        //حذف الموظف
+        var (resultEmployee, outputValuesEmployee) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployees", inputParams, outputParams);
+        int pErrorValueEmployee = (int)outputValuesEmployee["pError"];
+        if (pErrorValueEmployee < 1)
+        {
+            throw new Exception("error on delete employee main information data");
+        }
+        return 1;//suceess
+    }
     public async Task<int> SaveOrUpdateEmployee(SaveOrUpdateEmployeeAllData saveOrUpdateEmployeeAllData)
     {
+        //save main emplyee main Info(معلومات الموظف الاساسية)
         int employerId = await SaveOrUpdateEmployeeMainInFormation(saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeInFormation);
         if (employerId < 1)
         {
             throw new Exception("error on saveing employee main information data");
         }
+        //save EmployeeContracts(معلومات العقد)
+        int returnedContractIdOrError = await SaveOrUpdateContractInformation(saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeContract, employerId);
+        if (returnedContractIdOrError < 1)
+        {
+            throw new Exception("error on saveing EmployeeContracts information data");
+        }
+        //save emplyee Allowances(العلاوات)
+        int perrorAllowances = await SaveOrUpdateEmployeeAllowanceInformation(saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeAllowances, employerId);
+        if (perrorAllowances < 1)
+        {
+            throw new Exception("error on saveing employee Allowances(العلاوات) information data");
+        }
+        //save emplyee Deductions(الاقتطاعات)
+        int perrorDeductions = await SaveOrUpdateEmployeeDeductionInformation(saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeDeductions, employerId);
+        if (perrorDeductions < 1)
+        {
+            throw new Exception("error on saveing employee Deductions(الاقتطاعات) information data");
+        }
+        //save emplyee Shift(الشفتات)
+        int perrorShifts = await SaveOrUpdateEmployeeShifts(saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeShifts, employerId);
+        if(perrorShifts<1)
+        {
+            throw new Exception("error on saveing employee Shifts information data");
+        }      
+
 
         return employerId;
     }
@@ -1239,6 +1299,153 @@ internal class EmployeeService : IEmployeeService
         }
         return -1;
     }
+    private async Task<int> SaveOrUpdateEmployeeShifts(List<SaveOrUpdateEmployeeShifts> lstSaveOrUpdateEmployeeShifts,int EmployeeId)
+    {
+        int perror = 1;
+
+        if (lstSaveOrUpdateEmployeeShifts != null && lstSaveOrUpdateEmployeeShifts.Count()>0)
+        {
+            foreach(var item in lstSaveOrUpdateEmployeeShifts)
+            {
+                Dictionary<string, object> inputParams = new Dictionary<string, object>
+                {
+                    { "pEmployeeID",EmployeeId},
+                    { "pShiftID",item.ShiftId },
+                    { "pCreatedBy", _projectProvider.UserId() },
+
+                };
+
+                Dictionary<string, object> outputParams = new Dictionary<string, object>
+                {
+                    { "pError", "int" } // OUTPUT
+                };
+
+                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeShiftCheck", inputParams, outputParams);
+
+                perror = (int)outputValues["pError"];
+
+            }
+
+            return perror;
+        }
+        return 2;//there is no data on object of List Shifts
+    }
+    private async Task<int> SaveOrUpdateContractInformation(SaveOrUpdateEmployeeContract contractModel, int EmployeeId)
+    {
+        if (contractModel != null)
+        {
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pContractID", contractModel.ContractID ?? Convert.DBNull },
+            { "pStartDate", contractModel.StartDate.DateToIntValue() ?? Convert.DBNull },
+            { "pEndDate", contractModel.EndDate.DateToIntValue() ?? Convert.DBNull },
+            { "pEmployeeID", EmployeeId},
+            { "pSalary", contractModel.Salary ?? Convert.DBNull },
+            { "pCreatedBy", _projectProvider.UserId()},
+            { "pSocialSecuritySalary", contractModel.SocialSecuritySalary ?? Convert.DBNull },
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pIsDailyWork", contractModel.IsDailyWork }, // Convert bool to int for the stored procedure
+            { "pContractTypeID", contractModel.ContractTypeID ?? Convert.DBNull },
+            { "pIncomeTaxType", contractModel.IncomeTaxType ?? Convert.DBNull },
+            { "pCompanyID", contractModel.CompanyID ?? Convert.DBNull },
+            { "pEmployeeWorkingHours", contractModel.EmployeeWorkingHours ?? Convert.DBNull }
+        };
+
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pContractID", contractModel.ContractID.HasValue && contractModel.ContractID.Value > 0 ? contractModel.ContractID.Value : "int" }, // OUTPUT
+            { "pError", "int" } // OUTPUT
+        };
+
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeContracts", inputParams, outputParams);
+
+            int pErrorValue = (int)outputValues["pError"];
+            if (pErrorValue > 0)
+            {
+                if (contractModel.ContractID.HasValue && contractModel.ContractID.Value > 0)
+                {
+                    return contractModel.ContractID.Value;
+                }
+                return (int)outputValues["pContractID"];
+            }
+            return pErrorValue;
+        }
+        return -1;
+    }
+    private async Task<int> SaveOrUpdateEmployeeAllowanceInformation(List<SaveOrUpdateEmployeeAllowance> employeeAllowanceModel,int EmployeeId)
+    {
+        int pErrorValue = 1;
+        if (employeeAllowanceModel != null && employeeAllowanceModel.Count()>0)
+        {
+            foreach (var item in employeeAllowanceModel)
+            {
+                Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pEmployeeAllowanceID", item.EmployeeAllowanceID ?? Convert.DBNull },
+            { "pEmployeeID", EmployeeId },
+            { "pStartDate", item.StartDate.DateToIntValue() ?? Convert.DBNull },
+            { "pEndDate", item.EndDate.DateToIntValue() ?? Convert.DBNull },
+            { "pAllowanceID", item.AllowanceID ?? Convert.DBNull },
+            { "pCreatedBy", _projectProvider.UserId() },
+            { "pProjectID", _projectProvider.GetProjectId() }, // Required, so no null check
+            { "pAmount", item.Amount ?? Convert.DBNull },
+            { "pCalculatedWithOverTime", item.CalculatedWithOverTime ?? Convert.DBNull }
+        };
+
+                Dictionary<string, object> outputParams = new Dictionary<string, object>
+                {
+                    { "pEmployeeAllowanceID", item.EmployeeAllowanceID.HasValue && item.EmployeeAllowanceID.Value > 0 ? item.EmployeeAllowanceID.Value : "int" }, // OUTPUT
+                    { "pError", "int" } // OUTPUT
+                };
+
+                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeAllowances", inputParams, outputParams);
+
+                 pErrorValue = (int)outputValues["pError"];
+            }
+            return pErrorValue;
+
+
+        }
+        return 2;//The model is empty and not have any data 
+    }
+    private async Task<int> SaveOrUpdateEmployeeDeductionInformation(List<SaveOrUpdateEmployeeDeduction> employeeDeductionModel, int EmployeeId)
+    {
+        int pErrorValue = 1;
+        if (employeeDeductionModel != null && employeeDeductionModel.Count() > 0)
+        {
+            foreach (var item in employeeDeductionModel)
+            {
+                Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeDeductionID", item.EmployeeDeductionID ?? Convert.DBNull },
+                { "pEmployeeID", EmployeeId},
+                { "pStartDate", item.StartDate.DateToIntValue() ?? Convert.DBNull },
+                { "pEndDate", item.EndDate.DateToIntValue() ?? Convert.DBNull },
+                { "pDeductionID", item.DeductionID ?? Convert.DBNull },
+                { "pCreatedBy",_projectProvider.UserId()  },
+                { "pProjectID", _projectProvider.GetProjectId() }, 
+                { "pAmount", item.Amount ?? Convert.DBNull }
+            };
+
+                Dictionary<string, object> outputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeDeductionID", item.EmployeeDeductionID.HasValue && item.EmployeeDeductionID.Value > 0 ? item.EmployeeDeductionID.Value : "int" }, // OUTPUT
+                { "pError", "int" } // OUTPUT
+            };
+
+                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeDeductions", inputParams, outputParams);
+
+                 pErrorValue = (int)outputValues["pError"];
+            }
+           
+           
+            return pErrorValue;
+        }
+        return 2;//empty ,there is no data 
+    }
+
+   
+
     #endregion
 
 }

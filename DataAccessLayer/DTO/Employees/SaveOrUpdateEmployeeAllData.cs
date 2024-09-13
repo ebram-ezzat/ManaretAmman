@@ -9,7 +9,26 @@ namespace DataAccessLayer.DTO.Employees
 {
     public class SaveOrUpdateEmployeeAllData
     {
+        /// <summary>
+        /// بيانات الموظف الرئيسية
+        /// </summary>
         public SaveOrUpdateEmployeeInFormation SaveOrUpdateEmployeeInFormation { get; set; }
+        /// <summary>
+        /// العقد
+        /// </summary>
+        public SaveOrUpdateEmployeeContract SaveOrUpdateEmployeeContract { get; set; }
+        /// <summary>
+        /// العلاوات
+        /// </summary>
+        public List<SaveOrUpdateEmployeeAllowance> SaveOrUpdateEmployeeAllowances { get; set; }
+        /// <summary>
+        /// الاقتطاعات
+        /// </summary>
+        public List<SaveOrUpdateEmployeeDeduction> SaveOrUpdateEmployeeDeductions { get; set; }
+        /// <summary>
+        /// الشفتات
+        /// </summary>
+        public List<SaveOrUpdateEmployeeShifts> SaveOrUpdateEmployeeShifts { get; set; }
     }
     public class SaveOrUpdateEmployeeInFormation
     {
@@ -56,5 +75,43 @@ namespace DataAccessLayer.DTO.Employees
         public DateTime? DateForMozawleh { get; set; } // Assuming DateTime
         public int? CompanyNameID { get; set; }
 
+    }
+    public class SaveOrUpdateEmployeeShifts
+    {
+        public int ShiftId { get; set; }
+    }
+    public class SaveOrUpdateEmployeeContract
+    {
+        public int? ContractID { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public decimal? Salary { get; set; }
+        public int? CreatedBy { get; set; }
+        public decimal? SocialSecuritySalary { get; set; }
+        public int? ProjectID { get; set; }
+        public int? IsDailyWork { get; set; } = 0;
+        public int? ContractTypeID { get; set; }
+        public int? IncomeTaxType { get; set; }
+        public int? CompanyID { get; set; }
+        public int? EmployeeWorkingHours { get; set; }
+
+    }
+    public class SaveOrUpdateEmployeeAllowance//العلاوات
+    {
+        public int? EmployeeAllowanceID { get; set; }       
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public int? AllowanceID { get; set; }        
+        public decimal? Amount { get; set; }
+        public int? CalculatedWithOverTime { get; set; }
+    }
+
+    public class SaveOrUpdateEmployeeDeduction//الاقتطاعات
+    {
+        public int? EmployeeDeductionID { get; set; }      
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public int? DeductionID { get; set; }      
+        public decimal? Amount { get; set; }
     }
 }
