@@ -15,7 +15,7 @@ namespace DataAccessLayer.DTO.EmployeeSalary
         public decimal? BasicSalary { get; set; }
         public decimal? OverTime { get; set; }
 
-        public List<Tuple<string, decimal?>> AllowancesTable;
-        public List<Tuple<string, decimal?>> DeductionsTable;
+        public List<Tuple<string, decimal?>> AllowancesTable { get; set; }
+        public List<Tuple<string, decimal?>> DeductionsTable { get; set; }
     }
 }
