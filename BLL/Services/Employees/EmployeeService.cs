@@ -7,6 +7,7 @@ using BusinessLogicLayer.Services.Lookups;
 using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.EmployeeAttendance;
+using DataAccessLayer.DTO.EmployeeDeductions;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeSalary;
 using DataAccessLayer.DTO.EmployeeTransaction;
@@ -1135,6 +1136,127 @@ internal class EmployeeService : IEmployeeService
 
 
     #endregion
+
+    #region اقتطاعات الموظفين
+
+    public async Task<dynamic> GetEmployeeDeductionsMainScreen(GetEmployeeDeductionsInput getEmployeeDeductionsInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pEmployeeDeductionID", getEmployeeDeductionsInput.EmployeeDeductionID ?? Convert.DBNull },
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pEmployeeID", getEmployeeDeductionsInput.EmployeeID ?? Convert.DBNull },
+            { "pNatureID", getEmployeeDeductionsInput.NatureID ?? Convert.DBNull },
+            { "pFlag", getEmployeeDeductionsInput.Flag },
+            { "pAllowanceID", getEmployeeDeductionsInput.AllowanceID ?? Convert.DBNull },
+            { "pFromDate", getEmployeeDeductionsInput.FromDate.DateToIntValue() ?? Convert.DBNull },
+            { "pToDate", getEmployeeDeductionsInput.ToDate.DateToIntValue() ?? Convert.DBNull },
+            { "pDepartmentID", getEmployeeDeductionsInput.DepartmentID ?? Convert.DBNull },
+            { "pLoginUserID", _projectProvider.UserId()},
+            { "pPageNo", getEmployeeDeductionsInput.PageNo },
+            { "pPageSize", getEmployeeDeductionsInput.PageSize },
+
+        };
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "prowcount","int" },
+        };
+
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeDeductionsMainScreenOutput>("dbo.GetEmployeeDeductions", inputParams, outputParams);
+        return PublicHelper.CreateResultPaginationObject(getEmployeeDeductionsInput, result, outputValues);
+    }
+
+    public async Task<dynamic> GetEmployeeDeductionsPopupScreen(GetEmployeeDeductionsInput getEmployeeDeductionsInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pEmployeeDeductionID", getEmployeeDeductionsInput.EmployeeDeductionID ?? Convert.DBNull },
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pEmployeeID", getEmployeeDeductionsInput.EmployeeID ?? Convert.DBNull },
+            { "pNatureID", getEmployeeDeductionsInput.NatureID ?? Convert.DBNull },
+            { "pFlag", getEmployeeDeductionsInput.Flag },
+            { "pAllowanceID", getEmployeeDeductionsInput.AllowanceID ?? Convert.DBNull },
+            { "pFromDate", getEmployeeDeductionsInput.FromDate.DateToIntValue() ?? Convert.DBNull },
+            { "pToDate", getEmployeeDeductionsInput.ToDate.DateToIntValue() ?? Convert.DBNull },
+            { "pDepartmentID", getEmployeeDeductionsInput.DepartmentID ?? Convert.DBNull },
+            { "pLoginUserID", _projectProvider.UserId()},
+            { "pPageNo", getEmployeeDeductionsInput.PageNo },
+            { "pPageSize", getEmployeeDeductionsInput.PageSize },
+
+        };
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "prowcount","int" },
+        };
+
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeDeductionsPopupOutput>("dbo.GetEmployeeDeductions", inputParams, outputParams);
+        return PublicHelper.CreateResultPaginationObject(getEmployeeDeductionsInput, result, outputValues);
+    }
+
+    public async Task<int> DeleteEmployeeDeductions(DeleteEmployeeDeductions deleteEmployeeDeductions)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID", deleteEmployeeDeductions.EmployeeID},
+                { "pEmployeeDeductionID", deleteEmployeeDeductions.EmployeeAllowanceID },
+
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeeDeductions", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+
+    public async Task<int> UpdateEmployeeDeductions(UpdateEmployeeDeductions updateEmployeeDeductions)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                //{ "pDeductionID", updateEmployeeDeductions.AllowanceID},
+                { "pEmployeeDeductionID", updateEmployeeDeductions.EmployeeAllowanceID??Convert.DBNull },
+                { "pEndDate", updateEmployeeDeductions.EndDate.DateToIntValue()??Convert.DBNull },
+                { "pCreatedBy", _projectProvider.UserId() },
+                { "pProjectID", _projectProvider.GetProjectId() }
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.UpdateEmployeeDeduction", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+
+    public async Task<int> SaveEmployeeDeductions(SaveEmployeeDeductions saveEmployeeDeductions)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID ", saveEmployeeDeductions.EmployeeID??Convert.DBNull},
+                { "pDeductionID", saveEmployeeDeductions.DeductionID??Convert.DBNull },
+                { "pEndDate", saveEmployeeDeductions.EndDate.DateToIntValue()??Convert.DBNull },
+                { "pStartDate", saveEmployeeDeductions.StartDate.DateToIntValue()??Convert.DBNull },
+               { "pAmount", saveEmployeeDeductions.Amount??Convert.DBNull },
+                //{ "pCalculatedWithOverTime", saveEmployeeDeductions.CalculatedWithOverTime??Convert.DBNull },
+                { "pProjectID", _projectProvider.GetProjectId() },
+                { "pCreatedBy", _projectProvider.UserId() },
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pEmployeeDeductionID","int"},
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeDeductions", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+
+    #endregion
+
     #region Adding Employess(شاشة اضافة موظفين )
     public async Task<dynamic> GetEmployees(GetEmployeesInput getEmployeesInput)
     {

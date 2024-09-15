@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.DTO.EmployeeAttendance;
+using DataAccessLayer.DTO.EmployeeDeductions;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeSalary;
 using DataAccessLayer.DTO.EmployeeTransaction;
@@ -61,6 +62,10 @@ public interface IEmployeeService
     Task<dynamic> GetEmployees(GetEmployeesInput getEmployeesInput);
     Task<int> SaveOrUpdateEmployee(SaveOrUpdateEmployeeAllData saveOrUpdateEmployeeAllData);
     Task<int> DeleteEmployeeWithRelatedData(DeleteEmployeeWithRelatedData deleteEmployeeWithRelatedDate);
-
+    Task<dynamic> GetEmployeeDeductionsMainScreen(GetEmployeeDeductionsInput getEmployeeDeductionsInput);
+    Task<dynamic> GetEmployeeDeductionsPopupScreen(GetEmployeeDeductionsInput getEmployeeDeductionsInput);
+    Task<int> DeleteEmployeeDeductions(DeleteEmployeeDeductions deleteEmployeeDeductions);
+    Task<int> UpdateEmployeeDeductions(UpdateEmployeeDeductions updateEmployeeDeductions);
+    Task<int> SaveEmployeeDeductions(SaveEmployeeDeductions saveEmployeeDeductions);
 
 }
