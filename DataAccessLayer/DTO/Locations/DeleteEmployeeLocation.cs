@@ -12,8 +12,8 @@ namespace DataAccessLayer.DTO.Locations
         [Required(ErrorMessage = "The EmployeeID is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "The EmployeeID must be bigger than 0")]
         public int EmployeeID { get; set; }
-        [Required(ErrorMessage = "The LocationID is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "The LocationID must be bigger than 0")]
-        public int LocationID { get; set; } 
+        //[Required(ErrorMessage = "The LocationID is required.")]
+        //[Range(1, int.MaxValue, ErrorMessage = "The LocationID must be bigger than 0")]
+        public int? LocationID { get; set; } 
     }
 }
