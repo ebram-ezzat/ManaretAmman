@@ -12,8 +12,8 @@ namespace DataAccessLayer.DTO.EmployeeDeductions
         [Required(ErrorMessage = "The EmployeeID is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "The EmployeeID must be bigger than 0")]
         public int EmployeeID { get; set; }
-        [Required(ErrorMessage = "The EmployeeAllowanceID is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "The EmployeeAllowanceID must be bigger than 0")]
-        public int? EmployeeAllowanceID { get; set; }
+        [Required(ErrorMessage = "The EmployeeDeductionID is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "The EmployeeDeductionID must be bigger than 0")]
+        public int? EmployeeDeductionID { get; set; }
     }
 }

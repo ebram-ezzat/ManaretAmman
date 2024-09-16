@@ -1198,7 +1198,7 @@ internal class EmployeeService : IEmployeeService
         Dictionary<string, object> inputParams = new Dictionary<string, object>
             {
                 { "pEmployeeID", deleteEmployeeDeductions.EmployeeID},
-                { "pEmployeeDeductionID", deleteEmployeeDeductions.EmployeeAllowanceID },
+                { "pEmployeeDeductionID", deleteEmployeeDeductions.EmployeeDeductionID },
 
             };
 
