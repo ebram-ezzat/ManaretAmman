@@ -34,6 +34,7 @@ namespace DataAccessLayer.DTO.Locations
         public int? AnyWhere { get; set; }
         public decimal? Latitude { get; set; }
         public decimal? Longitude { get; set; }
+        public int? EmployeeLocationID { get; set; }
 
     }
 }

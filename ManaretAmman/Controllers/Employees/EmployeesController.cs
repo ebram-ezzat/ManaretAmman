@@ -790,6 +790,15 @@ namespace ManaretAmman.Controllers.Employees
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
             var result = await _employeeService.DeleteEmployeeAllowances(deleteEmployeeAllowances);
+            if(result == -3)
+            {
+                var errors = new List<string>()
+                {
+                    "cannot delete because the employee's salary has been calculated",
+                };
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
 
             return ApiResponse<int>.Success("data has been returned succussfully", result);
         }

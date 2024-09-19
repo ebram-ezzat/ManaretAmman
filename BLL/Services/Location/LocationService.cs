@@ -28,7 +28,9 @@ namespace BusinessLogicLayer.Services.Location
             {
                 { "pEmployeeID", deleteEmployeeLocation.EmployeeID},
                 { "pLocationID", deleteEmployeeLocation.LocationID },
-               
+                { "pEmployeeLocationID", deleteEmployeeLocation.EmployeeLocationID },
+                
+
 
             };
             Dictionary<string, object> outputParams = new Dictionary<string, object>
