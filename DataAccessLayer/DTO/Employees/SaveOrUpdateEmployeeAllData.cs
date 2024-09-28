@@ -40,7 +40,7 @@ namespace DataAccessLayer.DTO.Employees
         [Range(1, int.MaxValue, ErrorMessage = "The StatusID must be bigger than 0")]
         public int? StatusID { get; set; }
         public int? SettingID { get; set; }
-        [Required(ErrorMessage = "The NationalId is required.")]
+        //[Required(ErrorMessage = "The NationalId is required.")]
 
         public string NationalId { get; set; }
         public string SocialNumber { get; set; }

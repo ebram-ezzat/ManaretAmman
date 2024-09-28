@@ -1,5 +1,6 @@
 ﻿using BusinessLogicLayer.Services.Employees;
 using DataAccessLayer.DTO.EmployeeAttendance;
+using DataAccessLayer.DTO.EmployeeContract;
 using DataAccessLayer.DTO.EmployeeDeductions;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeSalary;
@@ -999,6 +1000,49 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<int>.Success("data has been retrieved succussfully", result);
         }
+        #endregion
+
+        #region Employee Contracts
+
+        /// <summary>
+        /// you can send {Accept-Language} Via header request to get the correct description "ar" For Arabic and "en" For English
+        /// </summary>
+        /// <param name="getEmployeeContract"></param>
+        /// <returns></returns>
+        [AddLanguageHeaderAttribute]
+        [HttpGet("GetEmployeeContracts")]
+        public async Task<IApiResponse> GetEmployeeContracts([FromQuery] GetEmployeeContracts GetEmployeeContract)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeContracts(GetEmployeeContract);
+
+            return ApiResponse<dynamic>.Success("data has been returned succussfully", result);
+        }
+
+        [HttpPost("SaveEmployeeContracts")]
+        public async Task<IApiResponse> SaveEmployeeContracts(SaveEmployeeContracts saveEmployeeContracts)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveEmployeeContracts(saveEmployeeContracts);
+            return ApiResponse.Success("data has been saved succussfully");
+        }
+
         #endregion
     }
 }

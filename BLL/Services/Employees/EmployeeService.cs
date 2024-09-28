@@ -7,6 +7,7 @@ using BusinessLogicLayer.Services.Lookups;
 using BusinessLogicLayer.Services.ProjectProvider;
 using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.EmployeeAttendance;
+using DataAccessLayer.DTO.EmployeeContract;
 using DataAccessLayer.DTO.EmployeeDeductions;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeSalary;
@@ -1406,7 +1407,7 @@ internal class EmployeeService : IEmployeeService
                     { "pError", "int" } // OUTPUT
                 };
 
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployee", inputParams, outputParams);
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployees", inputParams, outputParams);
 
             int pErrorValue = (int)outputValues["pError"];
             if (pErrorValue > 0)
@@ -1566,7 +1567,62 @@ internal class EmployeeService : IEmployeeService
         return 2;//empty ,there is no data 
     }
 
-   
+
+
+    #endregion
+
+    #region Employee Contracts
+
+    public async Task<dynamic> GetEmployeeContracts(GetEmployeeContracts getEmployeeContracts)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            { "pContractID", getEmployeeContracts.ContractID ?? Convert.DBNull },
+            { "pContractTypeID", getEmployeeContracts.ContractTypeID ?? Convert.DBNull },
+            { "pEmployeeID", getEmployeeContracts.EmployeeID ?? Convert.DBNull },
+            { "pFromDate", getEmployeeContracts.FromDate==null ? Convert.DBNull:getEmployeeContracts.FromDate.DateToIntValue() },
+            { "pToDate", getEmployeeContracts.ToDate==null ? Convert.DBNull:getEmployeeContracts.ToDate.DateToIntValue() },
+            { "pProjectID", _projectProvider.GetProjectId() },  // Not nullable, no need for DB null check
+            { "pLanguageID", _projectProvider.LangId() }, // Not nullable, no need for DB null check
+            { "pStatusID", getEmployeeContracts.StatusID ?? Convert.DBNull },
+            { "pToFromDate", getEmployeeContracts.ToFromDate==null ? Convert.DBNull:getEmployeeContracts.ToFromDate.DateToIntValue() },
+            { "pToToDate",getEmployeeContracts.ToToDate==null ? Convert.DBNull:getEmployeeContracts.ToToDate.DateToIntValue() },
+            { "pPageNo" ,getEmployeeContracts.PageNo },
+            { "pPageSize",getEmployeeContracts.PageSize }
+        };
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            {"prowcount","int" }
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeePenaltyResponse>("dbo.GetEmployeeContracts", inputParams, outputParams);
+        return PublicHelper.CreateResultPaginationObject(getEmployeeContracts, result, outputValues);
+
+    }
+
+    public async Task<int> SaveEmployeeContracts(SaveEmployeeContracts saveEmployeeContracts)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pContractTypeID", saveEmployeeContracts.ContractTypeID??Convert.DBNull },
+                { "pProjectID",_projectProvider.GetProjectId()},
+                { "pEmployeeID", saveEmployeeContracts.EmployeeID??Convert.DBNull },
+                { "pStatusID", saveEmployeeContracts.StatusID??Convert.DBNull },
+                { "pCreatedBy", _projectProvider.UserId() },
+                { "pContractEndDate", saveEmployeeContracts.ContractEndDate==null?Convert.DBNull:saveEmployeeContracts.ContractEndDate.DateToIntValue() },
+                { "pContractConfirmDate", saveEmployeeContracts.ContractConfirmDate==null?Convert.DBNull:saveEmployeeContracts.ContractConfirmDate.DateToIntValue() },
+                { "pContractFromDate", saveEmployeeContracts.ContractFromDate==null?Convert.DBNull:saveEmployeeContracts.ContractFromDate.DateToIntValue() },
+                { "pContractStartDate", saveEmployeeContracts.ContractStartDate==null?Convert.DBNull:saveEmployeeContracts.ContractStartDate.DateToIntValue() },
+                { "pCompanyID", saveEmployeeContracts.CompanyID??Convert.DBNull }
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeContracts", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
 
     #endregion
 
