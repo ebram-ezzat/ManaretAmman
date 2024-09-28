@@ -1384,7 +1384,7 @@ internal class EmployeeService : IEmployeeService
             { "pBranchID", saveOrUpdateEmployeeInFormation.BranchID ?? Convert.DBNull },
             { "pEmployeeImage", saveOrUpdateEmployeeInFormation.EmployeeImage ?? Convert.DBNull },
             { "pProjectID", _projectProvider.GetProjectId() },
-            { "pHasBreak", saveOrUpdateEmployeeInFormation.HasBreak ?? Convert.DBNull },
+            { "pHasBreak", saveOrUpdateEmployeeInFormation.HasBreak == true ? 1 : 0 },
             { "pStartDate", saveOrUpdateEmployeeInFormation.StartDate.DateToIntValue() ?? Convert.DBNull }, // Assuming DateToIntValue() exists
             { "pDepartmentID", saveOrUpdateEmployeeInFormation.DepartmentID ?? Convert.DBNull },
             { "pUserName", saveOrUpdateEmployeeInFormation.UserName ?? Convert.DBNull },
@@ -1459,7 +1459,7 @@ internal class EmployeeService : IEmployeeService
         {
             Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
-            { "pContractID", contractModel.ContractID ?? Convert.DBNull },
+            //{ "pContractID", contractModel.ContractID ?? Convert.DBNull },
             { "pStartDate", contractModel.StartDate.DateToIntValue() ?? Convert.DBNull },
             { "pEndDate", contractModel.EndDate.DateToIntValue() ?? Convert.DBNull },
             { "pEmployeeID", EmployeeId},
@@ -1469,7 +1469,7 @@ internal class EmployeeService : IEmployeeService
             { "pProjectID", _projectProvider.GetProjectId() },
             { "pIsDailyWork", contractModel.IsDailyWork }, // Convert bool to int for the stored procedure
             { "pContractTypeID", contractModel.ContractTypeID ?? Convert.DBNull },
-            { "pIncomeTaxType", contractModel.IncomeTaxType ?? Convert.DBNull },
+            { "pincometaxtype", contractModel.IncomeTaxType ?? Convert.DBNull },
             { "pCompanyID", contractModel.CompanyID ?? Convert.DBNull },
             { "pEmployeeWorkingHours", contractModel.EmployeeWorkingHours ?? Convert.DBNull }
         };
@@ -1504,7 +1504,7 @@ internal class EmployeeService : IEmployeeService
             {
                 Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
-            { "pEmployeeAllowanceID", item.EmployeeAllowanceID ?? Convert.DBNull },
+            //{ "pEmployeeAllowanceID", item.EmployeeAllowanceID ?? Convert.DBNull },
             { "pEmployeeID", EmployeeId },
             { "pStartDate", item.StartDate.DateToIntValue() ?? Convert.DBNull },
             { "pEndDate", item.EndDate.DateToIntValue() ?? Convert.DBNull },
@@ -1540,7 +1540,7 @@ internal class EmployeeService : IEmployeeService
             {
                 Dictionary<string, object> inputParams = new Dictionary<string, object>
             {
-                { "pEmployeeDeductionID", item.EmployeeDeductionID ?? Convert.DBNull },
+                //{ "pEmployeeDeductionID", item.EmployeeDeductionID ?? Convert.DBNull },
                 { "pEmployeeID", EmployeeId},
                 { "pStartDate", item.StartDate.DateToIntValue() ?? Convert.DBNull },
                 { "pEndDate", item.EndDate.DateToIntValue() ?? Convert.DBNull },
