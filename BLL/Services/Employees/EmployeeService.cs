@@ -1489,7 +1489,7 @@ internal class EmployeeService : IEmployeeService
                 {
                     return contractModel.ContractID.Value;
                 }
-                return (int)outputValues["pContractID"];
+                if (outputValues["pContractID"].ToString() != "") return (int)outputValues["pContractID"];
             }
             return pErrorValue;
         }
