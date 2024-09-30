@@ -35,7 +35,7 @@ namespace DataAccessLayer.DTO.Employees
         public int? EmployeeID { get; set; }
         [Required(ErrorMessage = "The EmployeeName is required.")]       
         public string EmployeeName { get; set; }
-        public string EmployeeNumber { get; set; }
+        public int? EmployeeNumber { get; set; }
         [Required(ErrorMessage = "The StatusID is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "The StatusID must be bigger than 0")]
         public int? StatusID { get; set; }
