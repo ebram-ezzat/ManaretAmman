@@ -1483,13 +1483,13 @@ internal class EmployeeService : IEmployeeService
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeContracts", inputParams, outputParams);
 
             int pErrorValue = (int)outputValues["pError"];
-            if (pErrorValue > 0)
+            if (pErrorValue > 1)
             {
                 if (contractModel.ContractID.HasValue && contractModel.ContractID.Value > 0)
                 {
                     return contractModel.ContractID.Value;
                 }
-                if (outputValues["pContractID"].ToString() != "") return (int)outputValues["pContractID"];
+                return (int)outputValues["pContractID"];
             }
             return pErrorValue;
         }
