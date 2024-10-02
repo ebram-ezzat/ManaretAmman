@@ -985,7 +985,7 @@ namespace ManaretAmman.Controllers.Employees
         }
 
         [HttpDelete("DeleteEmployee")]
-        public async Task<IApiResponse> DeleteEmployee([FromQuery] DeleteEmployeeWithRelatedData deleteEmployeeWithRelatedData)
+        public async Task<IApiResponse> DeleteEmployee([FromBody] DeleteEmployeeWithRelatedData deleteEmployeeWithRelatedData)
         {
             if (!ModelState.IsValid)
             {
