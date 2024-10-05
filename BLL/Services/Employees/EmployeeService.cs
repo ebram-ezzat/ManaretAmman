@@ -925,7 +925,7 @@ internal class EmployeeService : IEmployeeService
     public async Task<GetEmployeeSalaryDetailsOutput> GetEmployeeSalaryDetails(GetEmployeeSalaryInput getEmployeeSalaryInput)
     {
         Dictionary<string, object> inputParams;
-            inputParams = new Dictionary<string, object>
+        inputParams = new Dictionary<string, object>
             {
                 { "pProjectID", _projectProvider.GetProjectId() },
                 { "pEmployeeID", getEmployeeSalaryInput.EmployeeID ?? Convert.DBNull },
@@ -1302,7 +1302,7 @@ internal class EmployeeService : IEmployeeService
         if (pErrorValueAllowances < 1)
         {
             throw new Exception("error on delete employee Allowances(العلاوات) information data");
-        }       
+        }
         //حذف الاقطاعات
         var (resultDeductions, outputValuesDeductions) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeeDeductions", inputParams, outputParams);
         int pErrorValueDeductions = (int)outputValuesDeductions["pError"];
@@ -1346,11 +1346,11 @@ internal class EmployeeService : IEmployeeService
             throw new Exception("error on saveing employee Deductions(الاقتطاعات) information data");
         }
         //save emplyee Shift(الشفتات)
-        int perrorShifts = await SaveOrUpdateEmployeeShifts(saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeShifts, employerId);
-        if(perrorShifts<1)
+        int perrorShifts = await SaveOrUpdateEmployeeShifts(saveOrUpdateEmployeeAllData.saveOrUpdateEmployeeShifts, employerId);
+        if (perrorShifts < 1)
         {
             throw new Exception("error on saveing employee Shifts information data");
-        }      
+        }
 
 
         return employerId;
@@ -1422,32 +1422,32 @@ internal class EmployeeService : IEmployeeService
         }
         return -1;
     }
-    private async Task<int> SaveOrUpdateEmployeeShifts(List<SaveOrUpdateEmployeeShifts> lstSaveOrUpdateEmployeeShifts,int EmployeeId)
+    private async Task<int> SaveOrUpdateEmployeeShifts(SaveOrUpdateEmployeeShifts saveOrUpdateEmployeeShifts, int EmployeeId)
     {
         int perror = 1;
 
-        if (lstSaveOrUpdateEmployeeShifts != null && lstSaveOrUpdateEmployeeShifts.Count()>0)
+        if (saveOrUpdateEmployeeShifts != null && !string.IsNullOrEmpty(saveOrUpdateEmployeeShifts.ShiftId))
         {
-            foreach(var item in lstSaveOrUpdateEmployeeShifts)
-            {
-                Dictionary<string, object> inputParams = new Dictionary<string, object>
+            int ShiftidCount = saveOrUpdateEmployeeShifts.ShiftId.Split(';').Count();
+            string pEmployeeID = string.Join(";", Enumerable.Repeat(EmployeeId, ShiftidCount));
+
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
                 {
-                    { "pEmployeeID",EmployeeId},
-                    { "pShiftID",item.ShiftId },
+                    { "pEmployeeID",pEmployeeID},
+                    { "pShiftID",saveOrUpdateEmployeeShifts.ShiftId },
                     { "pCreatedBy", _projectProvider.UserId() },
 
                 };
 
-                Dictionary<string, object> outputParams = new Dictionary<string, object>
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
                 {
                     { "pError", "int" } // OUTPUT
                 };
 
-                var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeShiftCheck", inputParams, outputParams);
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeShiftCheck", inputParams, outputParams);
 
-                perror = (int)outputValues["pError"];
+            perror = (int)outputValues["pError"];
 
-            }
 
             return perror;
         }
@@ -1495,10 +1495,10 @@ internal class EmployeeService : IEmployeeService
         }
         return -1;
     }
-    private async Task<int> SaveOrUpdateEmployeeAllowanceInformation(List<SaveOrUpdateEmployeeAllowance> employeeAllowanceModel,int EmployeeId)
+    private async Task<int> SaveOrUpdateEmployeeAllowanceInformation(List<SaveOrUpdateEmployeeAllowance> employeeAllowanceModel, int EmployeeId)
     {
         int pErrorValue = 1;
-        if (employeeAllowanceModel != null && employeeAllowanceModel.Count()>0)
+        if (employeeAllowanceModel != null && employeeAllowanceModel.Count() > 0)
         {
             foreach (var item in employeeAllowanceModel)
             {
@@ -1523,7 +1523,7 @@ internal class EmployeeService : IEmployeeService
 
                 var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeAllowances", inputParams, outputParams);
 
-                 pErrorValue = (int)outputValues["pError"];
+                pErrorValue = (int)outputValues["pError"];
             }
             return pErrorValue;
 
@@ -1546,7 +1546,7 @@ internal class EmployeeService : IEmployeeService
                 { "pEndDate", item.EndDate.DateToIntValue() ?? Convert.DBNull },
                 { "pDeductionID", item.DeductionID ?? Convert.DBNull },
                 { "pCreatedBy",_projectProvider.UserId()  },
-                { "pProjectID", _projectProvider.GetProjectId() }, 
+                { "pProjectID", _projectProvider.GetProjectId() },
                 { "pAmount", item.Amount ?? Convert.DBNull }
             };
 
@@ -1558,10 +1558,10 @@ internal class EmployeeService : IEmployeeService
 
                 var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeDeductions", inputParams, outputParams);
 
-                 pErrorValue = (int)outputValues["pError"];
+                pErrorValue = (int)outputValues["pError"];
             }
-           
-           
+
+
             return pErrorValue;
         }
         return 2;//empty ,there is no data 

@@ -28,7 +28,7 @@ namespace DataAccessLayer.DTO.Employees
         /// <summary>
         /// الشفتات
         /// </summary>
-        public List<SaveOrUpdateEmployeeShifts> SaveOrUpdateEmployeeShifts { get; set; }
+        public SaveOrUpdateEmployeeShifts SaveOrUpdateEmployeeShifts { get; set; }
     }
     public class SaveOrUpdateEmployeeInFormation
     {
@@ -78,7 +78,7 @@ namespace DataAccessLayer.DTO.Employees
     }
     public class SaveOrUpdateEmployeeShifts
     {
-        public int ShiftId { get; set; }
+        public string ShiftId { get; set; }
     }
     public class SaveOrUpdateEmployeeContract
     {
