@@ -1346,7 +1346,7 @@ internal class EmployeeService : IEmployeeService
             throw new Exception("error on saveing employee Deductions(الاقتطاعات) information data");
         }
         //save emplyee Shift(الشفتات)
-        int perrorShifts = await SaveOrUpdateEmployeeShifts(saveOrUpdateEmployeeAllData.saveOrUpdateEmployeeShifts, employerId);
+        int perrorShifts = await SaveOrUpdateEmployeeShifts(saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeShifts, employerId);
         if (perrorShifts < 1)
         {
             throw new Exception("error on saveing employee Shifts information data");
