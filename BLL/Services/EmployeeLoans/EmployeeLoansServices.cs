@@ -440,6 +440,7 @@ namespace BusinessLogicLayer.Services.EmployeeLoans
                 };
             Dictionary<string, object> outputParams = new Dictionary<string, object>
                 {
+                    {"pEmployeeLoanID", FirstEmp.EmployeeLoanID},
                     {"pLoanSerial",FirstEmp.LoanSerial},
                     { "pError","int" },
 
