@@ -1352,7 +1352,18 @@ internal class EmployeeService : IEmployeeService
             throw new Exception("error on saveing employee Shifts information data");
         }
 
-
+        //save employee attandance (الحضور)
+        int perrorAttandance = await SaveOrUpdateEmployeeAttandance(employerId);
+        if (perrorAttandance < 1)
+        {
+            throw new Exception("error on saveing employee attandance information data");
+        }
+        //Save Employee Balance (رصيد)
+        int perrorBalance = saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeContract.HolidaysBalance.HasValue ?await SaveOrUpdateEmployeeBalance(employerId, saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeContract.HolidaysBalance):1;
+        if (perrorBalance < 1)
+        {
+            throw new Exception("error on saveing employee Balance information data");
+        }
         return employerId;
     }
     private async Task<int> SaveOrUpdateEmployeeMainInFormation(SaveOrUpdateEmployeeInFormation saveOrUpdateEmployeeInFormation)
@@ -1567,6 +1578,65 @@ internal class EmployeeService : IEmployeeService
         return 2;//empty ,there is no data 
     }
 
+    private async Task<int> SaveOrUpdateEmployeeAttandance(int EmployeeId)
+    {
+        int perror = 1;
+
+    
+
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+                {
+                    { "pEmployeeID",EmployeeId},
+                    { "pProjectID",_projectProvider.GetProjectId() },
+
+                };
+
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+                {
+                    { "pError", "int" } // OUTPUT
+                };
+
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeAttendance", inputParams, outputParams);
+
+            perror = (int)outputValues["pError"];
+
+
+            return perror;
+       
+    }
+    private async Task<int> SaveOrUpdateEmployeeBalance(int EmployeeId,int? CurrentBalance)
+    {
+        int perror = 1;
+        if(CurrentBalance.HasValue)
+        {
+            var settingResult = await _lookupsService.GetSettings();
+
+            var activeYear = settingResult?.ActiveYear;
+
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+                {
+                    { "pEmployeeID",EmployeeId},
+                    { "pCurrentBalance",CurrentBalance},
+                    { "pYearID",activeYear},
+                    { "pProjectID",_projectProvider.GetProjectId() },
+
+                };
+
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+                {
+                    { "pError", "int" } // OUTPUT
+                };
+
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeBalance", inputParams, outputParams);
+
+            perror = (int)outputValues["pError"];
+        }
+       
+
+
+        return perror;
+
+    }
 
 
     #endregion
