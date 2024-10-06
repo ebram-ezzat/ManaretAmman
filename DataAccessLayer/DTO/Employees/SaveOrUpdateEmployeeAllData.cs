@@ -94,6 +94,7 @@ namespace DataAccessLayer.DTO.Employees
         public int? IncomeTaxType { get; set; }
         public int? CompanyID { get; set; }
         public int? EmployeeWorkingHours { get; set; }
+        public int? HolidaysBalance { get; set; }
 
     }
     public class SaveOrUpdateEmployeeAllowance//العلاوات
