@@ -25,9 +25,9 @@ namespace DataAccessLayer.DTO.EmployeeContract
         public int? EmployeeID { get; set; }
         public decimal? Salary { get; set; }
         public int? CreatedBy { get; set; }
-        public int? CreationDate { get; set; }
+        public DateTime? CreationDate { get; set; }
         public int? ModifiedBy { get; set; }
-        public int? ModificationDate { get; set; }
+        public DateTime? ModificationDate { get; set; }
         public decimal? SocialSecuritySalary { get; set; }
         public int? ProjectID { get; set; }
         public int? IsDailyWork { get; set; }
@@ -35,15 +35,15 @@ namespace DataAccessLayer.DTO.EmployeeContract
         public int? ConfirmationDate { get; set; }
         public string StatusDesc { get; set; }
         public string EmployeeName { get; set; }
-        public string EmployeeNumber { get; set; }
+        public int? EmployeeNumber { get; set; }
         public int? StatusID { get; set; }
         public string ContractTypeDesc { get; set; }
         public int? Lastone { get; set; }
         public string ContractTypeValue { get; set; }
         public int? FirstDate { get; set; }
-        public DateTime? V_startdate { get; set; }
-        public DateTime? V_endDate { get; set; }
-        public DateTime? V_FirstDate { get; set; }
+        public DateTime? v_FirstDate { get; set; }
+        public DateTime? v_StartDate { get; set; }
+        public DateTime? v_EndDate { get; set; }
         public DateTime? v_ConfirmationDate { get; set; }
     }
 }
