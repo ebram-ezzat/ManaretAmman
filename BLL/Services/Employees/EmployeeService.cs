@@ -1594,7 +1594,7 @@ internal class EmployeeService : IEmployeeService
         {
             {"prowcount","int" }
         };
-        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeePenaltyResponse>("dbo.GetEmployeeContracts", inputParams, outputParams);
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeContractsResponse>("dbo.GetEmployeeContracts", inputParams, outputParams);
         return PublicHelper.CreateResultPaginationObject(getEmployeeContracts, result, outputValues);
 
     }
