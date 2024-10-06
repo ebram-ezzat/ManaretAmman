@@ -1610,7 +1610,7 @@ internal class EmployeeService : IEmployeeService
                 { "pCreatedBy", _projectProvider.UserId() },
                 { "pContractEndDate", saveEmployeeContracts.ContractEndDate==null?Convert.DBNull:saveEmployeeContracts.ContractEndDate.DateToIntValue() },
                 { "pContractConfirmDate", saveEmployeeContracts.ContractConfirmDate==null?Convert.DBNull:saveEmployeeContracts.ContractConfirmDate.DateToIntValue() },
-                { "pContractFromDate", saveEmployeeContracts.ContractFromDate==null?Convert.DBNull:saveEmployeeContracts.ContractFromDate.DateToIntValue() },
+                { "pContractFromDate", saveEmployeeContracts.ContractFromDate },
                 { "pContractStartDate", saveEmployeeContracts.ContractStartDate==null?Convert.DBNull:saveEmployeeContracts.ContractStartDate.DateToIntValue() },
                 { "pCompanyID", saveEmployeeContracts.CompanyID??Convert.DBNull }
             };

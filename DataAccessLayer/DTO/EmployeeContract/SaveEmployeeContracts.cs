@@ -13,7 +13,7 @@ namespace DataAccessLayer.DTO.EmployeeContract
         public int? StatusID { get; set; }
         public DateTime? ContractEndDate { get; set; }
         public DateTime? ContractConfirmDate { get; set; }
-        public DateTime? ContractFromDate { get; set; }
+        public int? ContractFromDate { get; set; }
         public DateTime? ContractStartDate { get; set; }
         public int? CompanyID { get; set; }
     }
