@@ -735,6 +735,11 @@ internal class EmployeeService : IEmployeeService
             { "pProjectID", _projectProvider.GetProjectId() },
             { "pEmployeeID", getEmployeeShifts.EmployeeID ?? Convert.DBNull },
         };
+        if(getEmployeeShifts.EmployeeID != null && getEmployeeShifts.EmployeeID=="-1")
+        {
+            var (resultNaga, outputValuesNaga) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeShiftsResponseNagative>("dbo.GetEmployeeShiftCheck", inputParams, null);
+            return resultNaga;
+        }
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeShiftsResponse>("dbo.GetEmployeeShiftCheck", inputParams, null);
         return result;
 
@@ -1325,6 +1330,21 @@ internal class EmployeeService : IEmployeeService
         int employerId = await SaveOrUpdateEmployeeMainInFormation(saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeInFormation);
         if (employerId < 1)
         {
+            if(employerId ==-3)
+            {
+                throw new Exception("error on saveing employee main information data, EmployeeNumber Existed Before,Error Code -3 ");
+
+            }
+            if(employerId==-4)
+            {
+                throw new Exception("error on saveing employee main information data, TheContract Existed Before at same date,Error Code -4 ");
+
+            }
+            if (employerId == -5)
+            {
+                throw new Exception("error on saveing employee main information data, UserName Existed Before,Error Code -5");
+
+            }
             throw new Exception("error on saveing employee main information data");
         }
         //save EmployeeContracts(معلومات العقد)
@@ -1697,5 +1717,24 @@ internal class EmployeeService : IEmployeeService
     }
 
     #endregion
+    #region Employee Additional Info(معلومات اضافية للموظف)
+    public async Task<dynamic> GetEmployeesAdditionalInfo(GetEmployeeAdditionalInfoInput getEmployeeAdditionalInfoInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pEmployeeID", getEmployeeAdditionalInfoInput.EmployeeID },            
 
+        };
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "prowcount","int" },
+        };
+
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeesOutput>("dbo.GetEmployees", inputParams, outputParams);
+        return result;
+    }
+
+    #endregion
 }

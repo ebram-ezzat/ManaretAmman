@@ -18,7 +18,7 @@ public interface IEmployeeService
     Task<int> SaveEmployeePaperProc(SaveEmployeePaper saveEmployeePaper);
     Task<List<EmplyeeProfileVModel>> EmployeeProfile(int EmployeeId);
 
-    Task<int> SaveEmployeeAffairsService (SaveEmployeeAffairsServices saveEmployeeAffairsService);
+    Task<int> SaveEmployeeAffairsService(SaveEmployeeAffairsServices saveEmployeeAffairsService);
     Task<int> DeleteEmployeeAffairsService(DeleteEmployeeAffairsService deleteEmployeeAffairsService);
 
     Task<dynamic> GetEmployeeAffairsService(GetEmployeeAffairsServiceRequest getEmployeeAffairsServiceRequest);
@@ -70,5 +70,5 @@ public interface IEmployeeService
     Task<int> SaveEmployeeDeductions(SaveEmployeeDeductions saveEmployeeDeductions);
     Task<dynamic> GetEmployeeContracts(GetEmployeeContracts getEmployeeContracts);
     Task<int> SaveEmployeeContracts(SaveEmployeeContracts saveEmployeeContracts);
-
+    public Task<dynamic> GetEmployeesAdditionalInfo(GetEmployeeAdditionalInfoInput getEmployeeAdditionalInfoInput);
 }

@@ -178,6 +178,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<GetEmployeePenaltyResponse>().HasNoKey().ToView(null);
             modelBuilder.Entity<EmployeeScheduledPaymentsLoanResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeShiftsResponse>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GetEmployeeShiftsResponseNagative>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeAttandanceShiftOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeTransactionOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<OfficialVacationGetOutput>().HasNoKey().ToView(null);

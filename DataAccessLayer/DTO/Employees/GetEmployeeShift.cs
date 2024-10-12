@@ -20,4 +20,11 @@ namespace DataAccessLayer.DTO.Employees
         public string ShiftName { get; set; }
         public int? IsChecked { get; set; }
     }
+    public class GetEmployeeShiftsResponseNagative
+    {
+        public int? EmployeeID { get; set; }
+        public int? ShiftID { get; set; }       
+        public string ShiftName { get; set; }
+        public int? IsChecked { get; set; }
+    }
 }

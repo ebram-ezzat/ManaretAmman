@@ -1002,7 +1002,7 @@ namespace ManaretAmman.Controllers.Employees
         }
         #endregion
 
-        #region Employee Contracts
+        #region Employee Contracts(العقود)
 
         /// <summary>
         /// you can send {Accept-Language} Via header request to get the correct description "ar" For Arabic and "en" For English
@@ -1043,6 +1043,29 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse.Success("data has been saved succussfully");
         }
 
+        #endregion
+        #region Employee Additional Info(معلومات اضافية للموظف)
+        /// <summary>
+        ///  Additional Info Employess (شاشة فرعية معلومات اضافية الموظفين)
+        /// </summary>
+        /// <param name="getEmployeeAdditionalInfoInput"></param>
+        /// <returns></returns>
+        [HttpGet("GetEmployeesAdditionalInfo")]
+        public async Task<IApiResponse> GetEmployeesAdditionalInfo([FromQuery] GetEmployeeAdditionalInfoInput getEmployeeAdditionalInfoInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeesAdditionalInfo(getEmployeeAdditionalInfoInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
         #endregion
     }
 }
