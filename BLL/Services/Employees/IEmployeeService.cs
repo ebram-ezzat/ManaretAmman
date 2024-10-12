@@ -70,5 +70,7 @@ public interface IEmployeeService
     Task<int> SaveEmployeeDeductions(SaveEmployeeDeductions saveEmployeeDeductions);
     Task<dynamic> GetEmployeeContracts(GetEmployeeContracts getEmployeeContracts);
     Task<int> SaveEmployeeContracts(SaveEmployeeContracts saveEmployeeContracts);
-    public Task<dynamic> GetEmployeesAdditionalInfo(GetEmployeeAdditionalInfoInput getEmployeeAdditionalInfoInput);
+    Task<dynamic> GetEmployeesAdditionalInfo(GetEmployeeAdditionalInfoInput getEmployeeAdditionalInfoInput);
+    Task<int> SaveEmployeeAdditionalInfo(SaveOrUpdateEmployeeAdditionalInfo saveOrUpdateEmployeeAdditionalInfo);
+
 }

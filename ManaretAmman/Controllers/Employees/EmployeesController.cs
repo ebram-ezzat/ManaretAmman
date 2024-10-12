@@ -1066,6 +1066,22 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
         }
+        [HttpPost("SaveOrUpdateEmployeeAdditionalInfo")]
+        public async Task<IApiResponse> SaveOrUpdateEmployeeAdditionalInfo([FromBody] SaveOrUpdateEmployeeAdditionalInfo saveOrUpdateEmployeeAdditionalInfo)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveEmployeeAdditionalInfo(saveOrUpdateEmployeeAdditionalInfo);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
         #endregion
     }
 }
