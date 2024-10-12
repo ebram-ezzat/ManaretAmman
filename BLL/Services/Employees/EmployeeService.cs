@@ -1462,7 +1462,7 @@ internal class EmployeeService : IEmployeeService
         if (saveOrUpdateEmployeeShifts != null && !string.IsNullOrEmpty(saveOrUpdateEmployeeShifts.ShiftId))
         {
             int ShiftidCount = saveOrUpdateEmployeeShifts.ShiftId.Split(';').Count();
-            string pEmployeeID = string.Join(";", Enumerable.Repeat(EmployeeId, ShiftidCount));
+            string pEmployeeID = string.Join(";", Enumerable.Repeat(EmployeeId, ShiftidCount - 1));
 
             Dictionary<string, object> inputParams = new Dictionary<string, object>
                 {
