@@ -1345,13 +1345,6 @@ internal class EmployeeService : IEmployeeService
         {
             throw new Exception("error on saveing employee Deductions(الاقتطاعات) information data");
         }
-        //save emplyee Shift(الشفتات)
-        int perrorShifts = await SaveOrUpdateEmployeeShifts(saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeShifts, employerId);
-        if (perrorShifts < 1)
-        {
-            throw new Exception("error on saveing employee Shifts information data");
-        }
-
         //save employee attandance (الحضور)
         int perrorAttandance = await SaveOrUpdateEmployeeAttandance(employerId);
         if (perrorAttandance < 1)
@@ -1359,11 +1352,19 @@ internal class EmployeeService : IEmployeeService
             throw new Exception("error on saveing employee attandance information data");
         }
         //Save Employee Balance (رصيد)
-        int perrorBalance = saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeContract.HolidaysBalance.HasValue ?await SaveOrUpdateEmployeeBalance(employerId, saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeContract.HolidaysBalance):1;
+        int perrorBalance = saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeContract.CurrentBalance.HasValue ? await SaveOrUpdateEmployeeBalance(employerId, saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeContract.CurrentBalance) : 1;
         if (perrorBalance < 1)
         {
             throw new Exception("error on saveing employee Balance information data");
         }
+        //save emplyee Shift(الشفتات)
+        int perrorShifts = await SaveOrUpdateEmployeeShifts(saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeShifts, employerId);
+        if (perrorShifts < 1)
+        {
+            throw new Exception("error on saveing employee Shifts information data");
+        }
+
+      
         return employerId;
     }
     private async Task<int> SaveOrUpdateEmployeeMainInFormation(SaveOrUpdateEmployeeInFormation saveOrUpdateEmployeeInFormation)
@@ -1410,6 +1411,7 @@ internal class EmployeeService : IEmployeeService
             { "pEmergencyCallName2", saveOrUpdateEmployeeInFormation.EmergencyCallName2 ?? Convert.DBNull },
             { "pDateForMozawleh", saveOrUpdateEmployeeInFormation.DateForMozawleh.DateToIntValue() ?? Convert.DBNull },
             { "pcompanynameid", saveOrUpdateEmployeeInFormation.CompanyNameID ?? Convert.DBNull },
+            {"pHasMobileInfo",saveOrUpdateEmployeeInFormation.HasMobileInfo ?? Convert.DBNull }
         };
 
             Dictionary<string, object> outputParams = new Dictionary<string, object>

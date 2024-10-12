@@ -74,6 +74,7 @@ namespace DataAccessLayer.DTO.Employees
         public string EmergencyCallName2 { get; set; }
         public DateTime? DateForMozawleh { get; set; } // Assuming DateTime
         public int? CompanyNameID { get; set; }
+        public int? HasMobileInfo { get; set; }
 
     }
     public class SaveOrUpdateEmployeeShifts
@@ -94,7 +95,7 @@ namespace DataAccessLayer.DTO.Employees
         public int? IncomeTaxType { get; set; }
         public int? CompanyID { get; set; }
         public int? EmployeeWorkingHours { get; set; }
-        public int? HolidaysBalance { get; set; }
+        public int? CurrentBalance { get; set; }
 
     }
     public class SaveOrUpdateEmployeeAllowance//العلاوات
