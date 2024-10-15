@@ -9,6 +9,7 @@ using BusinessLogicLayer.UnitOfWork;
 using DataAccessLayer.DTO.EmployeeAttendance;
 using DataAccessLayer.DTO.EmployeeContract;
 using DataAccessLayer.DTO.EmployeeDeductions;
+using DataAccessLayer.DTO.EmployeeIncrease;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeSalary;
 using DataAccessLayer.DTO.EmployeeTransaction;
@@ -1809,6 +1810,77 @@ internal class EmployeeService : IEmployeeService
             return pErrorValue;
         }
         return -1;
+    }
+
+    #endregion
+
+    #region Employee Additional Info(معلومات اضافية للموظف)
+    public async Task<dynamic> GetEmployeeIncrease(GetEmployeeIncreaseInput getEmployeeIncreaseInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+
+            { "pDetailID", getEmployeeIncreaseInput.DetailID },
+            { "pEmployeeID", getEmployeeIncreaseInput.EmployeeID },
+            { "pFlag", 1 },
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pFromDate", getEmployeeIncreaseInput.FromDate==null?Convert.DBNull:getEmployeeIncreaseInput.FromDate.DateToIntValue() },
+            { "pToDate", getEmployeeIncreaseInput.ToDate==null?Convert.DBNull:getEmployeeIncreaseInput.ToDate.DateToIntValue() },
+            { "pDepartmentID", getEmployeeIncreaseInput.DepartmentID },
+            { "pLoginUserID", _projectProvider.UserId() },
+            { "pPageNo", getEmployeeIncreaseInput.PageNo },
+            { "pPageSize", getEmployeeIncreaseInput.PageSize },
+
+
+        };
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "prowcount","int" },
+        };
+
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeIncreaseOutput>("dbo.GetEmployeeIncrease", inputParams, outputParams);
+        return result;
+    }
+
+    public async Task<int> DeleteEmployeeIncrease(DeleteEmployeeIncrease deleteEmployeeIncrease)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pDetailID", deleteEmployeeIncrease.DetailID },  
+                { "pEmployeeID", deleteEmployeeIncrease.EmployeeID},
+                { "pCreatedBy", _projectProvider.UserId()},
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteEmployeeIncrease", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+
+    public async Task<int> SaveEmployeeIncrease(SaveEmployeeIncrease saveEmployeeIncrease)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID ", saveEmployeeIncrease.EmployeeID??Convert.DBNull},
+                { "pIncreaseDate", saveEmployeeIncrease.IncreaseDate.DateToIntValue()??Convert.DBNull },
+                { "pSSSIncreaseDate", saveEmployeeIncrease.SSSIncreaseDate.DateToIntValue()??Convert.DBNull },
+                { "pAmount", saveEmployeeIncrease.Amount??Convert.DBNull },
+               { "pSSNAmount", saveEmployeeIncrease.SSNAmount??Convert.DBNull },
+               { "pCreatedBy", _projectProvider.UserId() },
+                { "pProjectID", _projectProvider.GetProjectId() },
+                
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeIncrease", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
     }
 
     #endregion

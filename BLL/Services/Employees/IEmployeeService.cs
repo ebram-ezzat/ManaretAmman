@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.DTO.EmployeeAttendance;
 using DataAccessLayer.DTO.EmployeeContract;
 using DataAccessLayer.DTO.EmployeeDeductions;
+using DataAccessLayer.DTO.EmployeeIncrease;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeSalary;
 using DataAccessLayer.DTO.EmployeeTransaction;
@@ -72,5 +73,7 @@ public interface IEmployeeService
     Task<int> SaveEmployeeContracts(SaveEmployeeContracts saveEmployeeContracts);
     Task<dynamic> GetEmployeesAdditionalInfo(GetEmployeeAdditionalInfoInput getEmployeeAdditionalInfoInput);
     Task<int> SaveEmployeeAdditionalInfo(SaveOrUpdateEmployeeAdditionalInfo saveOrUpdateEmployeeAdditionalInfo);
-
+    Task<dynamic> GetEmployeeIncrease(GetEmployeeIncreaseInput getEmployeeIncreaseInput);
+    Task<int> DeleteEmployeeIncrease(DeleteEmployeeIncrease deleteEmployeeIncrease);
+    Task<int> SaveEmployeeIncrease(SaveEmployeeIncrease saveEmployeeIncrease);
 }

@@ -2,6 +2,7 @@
 using DataAccessLayer.DTO.EmployeeAttendance;
 using DataAccessLayer.DTO.EmployeeContract;
 using DataAccessLayer.DTO.EmployeeDeductions;
+using DataAccessLayer.DTO.EmployeeIncrease;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeSalary;
 using DataAccessLayer.DTO.EmployeeTransaction;
@@ -1079,6 +1080,64 @@ namespace ManaretAmman.Controllers.Employees
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
             var result = await _employeeService.SaveEmployeeAdditionalInfo(saveOrUpdateEmployeeAdditionalInfo);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
+        #endregion
+
+        #region Employee Increase الزيادات
+        /// <summary>
+        ///  Employee Increase الزيادات
+        /// </summary>
+        /// <param name="getEmployeeIncreaseInput"></param>
+        /// <returns></returns>
+        [HttpGet("GetEmployeeIncrease")]
+        public async Task<IApiResponse> GetEmployeeIncrease([FromQuery] GetEmployeeIncreaseInput getEmployeeIncreaseInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeIncrease(getEmployeeIncreaseInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+
+        [HttpDelete("DeleteEmployeeIncrease")]
+        public async Task<IApiResponse> DeleteEmployeeIncrease([FromBody] DeleteEmployeeIncrease deleteEmployeeIncrease)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.DeleteEmployeeIncrease(deleteEmployeeIncrease);
+
+            return ApiResponse<int>.Success("data has been retrieved succussfully", result);
+        }
+
+        [HttpPost("SaveEmployeeIncrease")]
+        public async Task<IApiResponse> SaveEmployeeIncrease([FromBody] SaveEmployeeIncrease saveEmployeeIncrease)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveEmployeeIncrease(saveEmployeeIncrease);
 
             return ApiResponse<int>.Success("data has been returned succussfully", result);
         }
