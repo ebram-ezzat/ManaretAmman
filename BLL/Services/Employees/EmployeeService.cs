@@ -841,7 +841,7 @@ internal class EmployeeService : IEmployeeService
             { "pProjectID", _projectProvider.GetProjectId() },
             { "pFromDate", getEmployeeTransactionInput.FromDate!=null?getEmployeeTransactionInput.FromDate.DateToIntValue() : Convert.DBNull },
             { "pToDate", getEmployeeTransactionInput.ToDate!=null?getEmployeeTransactionInput.ToDate.DateToIntValue() : Convert.DBNull },
-            {"pFlag",1 },
+            {"pFlag",getEmployeeTransactionInput.Flag??1 },
             { "pTransactionTypeID", getEmployeeTransactionInput.TransactionTypeID ?? Convert.DBNull },
             { "pLanguageID", _projectProvider.LangId() },
             { "pLoginUserID", _projectProvider.UserId() },

@@ -12,7 +12,7 @@ namespace DataAccessLayer.DTO.EmployeeTransaction
         public int? EmployeeID { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
-        public int? Flag { get; set; }
+        public int? Flag { get; set; } = 1;
         public int? TransactionTypeID { get; set; }
         public int? DepartmentID { get; set; }
     }
