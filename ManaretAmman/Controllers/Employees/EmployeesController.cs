@@ -629,6 +629,26 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<dynamic>.Success("data has been returned succussfully", result);
         }
 
+
+
+        [HttpPost("SaveEmployeeTransactionAuto")]
+        public async Task<IApiResponse> SaveEmployeeTransactionAuto([FromBody] SaveEmployeeTransactionAutoInput saveEmployeeTransactionAutoInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveEmployeeTransactionAuto(saveEmployeeTransactionAutoInput);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
+
+
         [HttpDelete("DeleteEmployeeTransaction")]
         public async Task<IApiResponse> DeleteEmployeeTransaction([FromQuery] DeleteEmployeeTransaction deleteEmployeeTransaction)
         {

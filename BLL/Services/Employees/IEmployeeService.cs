@@ -50,6 +50,8 @@ public interface IEmployeeService
     Task<dynamic> GetEmployeeTransaction(GetEmployeeTransactionInput getEmployeeTransactionInput);
     Task<int> DeleteEmployeeTransaction(DeleteEmployeeTransaction deleteEmployeeTransaction);
     Task<int> SaveEmployeeTransaction(SaveEmployeeTransaction saveEmployeeTransaction);
+    Task<int> SaveEmployeeTransactionAuto(SaveEmployeeTransactionAutoInput saveEmployeeTransactionAutoInput);
+
     Task<dynamic> GetEmployeeAllowancesMainScreen(GetEmployeeAllowancesInput getEmployeeAllowancesInput);
     Task<dynamic> GetEmployeeAllowancesPopupScreen(GetEmployeeAllowancesInput getEmployeeAllowancesInput);
     Task<int> DeleteEmployeeAllowances(DeleteEmployeeAllowances deleteEmployeeAllowances);

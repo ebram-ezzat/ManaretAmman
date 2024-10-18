@@ -904,6 +904,33 @@ internal class EmployeeService : IEmployeeService
         int pErrorValue = (int)outputValues["pError"];
         return pErrorValue;
     }
+
+    public async Task<int> SaveEmployeeTransactionAuto(SaveEmployeeTransactionAutoInput saveEmployeeTransactionAutoInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID", saveEmployeeTransactionAutoInput.EmployeeID??Convert.DBNull },
+               { "pTransactionDate", saveEmployeeTransactionAutoInput.TransactionDate.DateToIntValue()?? Convert.DBNull },
+               { "pTransactionTypeID", saveEmployeeTransactionAutoInput.TransactionTypeID??Convert.DBNull },
+               { "pTransactionInMinutes", saveEmployeeTransactionAutoInput.TransactionInMinutes??Convert.DBNull },
+               { "pNotes", saveEmployeeTransactionAutoInput.Notes??Convert.DBNull },
+               { "pCreatedBy", _projectProvider.UserId() },
+               { "pBySystem", saveEmployeeTransactionAutoInput.BySystem??Convert.DBNull },
+               { "pRelatedToDate", saveEmployeeTransactionAutoInput.RelatedToDate??Convert.DBNull },
+               { "pProjectID",  _projectProvider.GetProjectId() },
+
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+           { "pEmployeeTransactionID",  "int"},
+
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeTransactionAuto", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
     #endregion
 
     #region Employee Salary
