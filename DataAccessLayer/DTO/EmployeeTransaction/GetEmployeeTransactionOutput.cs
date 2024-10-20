@@ -28,4 +28,22 @@ namespace DataAccessLayer.DTO.EmployeeTransaction
         public string TransactionTypeDesc { get; set; }
         public DateTime? v_transactiondate { get; set; }
     }
+
+    public class EmployeeTransactionAutoResult
+    {
+        public int EmployeeID { get; set; }
+        public string EmployeeName { get; set; }
+        public string EmployeeNumber { get; set; }
+
+        public int TransactionDate { get; set; }
+
+        public string TransactionTypeDesc { get; set; }
+        public string Notes { get; set; }
+
+        public double? TransactionInMinutes { get; set; }
+
+        public int TransactionTypeID { get; set; }
+        public int ColTransactionTypeID { get; set; }
+    }
+
 }

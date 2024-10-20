@@ -189,6 +189,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<GetEmployeeDeductionsPopupOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetAllowanceDeductionOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeTransactionOutput>().HasNoKey().ToView(null);
+            modelBuilder.Entity<EmployeeTransactionAutoResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeSalaryOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeesOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeContractsResponse>().HasNoKey().ToView(null);

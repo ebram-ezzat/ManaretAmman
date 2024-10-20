@@ -856,6 +856,11 @@ internal class EmployeeService : IEmployeeService
         {
             {"prowcount","int" }
         };
+        if(getEmployeeTransactionInput.Flag.HasValue&& getEmployeeTransactionInput.Flag == 2)
+        {
+            var (resultFlag2, outputValuesFlag2) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeTransactionAutoResult>("dbo.GetEmployeeTransaction", inputParams, outputParams);
+            return PublicHelper.CreateResultPaginationObject(getEmployeeTransactionInput, resultFlag2, outputValuesFlag2);
+        }
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeTransactionOutput>("dbo.GetEmployeeTransaction", inputParams, outputParams);
         return PublicHelper.CreateResultPaginationObject(getEmployeeTransactionInput, result, outputValues);
     }
