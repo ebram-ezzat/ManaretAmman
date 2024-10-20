@@ -33,7 +33,7 @@ namespace DataAccessLayer.DTO.EmployeeTransaction
     {
         public int EmployeeID { get; set; }
         public string EmployeeName { get; set; }
-        public string EmployeeNumber { get; set; }
+        public int EmployeeNumber { get; set; }
 
         public int TransactionDate { get; set; }
 
