@@ -1774,8 +1774,7 @@ internal class EmployeeService : IEmployeeService
         if (saveOrUpdateEmployeeAdditionalInfo != null)
         {
             Dictionary<string, object> inputParams = new Dictionary<string, object>
-        {
-            { "pEmployeeID", saveOrUpdateEmployeeAdditionalInfo.EmployeeID ?? Convert.DBNull },
+        {            
             { "pStatusID", saveOrUpdateEmployeeAdditionalInfo.StatusID ?? Convert.DBNull },
             { "pSettingID", saveOrUpdateEmployeeAdditionalInfo.SettingID ?? Convert.DBNull },
             { "pCreatedBy", _projectProvider.UserId() < 1 ? Convert.DBNull : _projectProvider.UserId() },
