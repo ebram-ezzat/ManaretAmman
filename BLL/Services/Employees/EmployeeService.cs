@@ -12,6 +12,7 @@ using DataAccessLayer.DTO.EmployeeDeductions;
 using DataAccessLayer.DTO.EmployeeIncrease;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeSalary;
+using DataAccessLayer.DTO.EmployeeShifts;
 using DataAccessLayer.DTO.EmployeeTransaction;
 using DataAccessLayer.DTO.EmployeeVacations;
 using DataAccessLayer.DTO.Locations;
@@ -1911,6 +1912,61 @@ internal class EmployeeService : IEmployeeService
             { "pError","int" },
         };
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeIncrease", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+
+    #endregion
+
+    #region Employee Shifts
+
+    public async Task<dynamic> GetEmployeeShiftsExchange(GetEmployeeShiftsExchangeInput getEmployeeShiftsExchangeInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+
+            { "pEmployeeShiftID", getEmployeeShiftsExchangeInput.EmployeeShiftID },
+            { "pEmployeeID", getEmployeeShiftsExchangeInput.EmployeeID },
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pFromDate", getEmployeeShiftsExchangeInput.FromDate==null?Convert.DBNull:getEmployeeShiftsExchangeInput.FromDate.DateToIntValue() },
+            { "pToDate", getEmployeeShiftsExchangeInput.ToDate==null?Convert.DBNull:getEmployeeShiftsExchangeInput.ToDate.DateToIntValue() },
+            { "pCreatedBy", _projectProvider.UserId() },
+            { "pLoginUserID", _projectProvider.UserId() },
+            { "pPageNo", getEmployeeShiftsExchangeInput.PageNo },
+            { "pPageSize", getEmployeeShiftsExchangeInput.PageSize },
+
+
+        };
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "prowcount","int" },
+        };
+
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeShiftsExchangeOutput>("dbo.GetEmployeeShifts", inputParams, outputParams);
+        return result;
+    }
+
+    public async Task<int> SaveEmployeeShiftsExchange(SaveEmployeeShiftsExchange saveEmployeeShiftsExchange)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeShiftID ", saveEmployeeShiftsExchange.EmployeeShiftID??Convert.DBNull},
+                { "pEmployeeID ", saveEmployeeShiftsExchange.EmployeeID??Convert.DBNull},
+                { "pShiftID ", saveEmployeeShiftsExchange.ShiftID??Convert.DBNull},
+                { "pFromDate", saveEmployeeShiftsExchange.FromDate.DateToIntValue()??Convert.DBNull },
+                { "pToDate", saveEmployeeShiftsExchange.ToDate.DateToIntValue()??Convert.DBNull },
+                { "pIsCalledFromOtherSP", saveEmployeeShiftsExchange.IsCalledFromOtherSP??Convert.DBNull },
+               { "pWithRefresh", saveEmployeeShiftsExchange.WithRefresh??Convert.DBNull },
+               { "pCreatedBy", _projectProvider.UserId() },
+                { "pProjectID", _projectProvider.GetProjectId() },
+
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeShifts", inputParams, outputParams);
         int pErrorValue = (int)outputValues["pError"];
         return pErrorValue;
     }

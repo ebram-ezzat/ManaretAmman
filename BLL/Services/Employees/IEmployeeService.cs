@@ -4,6 +4,7 @@ using DataAccessLayer.DTO.EmployeeDeductions;
 using DataAccessLayer.DTO.EmployeeIncrease;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeSalary;
+using DataAccessLayer.DTO.EmployeeShifts;
 using DataAccessLayer.DTO.EmployeeTransaction;
 using System.Threading.Tasks;
 
@@ -78,4 +79,6 @@ public interface IEmployeeService
     Task<dynamic> GetEmployeeIncrease(GetEmployeeIncreaseInput getEmployeeIncreaseInput);
     Task<int> DeleteEmployeeIncrease(DeleteEmployeeIncrease deleteEmployeeIncrease);
     Task<int> SaveEmployeeIncrease(SaveEmployeeIncrease saveEmployeeIncrease);
+    Task<dynamic> GetEmployeeShiftsExchange(GetEmployeeShiftsExchangeInput getEmployeeShiftsExchange);
+    Task<int> SaveEmployeeShiftsExchange(SaveEmployeeShiftsExchange saveEmployeeShiftsExchange);
 }

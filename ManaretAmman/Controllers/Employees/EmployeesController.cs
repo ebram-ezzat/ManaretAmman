@@ -5,6 +5,7 @@ using DataAccessLayer.DTO.EmployeeDeductions;
 using DataAccessLayer.DTO.EmployeeIncrease;
 using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.DTO.EmployeeSalary;
+using DataAccessLayer.DTO.EmployeeShifts;
 using DataAccessLayer.DTO.EmployeeTransaction;
 using DataAccessLayer.DTO.EmployeeVacations;
 using DataAccessLayer.Models;
@@ -1158,6 +1159,46 @@ namespace ManaretAmman.Controllers.Employees
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
             var result = await _employeeService.SaveEmployeeIncrease(saveEmployeeIncrease);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
+        #endregion
+
+        #region Employee Shifts
+        /// <summary>
+        ///  Employee Shifts
+        /// </summary>
+        /// <param name="getEmployeeShiftsExchangeInput"></param>
+        /// <returns></returns>
+        [HttpGet("GetEmployeeShiftsExchange")]
+        public async Task<IApiResponse> GetEmployeeShiftsExchange([FromQuery] GetEmployeeShiftsExchangeInput getEmployeeShiftsExchangeInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeShiftsExchange(getEmployeeShiftsExchangeInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+        [HttpPost("SaveEmployeeShiftsExchange")]
+        public async Task<IApiResponse> SaveEmployeeShiftsExchange([FromBody] SaveEmployeeShiftsExchange saveEmployeeShiftsExchange)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveEmployeeShiftsExchange(saveEmployeeShiftsExchange);
 
             return ApiResponse<int>.Success("data has been returned succussfully", result);
         }

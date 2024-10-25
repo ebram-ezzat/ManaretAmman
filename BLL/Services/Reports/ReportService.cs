@@ -47,6 +47,25 @@ namespace BusinessLogicLayer.Services.Reports
             return getEmployeeSalaryReportResponse.FirstOrDefault()?.EmailContent;
         }
 
+        public async Task<object> GetEmployeeSalaryReportV2(GetEmployeeSalaryReportRequest getEmployeeSalaryReportRequest)
+        {
+            getEmployeeSalaryReportRequest.ProjectID = _projectProvider.GetProjectId();
+            getEmployeeSalaryReportRequest.loginuserid = _projectProvider.UserId();
+            var parameters = PublicHelper.GetPropertiesWithPrefix<GetEmployeeSalaryReportRequest>(getEmployeeSalaryReportRequest, "p");
+
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
+              .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeeSalary", parameters, null);
+            if (result == null || result.Rows.Count == 0)
+                return null;
+
+            var settingResult = await _lookupsService.GetSettings();
+            string reportPath = GetReportPathIfValid(settingResult.SalarySlipReportName);
+            if (string.IsNullOrEmpty(reportPath))
+                return null;
+
+            return PublicHelper.BuildRdlcReportWithDataSourcPDFFormat(result, reportPath, "DsMain");
+        }
+
         #region تقرير شاشة خدمات شوون الموظفين
         public async Task<object> GetEmployeeAffairsServiceReport(GetEmployeeAffairsServiceReportRequest getEmployeeAffairsServiceReportRequest)
         {

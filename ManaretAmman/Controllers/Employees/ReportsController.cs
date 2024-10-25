@@ -32,6 +32,17 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<object>.Success("data has been retrieved succussfully", result);
         }
+        [HttpGet("GetEmployeeSalaryReportV2")]
+        public async Task<IApiResponse> GetEmployeeSalaryReportV2([FromQuery] GetEmployeeSalaryReportRequest getEmployeeSalaryReport)
+        {
+            var result = await _reportService.GetEmployeeSalaryReportV2(getEmployeeSalaryReport);
+
+            if (result == null)
+                return ApiResponse<object>.Failure("No data", null);
+
+
+            return ApiResponse<object>.Success("data has been retrieved succussfully", result);
+        }
 
         #region تقرير شاشة خدمات شوون الموظفين 
         /// <summary>
