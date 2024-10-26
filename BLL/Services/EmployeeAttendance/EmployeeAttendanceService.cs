@@ -56,7 +56,8 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
                                  ApprovedStatusID = item.ApprovedStatusID,
                                  EmployeeImage=item.EmployeeImage,
                                  JobTitleName=item.JobTitleName,
-                                 AnyWhere=item.AnyWhere
+                                 AnyWhere=item.AnyWhere,
+                                 ShiftID = item.ShiftID
                              }).ToList();
 
           

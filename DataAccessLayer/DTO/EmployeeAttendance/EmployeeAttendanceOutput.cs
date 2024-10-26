@@ -23,5 +23,6 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public string EmployeeImage { get; set; }
         public string JobTitleName { get; set; }
         public int? AnyWhere { get; set; }
+        public int? ShiftID { get; set; }
     }
 }
