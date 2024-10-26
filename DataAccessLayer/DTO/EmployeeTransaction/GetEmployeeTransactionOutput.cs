@@ -40,7 +40,7 @@ namespace DataAccessLayer.DTO.EmployeeTransaction
         public string TransactionTypeDesc { get; set; }
         public string Notes { get; set; }
 
-        public double? TransactionInMinutes { get; set; }
+        public decimal? TransactionInMinutes { get; set; }
 
         public int TransactionTypeID { get; set; }
         public int ColTransactionTypeID { get; set; }
