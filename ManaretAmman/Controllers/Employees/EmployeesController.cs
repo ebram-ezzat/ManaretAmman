@@ -1212,7 +1212,7 @@ namespace ManaretAmman.Controllers.Employees
         /// <param name="getEmployeeRatingInput"></param>
         /// <returns></returns>
         [HttpGet("GetEmployeeRating")]
-        public async Task<IApiResponse> GetEmployeeRating(GetEmployeeRatingInput getEmployeeRatingInput)
+        public async Task<IApiResponse> GetEmployeeRating([FromQuery] GetEmployeeRatingInput getEmployeeRatingInput)
         {
             if (!ModelState.IsValid)
             {
