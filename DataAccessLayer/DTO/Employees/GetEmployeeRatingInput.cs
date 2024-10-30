@@ -31,9 +31,10 @@ namespace DataAccessLayer.DTO.Employees
         public string v_EvalToDate { get; set; } 
         public string EvaluationName { get; set; }
         public string v_EvaluationDate { get; set; } 
-        public int EvaluationPoints { get; set; } 
+        public int? EvalueationPoints { get; set; } 
         public string EvaluationStatus { get; set; }
         public int? NextApprovalStatusID { get; set; } 
         public int? AllowEdit { get; set; }
+        public int? StatusID { get; set; }
     }
 }
