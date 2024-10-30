@@ -1242,7 +1242,7 @@ namespace ManaretAmman.Controllers.Employees
             }
             var result = await _employeeService.AcceptEmployeeRating(updateEmployeeRatingInput);
 
-            return ApiResponse<int>.Success("data has been returned succussfully", result);
+            return ApiResponse<int>.Success("data has been updated succussfully", result);
         }
         #endregion
     }
