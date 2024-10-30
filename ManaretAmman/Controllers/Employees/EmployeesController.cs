@@ -1203,5 +1203,47 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<int>.Success("data has been returned succussfully", result);
         }
         #endregion
+
+        #region Employee Evaluation (تقيم الموظفين)
+        /// <summary>
+        /// شاشة تقيم الموظفين
+        /// GetEmployeeRating 
+        /// </summary>
+        /// <param name="getEmployeeRatingInput"></param>
+        /// <returns></returns>
+        [HttpGet("GetEmployeeRating")]
+        public async Task<IApiResponse> GetEmployeeRating(GetEmployeeRatingInput getEmployeeRatingInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure("An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeRating(getEmployeeRatingInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+
+        [HttpPost("AcceptEmployeeRating")]
+        public async Task<IApiResponse> AcceptEmployeeRating([FromBody] UpdateEmployeeRatingInput updateEmployeeRatingInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.AcceptEmployeeRating(updateEmployeeRatingInput);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
+        #endregion
     }
 }

@@ -1971,4 +1971,44 @@ internal class EmployeeService : IEmployeeService
     }
 
     #endregion
+    #region Employee Evaluation (تقيم الموظفين)
+    public async Task<List<GetEmployeeRatingOutput>> GetEmployeeRating(GetEmployeeRatingInput getEmployeeRatingInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            
+            { "pEmployeeID", getEmployeeRatingInput.EmployeeID },
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pFromDate", getEmployeeRatingInput.FromDate.DateToIntValue()??Convert.DBNull },
+            { "pToDate", getEmployeeRatingInput.ToDate.DateToIntValue() ??Convert.DBNull },           
+            { "pLoginUserID", _projectProvider.UserId() },
+            { "pFlag", getEmployeeRatingInput.Flag },
+            { "pDepartmentID", getEmployeeRatingInput.DepartmentID??Convert.DBNull },
+            { "pLanguageID", _projectProvider.LangId() },
+            { "pStatusID", getEmployeeRatingInput.StatusID??Convert.DBNull },
+
+        };
+      
+
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeRatingOutput>("dbo.GetEmployeeEvaluation", inputParams, null);
+        return result;
+    }
+    public async Task<int> AcceptEmployeeRating(UpdateEmployeeRatingInput updateEmployeeRatingInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            {"pProjectID",_projectProvider.GetProjectId() },
+            {"pStatusID",updateEmployeeRatingInput.StatusID },
+            {"pEvaluationEmployeeID",updateEmployeeRatingInput.EvaluationEmployeeID }
+        };
+        Dictionary<string, object> outParams = new Dictionary<string, object>
+        {
+            {"pError", "int"}
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.UpdateEmployeeEvaluation", inputParams, outParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+    #endregion
 }
+
