@@ -2022,6 +2022,30 @@ internal class EmployeeService : IEmployeeService
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeRatingDetailsOutput>("dbo.GetEmployeeEvaluationDetail", inputParams, null);
         return result;
     }
+    public async Task<int> SaveEmployeeRatingDetails(SaveEmployeeRatingDetailsInput saveEmployeeRatingDetailsInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            {"pProjectID",_projectProvider.GetProjectId() },
+            {"pStatusID",saveEmployeeRatingDetailsInput.StatusID },
+            {"pEvaluationEmployeeID",saveEmployeeRatingDetailsInput.EvaluationEmployeeID?? Convert.DBNull },
+            {"pEmployeeID",saveEmployeeRatingDetailsInput.EmployeeID?? Convert.DBNull },
+            {"pEvaluationID",saveEmployeeRatingDetailsInput.EvaluationID },
+            {"pEvaluationdate",saveEmployeeRatingDetailsInput.EvaluationDate.DateToIntValue() ?? Convert.DBNull },
+            {"pCreatedBy",_projectProvider.UserId()},
+            {"pQuestionID",saveEmployeeRatingDetailsInput.QuestionID ?? Convert.DBNull },
+            {"pValues",saveEmployeeRatingDetailsInput.Values ?? Convert.DBNull },
+            {"pNotess",saveEmployeeRatingDetailsInput.Notes ?? Convert.DBNull },
+        };
+        Dictionary<string, object> outParams = new Dictionary<string, object>
+        {
+            {"pError", "int"},
+             {"EvaluationEmployeeID",saveEmployeeRatingDetailsInput.EvaluationEmployeeID.HasValue && saveEmployeeRatingDetailsInput.EvaluationEmployeeID.Value>0 ? saveEmployeeRatingDetailsInput.EvaluationEmployeeID : "int"},
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeEvaluation", inputParams, outParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
     #endregion
 }
 

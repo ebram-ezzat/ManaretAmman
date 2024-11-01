@@ -84,5 +84,6 @@ public interface IEmployeeService
     Task<List<GetEmployeeRatingOutput>> GetEmployeeRating(GetEmployeeRatingInput getEmployeeRatingInput);
     Task<int> AcceptEmployeeRating(UpdateEmployeeRatingInput updateEmployeeRatingInput);
     Task<List<GetEmployeeRatingDetailsOutput>> GetEmployeeRatingDetails(GetEmployeeRatingDetailsInput getEmployeeRatingDetailsInput);
+    Task<int> SaveEmployeeRatingDetails(SaveEmployeeRatingDetailsInput saveEmployeeRatingDetailsInput);
 
 }

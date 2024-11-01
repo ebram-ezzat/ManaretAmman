@@ -25,11 +25,11 @@ namespace DataAccessLayer.DTO.Employees
         public string DepartmentName { get; set; }
         public string EmployeeLevelDesc { get; set; }
         public string JobTitleName { get; set; }
-        public string EvalFromDate { get; set; }  
-        public string EvalToDate { get; set; }   
+        public string v_EvalFromDate { get; set; }  
+        public string v_EvalToDate { get; set; }   
         public string EvaluationName { get; set; }
         public string v_EvaluationDate { get; set; } 
-        public int? EvaluationPoints { get; set; } 
+        public int? EvalueationPoints { get; set; } 
         public string EvaluationStatus { get; set; }
         public string Question { get; set; }
         public string CategoryName { get; set; }
