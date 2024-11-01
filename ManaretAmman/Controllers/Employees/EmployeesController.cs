@@ -1244,6 +1244,29 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<int>.Success("data has been updated succussfully", result);
         }
+
+        /// <summary>
+        /// شاشة فرعية تقيم الموظفين
+        /// GetEmployeeRatingDetails 
+        /// </summary>
+        /// <param name="getEmployeeRatingDetailsInput"></param>
+        /// <returns></returns>
+        [HttpGet("GetEmployeeRatingDetails")]
+        public async Task<IApiResponse> GetEmployeeRatingDetails([FromQuery] GetEmployeeRatingDetailsInput getEmployeeRatingDetailsInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure("An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeRatingDetails(getEmployeeRatingDetailsInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
         #endregion
     }
 }

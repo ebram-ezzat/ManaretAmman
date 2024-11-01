@@ -83,4 +83,6 @@ public interface IEmployeeService
     Task<int> SaveEmployeeShiftsExchange(SaveEmployeeShiftsExchange saveEmployeeShiftsExchange);
     Task<List<GetEmployeeRatingOutput>> GetEmployeeRating(GetEmployeeRatingInput getEmployeeRatingInput);
     Task<int> AcceptEmployeeRating(UpdateEmployeeRatingInput updateEmployeeRatingInput);
+    Task<List<GetEmployeeRatingDetailsOutput>> GetEmployeeRatingDetails(GetEmployeeRatingDetailsInput getEmployeeRatingDetailsInput);
+
 }

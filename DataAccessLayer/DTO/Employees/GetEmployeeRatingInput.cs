@@ -18,6 +18,7 @@ namespace DataAccessLayer.DTO.Employees
     public class GetEmployeeRatingOutput
     {
         public int? EmployeeEvaluationID { get; set; }
+        public int? EvaluationID { get; set; }
         public int? EmployeeID { get; set; }
         public string EmployeeName { get; set; }
         public int? EmployeeNumber { get; set; }

@@ -2009,6 +2009,19 @@ internal class EmployeeService : IEmployeeService
         int pErrorValue = (int)outputValues["pError"];
         return pErrorValue;
     }
+    public async Task<List<GetEmployeeRatingDetailsOutput>> GetEmployeeRatingDetails(GetEmployeeRatingDetailsInput getEmployeeRatingDetailsInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            {"pEmployeeID", getEmployeeRatingDetailsInput.EmployeeID ?? Convert.DBNull},
+            {"pEvaluationID",getEmployeeRatingDetailsInput.EvaluationID }          
+
+        };
+
+
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeRatingDetailsOutput>("dbo.GetEmployeeEvaluationDetail", inputParams, null);
+        return result;
+    }
     #endregion
 }
 
