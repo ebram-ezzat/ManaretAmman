@@ -17,13 +17,13 @@ namespace DataAccessLayer.DTO.Employees
     }
     public class GetEmployeeRatingOutput
     {
-        public int EmployeeEvaluationID { get; set; }
-        public int EmployeeID { get; set; }
+        public int? EmployeeEvaluationID { get; set; }
+        public int? EmployeeID { get; set; }
         public string EmployeeName { get; set; }
         public int? EmployeeNumber { get; set; }
         public string v_StartDate { get; set; } 
         public string v_EndDate { get; set; }
-        public int? v_Period { get; set; } 
+        public string v_Period { get; set; } 
         public string DepartmentName { get; set; }
         public string EmployeeLevelDesc { get; set; }
         public string JobTitleName { get; set; }
