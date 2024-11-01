@@ -2039,20 +2039,27 @@ internal class EmployeeService : IEmployeeService
             EvaluationStatus = result.FirstOrDefault()?.EvaluationStatus
         };
 
-        // Group questions by CategoryID and CategoryName and populate Questions list
-        mainOutput.Questions = result
-            .GroupBy(r => new { r.CategoryID, r.CategoryName })
-            .Select(g => new QuestionDetail
+        var groupedCategories = result
+        .GroupBy(r => new { r.CategoryID, r.CategoryName })
+        .ToDictionary(
+            g => $"Category{g.Key.CategoryID}", // Use a dynamic key for the category, e.g., "Category1"
+            g => new CategoryDetail
             {
-                Question = g.FirstOrDefault()?.Question,
-                CategoryName = g.Key.CategoryName,
-                CategoryID = g.Key.CategoryID,
-                QuestionID = g.FirstOrDefault()?.QuestionID,
-                WithNotes = g.FirstOrDefault()?.WithNotes,
-                Notes = g.FirstOrDefault()?.Notes,
-                QuestionDegree = g.FirstOrDefault()?.QuestionDegree,
-                Amount = g.FirstOrDefault() ?.Amount// g.Sum(r => r.Amount) // Summing amounts if needed
-            }).ToList();
+                CategoryTitle = g.Key.CategoryName,
+                Questions = g.Select(q => new QuestionDetail
+                {
+                    Question = q.Question,
+                    QuestionID = q.QuestionID,
+                    WithNotes = q.WithNotes,
+                    Notes = q.Notes,
+                    QuestionDegree = q.QuestionDegree,
+                    Amount = q.Amount
+                }).ToList()
+            }
+        );
+
+        // Assign grouped categories to the Questions dictionary in mainOutput
+        mainOutput.Questions = groupedCategories;
 
         return mainOutput;
     }

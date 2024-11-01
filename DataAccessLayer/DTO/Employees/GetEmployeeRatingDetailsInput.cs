@@ -44,19 +44,17 @@ namespace DataAccessLayer.DTO.Employees
     public class QuestionDetail
     {
         public string Question { get; set; }
-        public string CategoryName { get; set; }
         public int? QuestionID { get; set; }
-        public int? CategoryID { get; set; }
         public int? WithNotes { get; set; }
         public string Notes { get; set; }
-        /// <summary>
-        /// النقاط
-        /// </summary>
         public string QuestionDegree { get; set; }
-        /// <summary>
-        /// التقيم
-        /// </summary>
         public decimal? Amount { get; set; }
+    }
+
+    public class CategoryDetail
+    {
+        public string CategoryTitle { get; set; }
+        public List<QuestionDetail> Questions { get; set; } = new List<QuestionDetail>();
     }
     public class GetEmployeeRatingDetailsMain
     {
@@ -77,7 +75,8 @@ namespace DataAccessLayer.DTO.Employees
         public string EvaluationStatus { get; set; }
 
         // List to hold grouped questions
-        public List<QuestionDetail> Questions { get; set; } = new List<QuestionDetail>();
+        public Dictionary<string, CategoryDetail> Questions { get; set; } = new Dictionary<string, CategoryDetail>();
+
     }
 
 }
