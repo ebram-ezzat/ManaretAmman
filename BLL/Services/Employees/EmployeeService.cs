@@ -2009,7 +2009,7 @@ internal class EmployeeService : IEmployeeService
         int pErrorValue = (int)outputValues["pError"];
         return pErrorValue;
     }
-    public async Task<List<GetEmployeeRatingDetailsOutput>> GetEmployeeRatingDetails(GetEmployeeRatingDetailsInput getEmployeeRatingDetailsInput)
+    public async Task<dynamic> GetEmployeeRatingDetails(GetEmployeeRatingDetailsInput getEmployeeRatingDetailsInput)
     {
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
@@ -2020,7 +2020,41 @@ internal class EmployeeService : IEmployeeService
 
 
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeRatingDetailsOutput>("dbo.GetEmployeeEvaluationDetail", inputParams, null);
-        return result;
+        var mainOutput = new GetEmployeeRatingDetailsMain
+        {
+            EmployeeID = result.FirstOrDefault()?.EmployeeID,
+            EmployeeName = result.FirstOrDefault()?.EmployeeName,
+            EmployeeNumber = result.FirstOrDefault()?.EmployeeNumber,
+            v_StartDate = result.FirstOrDefault()?.v_StartDate,
+            v_EndDate = result.FirstOrDefault()?.v_EndDate,
+            v_Period = result.FirstOrDefault()?.v_Period,
+            DepartmentName = result.FirstOrDefault()?.DepartmentName,
+            EmployeeLevelDesc = result.FirstOrDefault()?.EmployeeLevelDesc,
+            JobTitleName = result.FirstOrDefault()?.JobTitleName,
+            v_EvalFromDate = result.FirstOrDefault()?.v_EvalFromDate,
+            v_EvalToDate = result.FirstOrDefault()?.v_EvalToDate,
+            EvaluationName = result.FirstOrDefault()?.EvaluationName,
+            v_EvaluationDate = result.FirstOrDefault()?.v_EvaluationDate,
+            EvalueationPoints = result.FirstOrDefault()?.EvalueationPoints,
+            EvaluationStatus = result.FirstOrDefault()?.EvaluationStatus
+        };
+
+        // Group questions by CategoryID and CategoryName and populate Questions list
+        mainOutput.Questions = result
+            .GroupBy(r => new { r.CategoryID, r.CategoryName })
+            .Select(g => new QuestionDetail
+            {
+                Question = g.FirstOrDefault()?.Question,
+                CategoryName = g.Key.CategoryName,
+                CategoryID = g.Key.CategoryID,
+                QuestionID = g.FirstOrDefault()?.QuestionID,
+                WithNotes = g.FirstOrDefault()?.WithNotes,
+                Notes = g.FirstOrDefault()?.Notes,
+                QuestionDegree = g.FirstOrDefault()?.QuestionDegree,
+                Amount = g.FirstOrDefault() ?.Amount// g.Sum(r => r.Amount) // Summing amounts if needed
+            }).ToList();
+
+        return mainOutput;
     }
     public async Task<int> SaveEmployeeRatingDetails(SaveEmployeeRatingDetailsInput saveEmployeeRatingDetailsInput)
     {

@@ -40,4 +40,44 @@ namespace DataAccessLayer.DTO.Employees
         public string QuestionDegree { get; set; }
         public decimal? Amount { get; set; }
     }
+
+    public class QuestionDetail
+    {
+        public string Question { get; set; }
+        public string CategoryName { get; set; }
+        public int? QuestionID { get; set; }
+        public int? CategoryID { get; set; }
+        public int? WithNotes { get; set; }
+        public string Notes { get; set; }
+        /// <summary>
+        /// النقاط
+        /// </summary>
+        public string QuestionDegree { get; set; }
+        /// <summary>
+        /// التقيم
+        /// </summary>
+        public decimal? Amount { get; set; }
+    }
+    public class GetEmployeeRatingDetailsMain
+    {
+        public int? EmployeeID { get; set; }
+        public string EmployeeName { get; set; }
+        public int? EmployeeNumber { get; set; }
+        public string v_StartDate { get; set; }
+        public string v_EndDate { get; set; }
+        public string v_Period { get; set; }
+        public string DepartmentName { get; set; }
+        public string EmployeeLevelDesc { get; set; }
+        public string JobTitleName { get; set; }
+        public string v_EvalFromDate { get; set; }
+        public string v_EvalToDate { get; set; }
+        public string EvaluationName { get; set; }
+        public string v_EvaluationDate { get; set; }
+        public int? EvalueationPoints { get; set; }
+        public string EvaluationStatus { get; set; }
+
+        // List to hold grouped questions
+        public List<QuestionDetail> Questions { get; set; } = new List<QuestionDetail>();
+    }
+
 }
