@@ -1259,5 +1259,86 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
         }
         #endregion
+
+        #region Employee Evaluation (تقيم الموظفين)
+        /// <summary>
+        /// شاشة تقيم الموظفين
+        /// GetEmployeeRating 
+        /// </summary>
+        /// <param name="getEmployeeRatingInput"></param>
+        /// <returns></returns>
+        [HttpGet("GetEmployeeRating")]
+        public async Task<IApiResponse> GetEmployeeRating([FromQuery] GetEmployeeRatingInput getEmployeeRatingInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure("An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeRating(getEmployeeRatingInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+
+        [HttpPost("AcceptEmployeeRating")]
+        public async Task<IApiResponse> AcceptEmployeeRating([FromBody] UpdateEmployeeRatingInput updateEmployeeRatingInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.AcceptEmployeeRating(updateEmployeeRatingInput);
+
+            return ApiResponse<int>.Success("data has been updated succussfully", result);
+        }
+
+        /// <summary>
+        /// شاشة فرعية تقيم الموظفين
+        /// GetEmployeeRatingDetails 
+        /// </summary>
+        /// <param name="getEmployeeRatingDetailsInput"></param>
+        /// <returns></returns>
+        [HttpGet("GetEmployeeRatingDetails")]
+        public async Task<IApiResponse> GetEmployeeRatingDetails([FromQuery] GetEmployeeRatingDetailsInput getEmployeeRatingDetailsInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure("An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetEmployeeRatingDetails(getEmployeeRatingDetailsInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+        [HttpPost("SaveEmployeeRatingDetails")]
+        public async Task<IApiResponse> SaveEmployeeRatingDetails([FromBody] SaveEmployeeRatingDetailsInput saveEmployeeRatingDetailsInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveEmployeeRatingDetails(saveEmployeeRatingDetailsInput);
+
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
+        #endregion
     }
 }

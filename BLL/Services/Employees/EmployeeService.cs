@@ -2042,4 +2042,122 @@ internal class EmployeeService : IEmployeeService
     }
 
     #endregion
+    #region Employee Evaluation (تقيم الموظفين)
+    public async Task<List<GetEmployeeRatingOutput>> GetEmployeeRating(GetEmployeeRatingInput getEmployeeRatingInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            
+            { "pEmployeeID", getEmployeeRatingInput.EmployeeID },
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pFromDate", getEmployeeRatingInput.FromDate.DateToIntValue()??Convert.DBNull },
+            { "pToDate", getEmployeeRatingInput.ToDate.DateToIntValue() ??Convert.DBNull },           
+            { "pLoginUserID", _projectProvider.UserId() },
+            { "pFlag", getEmployeeRatingInput.Flag },
+            { "pDepartmentID", getEmployeeRatingInput.DepartmentID??Convert.DBNull },
+            { "pLanguageID", _projectProvider.LangId() },
+            { "pStatusID", getEmployeeRatingInput.StatusID??Convert.DBNull },
+
+        };
+      
+
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeRatingOutput>("dbo.GetEmployeeEvaluation", inputParams, null);
+        return result;
+    }
+    public async Task<int> AcceptEmployeeRating(UpdateEmployeeRatingInput updateEmployeeRatingInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            {"pProjectID",_projectProvider.GetProjectId() },
+            {"pStatusID",updateEmployeeRatingInput.StatusID },
+            {"pEvaluationEmployeeID",updateEmployeeRatingInput.EvaluationEmployeeID }
+        };
+        Dictionary<string, object> outParams = new Dictionary<string, object>
+        {
+            {"pError", "int"}
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.UpdateEmployeeEvaluation", inputParams, outParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+    public async Task<dynamic> GetEmployeeRatingDetails(GetEmployeeRatingDetailsInput getEmployeeRatingDetailsInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            {"pEmployeeID", getEmployeeRatingDetailsInput.EmployeeID ?? Convert.DBNull},
+            {"pEvaluationID",getEmployeeRatingDetailsInput.EvaluationID }          
+
+        };
+
+
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeRatingDetailsOutput>("dbo.GetEmployeeEvaluationDetail", inputParams, null);
+        var mainOutput = new GetEmployeeRatingDetailsMain
+        {
+            EmployeeID = result.FirstOrDefault()?.EmployeeID,
+            EmployeeName = result.FirstOrDefault()?.EmployeeName,
+            EmployeeNumber = result.FirstOrDefault()?.EmployeeNumber,
+            v_StartDate = result.FirstOrDefault()?.v_StartDate,
+            v_EndDate = result.FirstOrDefault()?.v_EndDate,
+            v_Period = result.FirstOrDefault()?.v_Period,
+            DepartmentName = result.FirstOrDefault()?.DepartmentName,
+            EmployeeLevelDesc = result.FirstOrDefault()?.EmployeeLevelDesc,
+            JobTitleName = result.FirstOrDefault()?.JobTitleName,
+            v_EvalFromDate = result.FirstOrDefault()?.v_EvalFromDate,
+            v_EvalToDate = result.FirstOrDefault()?.v_EvalToDate,
+            EvaluationName = result.FirstOrDefault()?.EvaluationName,
+            v_EvaluationDate = result.FirstOrDefault()?.v_EvaluationDate,
+            EvalueationPoints = result.FirstOrDefault()?.EvalueationPoints,
+            EvaluationStatus = result.FirstOrDefault()?.EvaluationStatus
+        };
+
+        var groupedCategories = result
+        .GroupBy(r => new { r.CategoryID, r.CategoryName })
+        .ToDictionary(
+            g => $"Category{g.Key.CategoryID}", // Use a dynamic key for the category, e.g., "Category1"
+            g => new CategoryDetail
+            {
+                CategoryTitle = g.Key.CategoryName,
+                Questions = g.Select(q => new QuestionDetail
+                {
+                    Question = q.Question,
+                    QuestionID = q.QuestionID,
+                    WithNotes = q.WithNotes,
+                    Notes = q.Notes,
+                    QuestionDegree = q.QuestionDegree,
+                    Amount = q.Amount
+                }).ToList()
+            }
+        );
+
+        // Assign grouped categories to the Questions dictionary in mainOutput
+        mainOutput.Questions = groupedCategories;
+
+        return mainOutput;
+    }
+    public async Task<int> SaveEmployeeRatingDetails(SaveEmployeeRatingDetailsInput saveEmployeeRatingDetailsInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+            {"pProjectID",_projectProvider.GetProjectId() },
+            {"pStatusID",saveEmployeeRatingDetailsInput.StatusID },
+            {"pEvaluationEmployeeID",saveEmployeeRatingDetailsInput.EvaluationEmployeeID?? Convert.DBNull },
+            {"pEmployeeID",saveEmployeeRatingDetailsInput.EmployeeID?? Convert.DBNull },
+            {"pEvaluationID",saveEmployeeRatingDetailsInput.EvaluationID },
+            {"pEvaluationdate",saveEmployeeRatingDetailsInput.EvaluationDate.DateToIntValue() ?? Convert.DBNull },
+            {"pCreatedBy",_projectProvider.UserId()},
+            {"pQuestionID",saveEmployeeRatingDetailsInput.QuestionID ?? Convert.DBNull },
+            {"pValues",saveEmployeeRatingDetailsInput.Values ?? Convert.DBNull },
+            {"pNotess",saveEmployeeRatingDetailsInput.Notes ?? Convert.DBNull },
+        };
+        Dictionary<string, object> outParams = new Dictionary<string, object>
+        {
+            {"pError", "int"},
+             {"EvaluationEmployeeID",saveEmployeeRatingDetailsInput.EvaluationEmployeeID.HasValue && saveEmployeeRatingDetailsInput.EvaluationEmployeeID.Value>0 ? saveEmployeeRatingDetailsInput.EvaluationEmployeeID : "int"},
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.SaveEmployeeEvaluation", inputParams, outParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+    #endregion
 }
+
