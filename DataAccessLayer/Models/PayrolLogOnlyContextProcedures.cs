@@ -196,6 +196,8 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<GetEmployeeContractsResponse>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeIncreaseOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeShiftsExchangeOutput>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GetAttendanceOutput>().HasNoKey().ToView(null);
+            
         }
     }
 

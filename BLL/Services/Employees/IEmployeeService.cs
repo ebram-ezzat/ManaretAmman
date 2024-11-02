@@ -81,4 +81,7 @@ public interface IEmployeeService
     Task<int> SaveEmployeeIncrease(SaveEmployeeIncrease saveEmployeeIncrease);
     Task<dynamic> GetEmployeeShiftsExchange(GetEmployeeShiftsExchangeInput getEmployeeShiftsExchange);
     Task<int> SaveEmployeeShiftsExchange(SaveEmployeeShiftsExchange saveEmployeeShiftsExchange);
+    Task<int> DeleteAttendance(DeleteAttendance deleteAttendance);
+    Task<int> InsertAttendance(InsertAttendance insertAttendance);
+    Task<dynamic> GetAttendance(GetAttendanceInput getAttendanceInput);
 }

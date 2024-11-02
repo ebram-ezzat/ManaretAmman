@@ -1202,6 +1202,62 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<int>.Success("data has been returned succussfully", result);
         }
+
+        [HttpDelete("DeleteAttendance")]
+        public async Task<IApiResponse> DeleteAttendance([FromBody] DeleteAttendance deleteAttendance)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.DeleteAttendance(deleteAttendance);
+
+            return ApiResponse<int>.Success("data has been retrieved succussfully", result);
+        }
+
+        [HttpPost("InsertAttendance")]
+        public async Task<IApiResponse> InsertAttendance([FromBody] InsertAttendance insertAttendance)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.InsertAttendance(insertAttendance);
+
+            return ApiResponse<int>.Success("data has been returned succussfully", result);
+        }
+
+        /// <summary>
+        ///  Employee Shifts
+        /// </summary>
+        /// <param name="getAttendanceInput"></param>
+        /// <returns></returns>
+        [HttpGet("GetAttendance")]
+        public async Task<IApiResponse> GetAttendance([FromQuery] GetAttendanceInput getAttendanceInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.GetAttendance(getAttendanceInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
         #endregion
     }
 }

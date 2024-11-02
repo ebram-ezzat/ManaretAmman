@@ -1970,5 +1970,76 @@ internal class EmployeeService : IEmployeeService
         return pErrorValue;
     }
 
+    public async Task<int> DeleteAttendance(DeleteAttendance deleteAttendance)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pID", deleteAttendance.ID},
+                { "pProjectID", _projectProvider.GetProjectId()},
+                { "pEmployeeID", deleteAttendance.EmployeeID},
+
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.DeleteAttendance", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+
+    public async Task<int> InsertAttendance(InsertAttendance insertAttendance)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pAttDate ", insertAttendance.AttDate.DateToIntValue()??Convert.DBNull},
+                { "pType ", insertAttendance.Type},
+                { "pEmployeeID ", insertAttendance.EmployeeID??Convert.DBNull},
+                { "pStatusID", 0 },
+                { "pattdateint", insertAttendance.attdateint??Convert.DBNull },
+                { "pProjectID", _projectProvider.GetProjectId() },
+                { "pDatetime", insertAttendance.Datetime??Convert.DBNull }, 
+               { "pCreatedBY", _projectProvider.UserId() },
+                
+
+            };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "pError","int" },
+        };
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertAttendance", inputParams, outputParams);
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+
+    public async Task<dynamic> GetAttendance(GetAttendanceInput getAttendanceInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+
+            { "pID", getAttendanceInput.ID },
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pEmployeeID", getAttendanceInput.EmployeeID },
+            { "pFromDate", getAttendanceInput.FromDate==null?Convert.DBNull:getAttendanceInput.FromDate.DateToIntValue() },
+            { "pToDate", getAttendanceInput.ToDate==null?Convert.DBNull:getAttendanceInput.ToDate.DateToIntValue() },
+            { "pFlag" , 4 },
+            { "pLanguageID", 1 } ,
+            { "pCreatedBy", _projectProvider.UserId() },
+            { "pDepartmentID",getAttendanceInput.DepartmentID },
+            { "pOnlyFromDevice", getAttendanceInput.OnlyFromDevice },
+
+
+        };
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+        {
+            { "prowcount","int" },
+        };
+
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetAttendanceOutput>("dbo.GetAttendance", inputParams, outputParams);
+        return result;
+    }
+
     #endregion
 }
