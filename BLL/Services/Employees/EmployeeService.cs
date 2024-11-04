@@ -2032,12 +2032,12 @@ internal class EmployeeService : IEmployeeService
 
 
         };
-        Dictionary<string, object> outputParams = new Dictionary<string, object>
-        {
-            { "prowcount","int" },
-        };
+        //Dictionary<string, object> outputParams = new Dictionary<string, object>
+        //{
+        //    { "prowcount","int" },
+        //};
 
-        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetAttendanceOutput>("dbo.GetAttendance", inputParams, outputParams);
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetAttendanceOutput>("dbo.GetAttendance", inputParams, null);
         return result;
     }
 
