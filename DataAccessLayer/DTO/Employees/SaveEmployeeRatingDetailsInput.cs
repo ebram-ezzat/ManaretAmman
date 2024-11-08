@@ -13,8 +13,8 @@ namespace DataAccessLayer.DTO.Employees
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "The EvaluationID must be bigger than 0")]
         public int EvaluationID { get; set; }
-        [Required( ErrorMessage = "The EvaluationDate Required")]
-        public DateTime? EvaluationDate { get; set; }
+        //[Required(ErrorMessage = "The EvaluationDate Required")]
+        public DateTime? EvaluationDate { get; set; } = DateTime.Now;
         public int StatusID { get; set; } 
         public string QuestionID { get; set; }  
         public string Values { get; set; }     

@@ -2139,8 +2139,7 @@ internal class EmployeeService : IEmployeeService
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
             {"pProjectID",_projectProvider.GetProjectId() },
-            {"pStatusID",saveEmployeeRatingDetailsInput.StatusID },
-            {"pEvaluationEmployeeID",saveEmployeeRatingDetailsInput.EvaluationEmployeeID?? Convert.DBNull },
+            {"pStatusID",saveEmployeeRatingDetailsInput.StatusID },            
             {"pEmployeeID",saveEmployeeRatingDetailsInput.EmployeeID?? Convert.DBNull },
             {"pEvaluationID",saveEmployeeRatingDetailsInput.EvaluationID },
             {"pEvaluationdate",saveEmployeeRatingDetailsInput.EvaluationDate.DateToIntValue() ?? Convert.DBNull },
