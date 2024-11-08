@@ -40,9 +40,9 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public int? TempCheckoutAfter { get; set; }
         public string DayDesc { get; set; }
         public int? IsAddedManual { get; set; }
-        public int? EmployeeWeeklyHolidayStatusID { get; set; }
-        public string FormattedAttendanceDate { get; set; }
-        public string FormattedCheckIn { get; set; }
-        public string FormattedCheckOut { get; set; }
+        public int? EmployeeWeeklHolidayStatusID { get; set; }
+        public string v_AttendanceDate  { get; set; }
+        public string v_checkin { get; set; }
+        public string v_checkout { get; set; }
     }
 }

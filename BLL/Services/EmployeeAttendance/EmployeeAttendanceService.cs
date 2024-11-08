@@ -4,6 +4,7 @@ using BusinessLogicLayer.Services.Auth;
 using BusinessLogicLayer.Services.Lookups;
 using BusinessLogicLayer.Services.ProjectProvider;
 using DataAccessLayer.DTO.EmployeeAttendance;
+using DataAccessLayer.DTO.Employees;
 using DataAccessLayer.Models;
 
 namespace BusinessLogicLayer.Services.EmployeeAttendance
@@ -65,6 +66,32 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
             //var test3= (returnedData.CreatePagedReponse<EmployeeAttendanceOutput>(filter.PageIndex, filter.Offset, totalRecords)).Result.Where(x => x.Approvedtimeinminutes == "05:00").ToList();
             return returnedData.CreatePagedReponse<EmployeeAttendanceOutput>(filter.PageIndex, filter.Offset, totalRecords);
         }
-        
+
+        public async Task<List<EmployeeAttendanceTreatmentOutput>> GetEmployeeAttendanceTreatment(EmployeeAttendanceInput employeeAttendanceInput)
+        {
+            var settingResult = await _lookupsService.GetSettings();
+
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID", employeeAttendanceInput.EmployeeID ??Convert.DBNull },
+                { "pFromDate", employeeAttendanceInput.FromDate.DateToIntValue() ?? Convert.DBNull },
+                { "pToDate", employeeAttendanceInput.ToDate.DateToIntValue() ?? Convert.DBNull },
+                { "pLoginUserID", employeeAttendanceInput.LoginUserID ?? Convert.DBNull },
+                { "pFlag", 3 },
+                { "pDepartmentID", employeeAttendanceInput.DepartmentID ?? Convert.DBNull },
+                { "pLanguageID", _projectProvider.LangId() },
+                { "pProjectID", _projectProvider.GetProjectId() },
+                { "pApprovalTypeID", employeeAttendanceInput.ApprovalTypeID ?? Convert.DBNull },
+                { "pShiftID", employeeAttendanceInput.ShiftID ?? Convert.DBNull },
+                { "pYearID", employeeAttendanceInput.YearId ?? Convert.DBNull },
+                { "pVacationTypeID", settingResult?.PersonalVacationID ?? Convert.DBNull },
+
+            };
+
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
+                .ExecuteStoredProcedureAsync<EmployeeAttendanceTreatmentOutput>("dbo.GetEmployeeAttendance", inputParams, null);
+
+            return result;
+        }
     }
 }

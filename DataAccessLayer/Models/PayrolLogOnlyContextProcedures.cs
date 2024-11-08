@@ -199,6 +199,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<GetEmployeeRatingOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeRatingDetailsOutput>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetAttendanceOutput>().HasNoKey().ToView(null);
+            modelBuilder.Entity<EmployeeAttendanceTreatmentOutput>().HasNoKey().ToView(null);
             
         }
     }
