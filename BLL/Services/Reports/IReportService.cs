@@ -23,7 +23,7 @@ namespace BusinessLogicLayer.Services.Reports
         Task<object> GetEmployeePenaltyReport(GetEmployeePenaltyReport getEmployeePenaltyReport);
         Task<object> GetEmpSalaryReport(GetEmployeeSalaryReport getEmployeeSalaryReport);
         Task<object> GetAllowancesDeductionsReport(GetEmployeeSalaryReport getEmployeeSalaryReport);
-        Task<object> GetEmployeeSalaryReportV2(GetEmployeeSalaryReportRequest getEmployeeSalaryReportRequest);
+        Task<object> GetEmployeeSalaryReportV2(GetEmployeeSalaryReportRequestV2 getEmployeeSalaryReportRequest);
 
     }
 }

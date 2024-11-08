@@ -33,7 +33,7 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<object>.Success("data has been retrieved succussfully", result);
         }
         [HttpGet("GetEmployeeSalaryReportV2")]
-        public async Task<IApiResponse> GetEmployeeSalaryReportV2([FromQuery] GetEmployeeSalaryReportRequest getEmployeeSalaryReport)
+        public async Task<IApiResponse> GetEmployeeSalaryReportV2([FromQuery] GetEmployeeSalaryReportRequestV2 getEmployeeSalaryReport)
         {
             var result = await _reportService.GetEmployeeSalaryReportV2(getEmployeeSalaryReport);
 

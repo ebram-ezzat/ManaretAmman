@@ -47,14 +47,29 @@ namespace BusinessLogicLayer.Services.Reports
             return getEmployeeSalaryReportResponse.FirstOrDefault()?.EmailContent;
         }
 
-        public async Task<object> GetEmployeeSalaryReportV2(GetEmployeeSalaryReportRequest getEmployeeSalaryReportRequest)
+        public async Task<object> GetEmployeeSalaryReportV2(GetEmployeeSalaryReportRequestV2 getEmployeeSalaryReportRequest)
         {
-            getEmployeeSalaryReportRequest.ProjectID = _projectProvider.GetProjectId();
-            getEmployeeSalaryReportRequest.loginuserid = _projectProvider.UserId();
-            var parameters = PublicHelper.GetPropertiesWithPrefix<GetEmployeeSalaryReportRequest>(getEmployeeSalaryReportRequest, "p");
+            //getEmployeeSalaryReportRequest.ProjectID = _projectProvider.GetProjectId();
+            //getEmployeeSalaryReportRequest.LoginUserID = _projectProvider.UserId();
+            //getEmployeeSalaryReportRequest.LanguageID = _projectProvider.LangId();
+
+            var inputParams = new Dictionary<string, object>
+            {
+                {"pProjectID", _projectProvider.GetProjectId()},
+                {"pEmployeeID", getEmployeeSalaryReportRequest.EmployeeID},
+                {"ploginuserid", _projectProvider.UserId()},
+                {"pLanguageID", _projectProvider.LangId()},
+                {"pCurrentYearID", getEmployeeSalaryReportRequest.CurrentYearID},
+                {"pCurrentMonthID", getEmployeeSalaryReportRequest.CurrentMonthID},
+                {"pIsAllEmployees", getEmployeeSalaryReportRequest.IsAllEmployees},
+                {"pFlag", getEmployeeSalaryReportRequest.Flag},
+                {"pWithDetail", getEmployeeSalaryReportRequest.WithDetail},
+
+            };
+        //    var parameters = PublicHelper.GetPropertiesWithPrefix<GetEmployeeSalaryReportRequestV2>(getEmployeeSalaryReportRequest, "p");
 
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
-              .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeeSalary", parameters, null);
+              .ExecuteReportStoredProcedureAsyncByADO("dbo.GetEmployeeSalaryReport", inputParams, null);
             if (result == null || result.Rows.Count == 0)
                 return null;
 
