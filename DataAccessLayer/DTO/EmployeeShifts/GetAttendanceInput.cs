@@ -27,6 +27,6 @@ namespace DataAccessLayer.DTO.EmployeeShifts
         public string attTIme { get; set; }
         public string TypeDesc { get; set; }
         public string IP { get; set; }
-        //public string MachineName { get; set; }
+        public string MachineName { get; set; }
     }
 }
