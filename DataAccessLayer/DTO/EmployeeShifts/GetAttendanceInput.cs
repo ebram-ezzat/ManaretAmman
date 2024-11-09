@@ -22,7 +22,7 @@ namespace DataAccessLayer.DTO.EmployeeShifts
         public int? ID { get; set; }
         public string AttDate { get; set; }
         public int? EmployeeID { get; set; }
-        public int? Type { get; set; }
+        public string Type { get; set; }
         public int? StatusID { get; set; }
         public string attTIme { get; set; }
         public string TypeDesc { get; set; }

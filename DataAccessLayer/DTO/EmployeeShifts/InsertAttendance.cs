@@ -14,6 +14,6 @@ namespace DataAccessLayer.DTO.EmployeeShifts
         public int? EmployeeID { get; set; }
         public int? StatusID { get; set; }
         public int? attdateint { get; set; }
-        public int? Datetime { get; set; }
+        public DateTime? Datetime { get; set; }
     }
 }
