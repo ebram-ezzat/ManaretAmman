@@ -12,7 +12,9 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
     public interface IEmployeeAttendanceService
     {
         public Task<PagedResponse<EmployeeAttendanceOutput>> GetEmployeeAttendance(PaginationFilter<EmployeeAttendanceInput> filter);
-       public Task<List<EmployeeAttendanceTreatmentOutput>> GetEmployeeAttendanceTreatment(EmployeeAttendanceInput employeeAttendanceInput);
+       public Task<List<EmployeeAttendanceTreatmentOutput>> GetEmployeeAttendanceTreatment(EmployeeAttendanceTreatmentInput employeeAttendanceInput);
+        public Task<int> SaveEmployeeAttendanceTreatment(SaveEmployeeLeaveInput saveEmployeeLeaveInput);
+
 
     }
 }

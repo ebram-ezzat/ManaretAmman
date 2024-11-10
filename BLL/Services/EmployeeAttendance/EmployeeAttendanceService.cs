@@ -67,7 +67,7 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
             return returnedData.CreatePagedReponse<EmployeeAttendanceOutput>(filter.PageIndex, filter.Offset, totalRecords);
         }
 
-        public async Task<List<EmployeeAttendanceTreatmentOutput>> GetEmployeeAttendanceTreatment(EmployeeAttendanceInput employeeAttendanceInput)
+        public async Task<List<EmployeeAttendanceTreatmentOutput>> GetEmployeeAttendanceTreatment(EmployeeAttendanceTreatmentInput employeeAttendanceInput)
         {
             var settingResult = await _lookupsService.GetSettings();
 
@@ -77,7 +77,7 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
                 { "pFromDate", employeeAttendanceInput.FromDate.DateToIntValue() ?? Convert.DBNull },
                 { "pToDate", employeeAttendanceInput.ToDate.DateToIntValue() ?? Convert.DBNull },
                 { "pLoginUserID", employeeAttendanceInput.LoginUserID ?? Convert.DBNull },
-                { "pFlag", 3 },
+                { "pFlag", employeeAttendanceInput.Flag },
                 { "pDepartmentID", employeeAttendanceInput.DepartmentID ?? Convert.DBNull },
                 { "pLanguageID", _projectProvider.LangId() },
                 { "pProjectID", _projectProvider.GetProjectId() },
@@ -92,6 +92,33 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
                 .ExecuteStoredProcedureAsync<EmployeeAttendanceTreatmentOutput>("dbo.GetEmployeeAttendance", inputParams, null);
 
             return result;
+        }
+
+        public async Task<int> SaveEmployeeAttendanceTreatment(SaveEmployeeLeaveInput saveEmployeeLeaveInput)
+        {
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeLeaveID", saveEmployeeLeaveInput.EmployeeLeaveID ??Convert.DBNull },
+                { "pEmployeeID", saveEmployeeLeaveInput.EmployeeID ?? Convert.DBNull },
+                { "pLeaveTypeID", saveEmployeeLeaveInput.LeaveTypeID ?? Convert.DBNull },
+                { "pLeaveDate", saveEmployeeLeaveInput?.LeaveDate.DateToIntValue() ?? Convert.DBNull },
+                { "pFromTime", saveEmployeeLeaveInput?.FromTime.DateToIntValue() ?? Convert.DBNull},
+                { "pToTime", saveEmployeeLeaveInput?.ToTime.DateToIntValue() ?? Convert.DBNull },
+                { "pCreatedBy", _projectProvider.UserId() },
+                { "pProjectID", _projectProvider.GetProjectId() },
+                { "pBySystem", saveEmployeeLeaveInput.BySystem ?? Convert.DBNull },
+                { "pPrevilageType", saveEmployeeLeaveInput.PrevilageType ?? Convert.DBNull },
+                { "pImagepath", saveEmployeeLeaveInput.ImagePath ?? Convert.DBNull },
+            };
+            Dictionary<string, object> outParams = new Dictionary<string, object>
+            {
+                {"pError","int" }
+            };
+            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
+               .ExecuteStoredProcedureAsync("dbo.SaveEmployeeLeaves", inputParams, outParams);
+
+            return result;
+
         }
     }
 }

@@ -1,11 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.DTO.EmployeeAttendance
 {
+    public class EmployeeAttendanceTreatmentInput
+    {
+        public DateTime? ToDate { get; set; }
+        public DateTime? FromDate { get; set; }
+        [Required(ErrorMessage = "The Flag is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "The Flag must be bigger than 0")]
+        public int? Flag { get; set; } = 3;
+        public int? EmployeeID { get; set; }
+        public int? UserId { get; set; }
+        public int? YearId { get; set; }
+        public int? ShiftID { get; set; }
+        public int? LoginUserID { get; set; }
+        public int? DepartmentID { get; set; }
+        public int? ApprovalTypeID { get; set; }
+    }
     public class EmployeeAttendanceTreatmentOutput
     {
         public int? EmployeeID { get; set; }
