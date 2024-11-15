@@ -15,6 +15,7 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
        public Task<dynamic> GetEmployeeAttendanceTreatment(EmployeeAttendanceTreatmentInput employeeAttendanceInput);
         public Task<int> SaveEmployeeAttendanceTreatment(SaveEmployeeLeaveInput saveEmployeeLeaveInput);
 
+        public Task<int> SaveEmployeeVacationTreatment(SaveEmployeeVacationInput saveEmployeeLeaveInput);
 
     }
 }
