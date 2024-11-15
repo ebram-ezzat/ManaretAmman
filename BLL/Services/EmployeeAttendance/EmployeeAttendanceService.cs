@@ -67,7 +67,7 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
             return returnedData.CreatePagedReponse<EmployeeAttendanceOutput>(filter.PageIndex, filter.Offset, totalRecords);
         }
 
-        public async Task<List<EmployeeAttendanceTreatmentOutput>> GetEmployeeAttendanceTreatment(EmployeeAttendanceTreatmentInput employeeAttendanceInput)
+        public async Task<dynamic> GetEmployeeAttendanceTreatment(EmployeeAttendanceTreatmentInput employeeAttendanceInput)
         {
             var settingResult = await _lookupsService.GetSettings();
 
@@ -87,10 +87,21 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
                 { "pVacationTypeID", settingResult?.PersonalVacationID ?? Convert.DBNull },
 
             };
-
+            
+            if (employeeAttendanceInput.Flag == 8)
+            {
+                var (resultFlag8, outputValues8) = await _payrolLogOnlyContext.GetProcedures()
+               .ExecuteStoredProcedureAsync<EmployeeAttendanceTreatmentOutputFlag8>("dbo.GetEmployeeAttendance", inputParams, null);
+                return resultFlag8;
+            }
+            if (employeeAttendanceInput.Flag == 9)
+            {
+                var (resultFlag9, outputValues9) = await _payrolLogOnlyContext.GetProcedures()
+               .ExecuteStoredProcedureAsync<EmployeeAttendanceTreatmentOutputFlag9>("dbo.GetEmployeeAttendance", inputParams, null);
+                return resultFlag9;
+            }
             var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
-                .ExecuteStoredProcedureAsync<EmployeeAttendanceTreatmentOutput>("dbo.GetEmployeeAttendance", inputParams, null);
-
+             .ExecuteStoredProcedureAsync<EmployeeAttendanceTreatmentOutput>("dbo.GetEmployeeAttendance", inputParams, null);
             return result;
         }
 
