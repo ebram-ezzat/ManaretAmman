@@ -10,7 +10,7 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
     {
         public int? EmployeeLeaveID { get; set; }
         public int? EmployeeID { get; set; }
-        public int? LeaveTypeID { get; set; }
+       // public int? LeaveTypeID { get; set; }
         public DateTime? LeaveDate { get; set; }
         public DateTime? FromTime { get; set; }
         public DateTime? ToTime { get; set; }
