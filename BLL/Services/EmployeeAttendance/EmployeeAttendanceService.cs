@@ -105,71 +105,80 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
             return result;
         }
 
-        public async Task<int> SaveEmployeeAttendanceTreatment(SaveEmployeeLeaveInput saveEmployeeLeaveInput)
+        public async Task<int> SaveEmployeeAttendanceTreatment(List<SaveEmployeeLeaveInput> saveEmployeeLeaveInput)
         {
             var settingResult = await _lookupsService.GetSettings();
-            Dictionary<string, object> inputParams = new Dictionary<string, object>
+            var result = 0;
+            foreach (var item in saveEmployeeLeaveInput)
             {
-                { "pEmployeeLeaveID", saveEmployeeLeaveInput.EmployeeLeaveID ??Convert.DBNull },
-                { "pEmployeeID", saveEmployeeLeaveInput.EmployeeID ?? Convert.DBNull },
+                Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeLeaveID", item.EmployeeLeaveID ??Convert.DBNull },
+                { "pEmployeeID", item.EmployeeID ?? Convert.DBNull },
                 { "pLeaveTypeID",settingResult?.PersonalVacationID ?? Convert.DBNull },
-                { "pLeaveDate", saveEmployeeLeaveInput?.LeaveDate.DateToIntValue() ?? Convert.DBNull },
-                { "pFromTime", saveEmployeeLeaveInput?.FromTime.DateToIntValue() ?? Convert.DBNull},
-                { "pToTime", saveEmployeeLeaveInput?.ToTime.DateToIntValue() ?? Convert.DBNull },
+                { "pLeaveDate", item?.LeaveDate.DateToIntValue() ?? Convert.DBNull },
+                { "pFromTime", item?.FromTime.DateToIntValue() ?? Convert.DBNull},
+                { "pToTime", item?.ToTime.DateToIntValue() ?? Convert.DBNull },
                 { "pCreatedBy", _projectProvider.UserId() },
                 { "pProjectID", _projectProvider.GetProjectId() },
-                { "pBySystem", saveEmployeeLeaveInput.BySystem ?? Convert.DBNull },
-                { "pPrevilageType", saveEmployeeLeaveInput.PrevilageType ?? Convert.DBNull },
-                { "pImagepath", saveEmployeeLeaveInput.ImagePath ?? Convert.DBNull },
+                { "pBySystem", item.BySystem ?? Convert.DBNull },
+                { "pPrevilageType", item.PrevilageType ?? Convert.DBNull },
+                { "pImagepath", item.ImagePath ?? Convert.DBNull },
             };
-            Dictionary<string, object> outParams = new Dictionary<string, object>
+                Dictionary<string, object> outParams = new Dictionary<string, object>
             {
                 {"pError","int" }
             };
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
-               .ExecuteStoredProcedureAsync("dbo.SaveEmployeeLeaves", inputParams, outParams);
+                var (resultout, outputValues) = await _payrolLogOnlyContext.GetProcedures()
+                   .ExecuteStoredProcedureAsync("dbo.SaveEmployeeLeaves", inputParams, outParams);
+                result = resultout;
+            }
 
             return result;
 
         }
 
-        public async Task<int> SaveEmployeeVacationTreatment(SaveEmployeeVacationInput saveEmployeeVacationInput)
+        public async Task<int> SaveEmployeeVacationTreatment(List<SaveEmployeeVacationInput> saveEmployeeVacationInput)
         {
             // Retrieve settings or other configurations
             var settingResult = await _lookupsService.GetSettings();
-
-            // Prepare input parameters for the stored procedure
-                    Dictionary<string, object> inputParams = new Dictionary<string, object>
+            var result = 0;
+            foreach (var item in saveEmployeeVacationInput)
             {
-                { "pEmployeeID", saveEmployeeVacationInput.EmployeeID },
+                // Prepare input parameters for the stored procedure
+                Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
+                { "pEmployeeID", item.EmployeeID },
                 { "pVacationTypeID",  settingResult?.PersonalVacationID ?? Convert.DBNull },
-                { "pFromDate", saveEmployeeVacationInput?.FromDate.DateToIntValue() ?? Convert.DBNull },
-                { "pToDate", saveEmployeeVacationInput?.ToDate.DateToIntValue() ?? Convert.DBNull },
-                { "pNotes", saveEmployeeVacationInput.Notes ?? Convert.DBNull },
-                { "pDayCount", saveEmployeeVacationInput.DayCount ?? Convert.DBNull },
-                { "pCreatedBy", saveEmployeeVacationInput.CreatedBy ?? _projectProvider.UserId() },
-                { "pProjectID", saveEmployeeVacationInput.ProjectID },
-                { "pIsCalledFromOtherSP", saveEmployeeVacationInput.IsCalledFromOtherSP },
-                { "pPrevilageType", saveEmployeeVacationInput.PrevilageType ?? Convert.DBNull },
-                { "pImagepath", saveEmployeeVacationInput.ImagePath ?? Convert.DBNull },
+                { "pFromDate", item?.FromDate.DateToIntValue() ?? Convert.DBNull },
+                { "pToDate", item?.ToDate.DateToIntValue() ?? Convert.DBNull },
+                { "pNotes", item.Notes ?? Convert.DBNull },
+                { "pDayCount", item.DayCount ?? Convert.DBNull },
+                { "pCreatedBy", _projectProvider.UserId() },
+                { "pProjectID", _projectProvider.GetProjectId() },
+                { "pIsCalledFromOtherSP", item.IsCalledFromOtherSP },
+                { "pPrevilageType", item.PrevilageType ?? Convert.DBNull },
+                { "pImagepath", item.ImagePath ?? Convert.DBNull },
             };
 
-            // Prepare output parameters for the stored procedure
-                    Dictionary<string, object> outParams = new Dictionary<string, object>
+                // Prepare output parameters for the stored procedure
+                Dictionary<string, object> outParams = new Dictionary<string, object>
             {
-                { "pEmployeeVacationID", saveEmployeeVacationInput.EmployeeVacationID !=null && saveEmployeeVacationInput.EmployeeVacationID >0 ?saveEmployeeVacationInput.EmployeeVacationID: "int"},
+                { "pEmployeeVacationID", item.EmployeeVacationID !=null && item.EmployeeVacationID >0 ?item.EmployeeVacationID: "int"},
                 { "pError", "int" }
             };
 
-            // Execute the stored procedure asynchronously
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures()
-                .ExecuteStoredProcedureAsync("dbo.SaveEmployeeVacation", inputParams, outParams);
-
-            // Process the output parameter if needed
-            if (outputValues.TryGetValue("pError", out var errorValue) && errorValue is int errorCode && errorCode != 0)
-            {
-                throw new Exception($"Stored procedure returned an error code: {errorCode}");
+                // Execute the stored procedure asynchronously
+                var (resultout, outputValues) = await _payrolLogOnlyContext.GetProcedures()
+                    .ExecuteStoredProcedureAsync("dbo.SaveEmployeeVacation", inputParams, outParams);
+                result = resultout;
+                // Process the output parameter if needed
+                if (outputValues.TryGetValue("pError", out var errorValue) && errorValue is int errorCode && errorCode != 0)
+                {
+                    throw new Exception($"Stored procedure returned an error code: {errorCode}");
+                }
             }
+          
 
             return result;
         }

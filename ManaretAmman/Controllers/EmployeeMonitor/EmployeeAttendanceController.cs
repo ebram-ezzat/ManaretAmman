@@ -47,8 +47,13 @@ namespace ManaretAmman.Controllers.EmployeeMonitor
 
             return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
         }
+        /// <summary>
+        /// Incase flag 3 or 9
+        /// </summary>
+        /// <param name="saveEmployeeLeaveInput"></param>
+        /// <returns></returns>
         [HttpPost("SaveEmployeeAttendanceTreatment")]
-        public async Task<IApiResponse> SaveEmployeeAttendanceTreatment([FromBody] SaveEmployeeLeaveInput saveEmployeeLeaveInput)
+        public async Task<IApiResponse> SaveEmployeeAttendanceTreatment([FromBody] List<SaveEmployeeLeaveInput> saveEmployeeLeaveInput)
         {
             if (!ModelState.IsValid)
             {
@@ -64,8 +69,13 @@ namespace ManaretAmman.Controllers.EmployeeMonitor
 
             return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
         }
+        /// <summary>
+        /// Incase flag 8 (غيابات)
+        /// </summary>
+        /// <param name="saveEmployeeVacationInput"></param>
+        /// <returns></returns>
         [HttpPost("SaveEmployeeVacationTreatment")]
-        public async Task<IApiResponse> SaveEmployeeVacationTreatment([FromBody] SaveEmployeeVacationInput saveEmployeeVacationInput)
+        public async Task<IApiResponse> SaveEmployeeVacationTreatment([FromBody] List<SaveEmployeeVacationInput> saveEmployeeVacationInput)
         {
             if (!ModelState.IsValid)
             {

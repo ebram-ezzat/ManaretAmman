@@ -54,7 +54,7 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public int? MorningAttendanceAsAdditional { get; set; }
         public int? AllowedAdditionalBefore { get; set; }
         public int? FixedDayID { get; set; }
-        public int? IsAbsent { get; set; }
+        public int? IsAbsent { get; set; }//=>ديما بتتعرض مكان التاخير الصباحى او الخروج المبكر
         public int? IsLateChecked { get; set; }
         public int? StartTime2 { get; set; }
         public int? EndTime2 { get; set; }
@@ -79,7 +79,7 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public int? BreakIn { get; set; }
         public int? BreakOut { get; set; }
         public int? ProjectID { get; set; }
-        public int? EmployeeNumber { get; set; }
+        public int? EmployeeNumber { get; set; }//الرمز
         public string EmployeeName { get; set; }
         public string ShiftName { get; set; }
         public int? StartTime { get; set; }
@@ -95,8 +95,8 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public int? MorningAttendanceAsAdditional { get; set; }
         public int? AllowedAdditionalBefore { get; set; }
         public int? FixedDayID { get; set; }
-        public int? IsEarlyLeaveChecked { get; set; }
-        public int? IsLateChecked { get; set; }
+        public int? IsEarlyLeaveChecked { get; set; }//الخروج المبكر 1 يعرضها 
+        public int? IsLateChecked { get; set; }//التاخير الصبحى 1 يعرضها
         public int? StartTime2 { get; set; }
         public int? EndTime2 { get; set; }
         public string TempCheckinAfter { get; set; }
@@ -104,7 +104,7 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public string DayDesc { get; set; }
         public int? IsAddedManual { get; set; }
         public int? EmployeeWeeklHolidayStatusID { get; set; }
-        public string v_AttendanceDate  { get; set; }
+        public string v_AttendanceDate  { get; set; }//التاريخ
        
     }
     /*
@@ -137,7 +137,7 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public int? MorningAttendanceAsAdditional { get; set; }
         public int? AllowedAdditionalBefore { get; set; }
         public int? FixedDayID { get; set; }
-        public int? IsLeave { get; set; }
+        public int? IsLeave { get; set; }//مكان التاخير الصبحى او الخروج المبكر ديما بتتعرض
         public int? StartTime2 { get; set; }
         public int? EndTime2 { get; set; }
         public string TempCheckinAfter { get; set; }
