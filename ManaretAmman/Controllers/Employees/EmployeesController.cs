@@ -1334,6 +1334,11 @@ namespace ManaretAmman.Controllers.Employees
         }
         #endregion
         #region (العلاوات (اعدادات عامة
+        /// <summary>
+        /// شاشة العلاوات اعدادات عامة
+        /// </summary>
+        /// <param name="deleteAllowance_deduction"></param>
+        /// <returns></returns>
        [HttpDelete("DeleteAllowance_Deduction")]
         public async Task<IApiResponse> DeleteAllowance_Deduction([FromQuery] DeleteAllowance_deduction deleteAllowance_deduction)
         {
