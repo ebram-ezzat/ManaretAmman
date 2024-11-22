@@ -857,14 +857,7 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<int>.Success("data has been returned succussfully", result);
         }
-        [HttpGet("GetEmployeeAllowancesDeductionDDL")]
-        public async Task<IApiResponse> GetEmployeeAllowancesDeductionDDL([FromQuery] GetAllowanceDeductionInput getAllowanceDeductionInput)
-        {
-           
-            var result = await _employeeService.GetEmployeeAllowancesDeductionDDL(getAllowanceDeductionInput);
-
-            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
-        }
+       
         #endregion
 
         #region اقتطاعات الموظفين
@@ -1340,5 +1333,48 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<int>.Success("data has been saved succussfully", result);
         }
         #endregion
+        #region (العلاوات (اعدادات عامة
+       [HttpDelete("DeleteAllowance_Deduction")]
+        public async Task<IApiResponse> DeleteAllowance_Deduction([FromQuery] DeleteAllowance_deduction deleteAllowance_deduction)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.DeleteAllowance_Deduction(deleteAllowance_deduction);
+
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
+        [HttpPost("SaveOrUpdateAllowance_Deduction")]
+        public async Task<IApiResponse> SaveOrUpdateAllowance_Deduction([FromBody] SaveAllowance_DeductionInput saveAllowance_DeductionInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveorUpdateAllowance_Deduction(saveAllowance_DeductionInput);
+
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
+        [HttpGet("GetEmployeeAllowancesDeductionDDL")]
+        public async Task<IApiResponse> GetEmployeeAllowancesDeductionDDL([FromQuery] GetAllowanceDeductionInput getAllowanceDeductionInput)
+        {
+
+            var result = await _employeeService.GetEmployeeAllowancesDeductionDDL(getAllowanceDeductionInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+        #endregion
+
     }
 }

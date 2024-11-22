@@ -2158,5 +2158,68 @@ internal class EmployeeService : IEmployeeService
         return pErrorValue;
     }
     #endregion
+
+    #region (العلاوات (اعدادات عامة
+        public async Task<int> SaveorUpdateAllowance_Deduction(SaveAllowance_DeductionInput saveAllowance_DeductionInput)
+        {
+            // Prepare input parameters from the input model
+                Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {               
+                { "pDefaultDesc", saveAllowance_DeductionInput.DefaultDesc ??Convert.DBNull },
+                { "pTypeID", saveAllowance_DeductionInput.TypeID ??Convert.DBNull },
+                { "pAmount", saveAllowance_DeductionInput.Amount ??Convert.DBNull },
+                { "pCalculateTypeID", saveAllowance_DeductionInput.CalculateTypeID ??Convert.DBNull },
+                { "pNatureID", saveAllowance_DeductionInput.NatureID ??Convert.DBNull },
+                { "pIsDefault", saveAllowance_DeductionInput.IsDefault ??Convert.DBNull },
+                { "pCreatedBy", _projectProvider.UserId() },
+                { "pProjectID", _projectProvider.GetProjectId() },
+                { "pCalculateWithOvertime", saveAllowance_DeductionInput.CalculateWithOvertime },
+                { "pCalculateWithAttendanceDeduction", saveAllowance_DeductionInput.CalculateWithAttendanceDeduction },
+                { "pIsDependInAttendance", saveAllowance_DeductionInput.IsDependInAttendance ??Convert.DBNull },
+                { "pIsMonthly", saveAllowance_DeductionInput.IsMonthly ??Convert.DBNull },
+                { "pDependInCheckout", saveAllowance_DeductionInput.DependInCheckout ??Convert.DBNull },
+                { "pDependInCheckin", saveAllowance_DeductionInput.DependInCheckin ??Convert.DBNull }
+            };
+
+                // Prepare output parameters
+                Dictionary<string, object> outputParams = new Dictionary<string, object>
+                {
+                    { "pError", "int" },
+                     { "pAllowanceID", saveAllowance_DeductionInput.AllowanceID !=null && saveAllowance_DeductionInput.AllowanceID >0 ? saveAllowance_DeductionInput.AllowanceID:"int" }
+                };
+
+            // Execute stored procedure
+            var (result, outputValues) = await _payrolLogOnlyContext
+                .GetProcedures()
+                .ExecuteStoredProcedureAsync("dbo.SaveAllowance_Deduction", inputParams, outputParams);
+
+            // Extract output parameter value
+            int pErrorValue = (int)outputValues["pError"];
+            return pErrorValue;
+         }
+       public async Task<int> DeleteAllowance_Deduction(DeleteAllowance_deduction deleteAllowance_deduction)
+        {
+            Dictionary<string, object> inputParams = new Dictionary<string, object>
+                {
+                    { "pAllowanceID", deleteAllowance_deduction.AllowanceID  },
+                     { "pProjectID", _projectProvider.GetProjectId()  },
+                };
+            // Prepare output parameters
+            Dictionary<string, object> outputParams = new Dictionary<string, object>
+                    {
+                        { "pError", "int" },
+                   
+                    };
+
+            // Execute stored procedure
+            var (result, outputValues) = await _payrolLogOnlyContext
+                .GetProcedures()
+                .ExecuteStoredProcedureAsync("dbo.DeleteAllowance_deduction", inputParams, outputParams);
+
+            // Extract output parameter value
+            int pErrorValue = (int)outputValues["pError"];
+            return pErrorValue;
+        }
+    #endregion
 }
 
