@@ -63,7 +63,9 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public string DayDesc { get; set; }
         public int? IsAddedManual { get; set; }
         public int? EmployeeWeeklHolidayStatusID { get; set; }
-        public string V_AttendanceDate { get; set; }
+        public DateTime? v_AttendanceDate { get; set; }//التاريخ
+        public string v_checkin { get; set; }
+        public string v_checkout { get; set; }
     }
     /*
      * الخروج المبكر والتاخير الصباحى
@@ -104,8 +106,10 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public string DayDesc { get; set; }
         public int? IsAddedManual { get; set; }
         public int? EmployeeWeeklHolidayStatusID { get; set; }
-        public string v_AttendanceDate  { get; set; }//التاريخ
-       
+        public DateTime? v_AttendanceDate  { get; set; }//التاريخ
+        public string v_checkin { get; set; }
+        public string v_checkout { get; set; }
+
     }
     /*
     * مغادرات
@@ -145,7 +149,9 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public string DayDesc { get; set; }
         public int? IsAddedManual { get; set; }
         public int? EmployeeWeeklHolidayStatusID { get; set; }
-        public string V_AttendanceDate { get; set; }
+        public DateTime? v_AttendanceDate { get; set; }//التاريخ
+        public string v_checkin { get; set; }
+        public string v_checkout { get; set; }
     }
 
 }

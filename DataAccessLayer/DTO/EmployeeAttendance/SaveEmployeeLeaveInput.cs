@@ -17,13 +17,13 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
          * الخروج المبكر هتبقى checkout
          * المغادرة9 هتبقى checkin 
          */
-        public DateTime? FromTime { get; set; }
+        public int? FromTime { get; set; }
         /*
         * تاخير صباحى هيبقى checkin
         *   الخروج المبكر هتبقى endtime
         * المغادرة9 هتبقى checkout 
         */
-        public DateTime? ToTime { get; set; }
+        public int? ToTime { get; set; }
         public int? CreatedBy { get; set; }
         public int? BySystem { get; set; } = 1;
         public int? PrevilageType { get; set; }
