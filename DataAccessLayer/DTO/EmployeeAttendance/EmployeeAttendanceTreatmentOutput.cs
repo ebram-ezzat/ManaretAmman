@@ -118,14 +118,14 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
     public class EmployeeAttendanceTreatmentOutputFlag9
     {
         public int? EmployeeID { get; set; }
-        public DateTime? AttendanceDate { get; set; }
+        public int? AttendanceDate { get; set; }
         public int? CheckIn { get; set; }
         public int? CheckOut { get; set; }
-        public int WeekDayID { get; set; }
+        public int? WeekDayID { get; set; }
         public int? BreakIn { get; set; }
         public int? BreakOut { get; set; }
         public int? ProjectID { get; set; }
-        public int? EmployeeNumber { get; set; }
+        public int? EmployeeNumber { get; set; }//الرمز
         public string EmployeeName { get; set; }
         public string ShiftName { get; set; }
         public int? StartTime { get; set; }
@@ -141,7 +141,8 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public int? MorningAttendanceAsAdditional { get; set; }
         public int? AllowedAdditionalBefore { get; set; }
         public int? FixedDayID { get; set; }
-        public int? IsLeave { get; set; }//مكان التاخير الصبحى او الخروج المبكر ديما بتتعرض
+        public int? IsEarlyLeaveChecked { get; set; }//الخروج المبكر 1 يعرضها 
+        public int? IsLateChecked { get; set; }//التاخير الصبحى 1 يعرضها
         public int? StartTime2 { get; set; }
         public int? EndTime2 { get; set; }
         public string TempCheckinAfter { get; set; }
@@ -152,6 +153,7 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public DateTime? v_AttendanceDate { get; set; }//التاريخ
         public string v_checkin { get; set; }
         public string v_checkout { get; set; }
+        public int? IsLeave { get; set; }
     }
 
 }
