@@ -34,8 +34,8 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public int? EmployeeVacationID { get; set; }
         public int EmployeeID { get; set; } 
         public int? VacationTypeID { get; set; } 
-        public DateTime? FromDate { get; set; } //=>attendance date
-        public DateTime? ToDate { get; set; } //=>attendance date
+        public int? FromDate { get; set; } //=>attendance date
+        public int? ToDate { get; set; } //=>attendance date
         public string Notes { get; set; }
         public int? DayCount { get; set; } = 1;
         public int? CreatedBy { get; set; } 

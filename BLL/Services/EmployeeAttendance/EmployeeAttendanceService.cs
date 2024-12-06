@@ -150,8 +150,8 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
             {
                 { "pEmployeeID", item.EmployeeID },
                 { "pVacationTypeID",  settingResult?.PersonalVacationID ?? Convert.DBNull },
-                { "pFromDate", item?.FromDate.DateToIntValue() ?? Convert.DBNull },
-                { "pToDate", item?.ToDate.DateToIntValue() ?? Convert.DBNull },
+                { "pFromDate", item?.FromDate?? Convert.DBNull },
+                { "pToDate", item?.ToDate ?? Convert.DBNull },
                 { "pNotes", item.Notes ?? Convert.DBNull },
                 { "pDayCount", item.DayCount ?? Convert.DBNull },
                 { "pCreatedBy", _projectProvider.UserId() },
