@@ -89,4 +89,8 @@ public interface IEmployeeService
     Task<int> DeleteAttendance(DeleteAttendance deleteAttendance);
     Task<int> InsertAttendance(InsertAttendance insertAttendance);
     Task<dynamic> GetAttendance(GetAttendanceInput getAttendanceInput);
+
+    Task<int> SaveorUpdateAllowance_Deduction(SaveAllowance_DeductionInput saveAllowance_DeductionInput);
+    Task<int> DeleteAllowance_Deduction(DeleteAllowance_deduction deleteAllowance_deduction);
+
 }

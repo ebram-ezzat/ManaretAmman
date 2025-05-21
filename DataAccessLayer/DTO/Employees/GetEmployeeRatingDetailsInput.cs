@@ -19,16 +19,16 @@ namespace DataAccessLayer.DTO.Employees
         public int? EmployeeID { get; set; }
         public string EmployeeName { get; set; }
         public int? EmployeeNumber { get; set; }
-        public string v_StartDate { get; set; }  
-        public string v_EndDate { get; set; }   
+        public DateTime? v_StartDate { get; set; }  
+        public DateTime? v_EndDate { get; set; }   
         public string v_Period { get; set; }        
         public string DepartmentName { get; set; }
         public string EmployeeLevelDesc { get; set; }
         public string JobTitleName { get; set; }
-        public string v_EvalFromDate { get; set; }  
-        public string v_EvalToDate { get; set; }   
+        public DateTime? v_EvalFromDate { get; set; }  
+        public DateTime? v_EvalToDate { get; set; }   
         public string EvaluationName { get; set; }
-        public string v_EvaluationDate { get; set; } 
+        public DateTime? v_EvaluationDate { get; set; } 
         public int? EvalueationPoints { get; set; } 
         public string EvaluationStatus { get; set; }
         public string Question { get; set; }
@@ -61,16 +61,16 @@ namespace DataAccessLayer.DTO.Employees
         public int? EmployeeID { get; set; }
         public string EmployeeName { get; set; }
         public int? EmployeeNumber { get; set; }
-        public string v_StartDate { get; set; }
-        public string v_EndDate { get; set; }
+        public DateTime? v_StartDate { get; set; }
+        public DateTime? v_EndDate { get; set; }
         public string v_Period { get; set; }
         public string DepartmentName { get; set; }
         public string EmployeeLevelDesc { get; set; }
         public string JobTitleName { get; set; }
-        public string v_EvalFromDate { get; set; }
-        public string v_EvalToDate { get; set; }
+        public DateTime? v_EvalFromDate { get; set; }
+        public DateTime? v_EvalToDate { get; set; }
         public string EvaluationName { get; set; }
-        public string v_EvaluationDate { get; set; }
+        public DateTime? v_EvaluationDate { get; set; }
         public int? EvalueationPoints { get; set; }
         public string EvaluationStatus { get; set; }
 

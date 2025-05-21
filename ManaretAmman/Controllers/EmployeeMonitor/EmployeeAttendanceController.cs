@@ -32,7 +32,7 @@ namespace ManaretAmman.Controllers.EmployeeMonitor
         }
 
         [HttpGet("GetEmployeeAttendanceTreatment")]
-        public async Task<IApiResponse> GetEmployeeAttendanceTreatment([FromQuery] EmployeeAttendanceInput employeeAttendanceInput)
+        public async Task<IApiResponse> GetEmployeeAttendanceTreatment([FromQuery] EmployeeAttendanceTreatmentInput employeeAttendanceTreatmentInput)
         {
             if (!ModelState.IsValid)
             {
@@ -43,7 +43,51 @@ namespace ManaretAmman.Controllers.EmployeeMonitor
 
                 return ApiResponse.Failure("An unexpected error on validation occurred", errors.ToArray());
             }
-            var result = await _employeeAttendanceService.GetEmployeeAttendanceTreatment(employeeAttendanceInput);
+            var result = await _employeeAttendanceService.GetEmployeeAttendanceTreatment(employeeAttendanceTreatmentInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+        /// <summary>
+        /// Incase flag 3 or 9
+        /// </summary>
+        /// <param name="saveEmployeeLeaveInput"></param>
+        /// <returns></returns>
+        [HttpPost("SaveEmployeeAttendanceTreatment")]
+        public async Task<IApiResponse> SaveEmployeeAttendanceTreatment([FromBody] List<SaveEmployeeLeaveInput> saveEmployeeLeaveInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure("An unexpected error on validation occurred", errors.ToArray());
+            }
+            
+            var result = await _employeeAttendanceService.SaveEmployeeAttendanceTreatment(saveEmployeeLeaveInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+        /// <summary>
+        /// Incase flag 8 (غيابات)
+        /// </summary>
+        /// <param name="saveEmployeeVacationInput"></param>
+        /// <returns></returns>
+        [HttpPost("SaveEmployeeVacationTreatment")]
+        public async Task<IApiResponse> SaveEmployeeVacationTreatment([FromBody] List<SaveEmployeeVacationInput> saveEmployeeVacationInput)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure("An unexpected error on validation occurred", errors.ToArray());
+            }
+
+            var result = await _employeeAttendanceService.SaveEmployeeVacationTreatment(saveEmployeeVacationInput);
 
             return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
         }

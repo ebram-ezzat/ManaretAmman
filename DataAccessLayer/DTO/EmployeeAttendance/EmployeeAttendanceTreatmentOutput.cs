@@ -1,22 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.DTO.EmployeeAttendance
 {
-    public class EmployeeAttendanceTreatmentOutput
+    public class EmployeeAttendanceTreatmentInput
+    {
+        [Required(ErrorMessage = "The ToDate is required.")]
+        public DateTime? ToDate { get; set; }
+        [Required(ErrorMessage = "The FromDate is required.")]
+        public DateTime? FromDate { get; set; }
+        [Required(ErrorMessage = "The Flag is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "The Flag must be bigger than 0")]
+        public int? Flag { get; set; } 
+        public int? EmployeeID { get; set; }
+        public int? UserId { get; set; }
+        public int? YearId { get; set; }
+        public int? ShiftID { get; set; }
+        public int? LoginUserID { get; set; }
+        public int? DepartmentID { get; set; }
+        public int? ApprovalTypeID { get; set; }
+    }
+    /*
+     * غيابات
+     * Flag=8
+     */
+    public class EmployeeAttendanceTreatmentOutputFlag8
     {
         public int? EmployeeID { get; set; }
-        public DateTime? AttendanceDate { get; set; }
+        public int? AttendanceDate { get; set; }
         public int? CheckIn { get; set; }
         public int? CheckOut { get; set; }
         public int? WeekDayID { get; set; }
         public int? BreakIn { get; set; }
         public int? BreakOut { get; set; }
         public int? ProjectID { get; set; }
-        public string EmployeeNumber { get; set; }
+        public int? EmployeeNumber { get; set; }
         public string EmployeeName { get; set; }
         public string ShiftName { get; set; }
         public int? StartTime { get; set; }
@@ -24,7 +46,7 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public string Notes { get; set; }
         public int? CheckoutAfterMidnight { get; set; }
         public int? IsWorkingDay { get; set; }
-        public int BreakTime { get; set; }
+        public int? BreakTime { get; set; }
         public int? IsVacation { get; set; }
         public int? AllowedLate { get; set; }
         public int? EarlyLeave { get; set; }
@@ -32,17 +54,106 @@ namespace DataAccessLayer.DTO.EmployeeAttendance
         public int? MorningAttendanceAsAdditional { get; set; }
         public int? AllowedAdditionalBefore { get; set; }
         public int? FixedDayID { get; set; }
-        public int? IsEarlyLeaveChecked { get; set; }
+        public int? IsAbsent { get; set; }//=>ديما بتتعرض مكان التاخير الصباحى او الخروج المبكر
         public int? IsLateChecked { get; set; }
         public int? StartTime2 { get; set; }
         public int? EndTime2 { get; set; }
-        public int? TempCheckinAfter { get; set; }
-        public int? TempCheckoutAfter { get; set; }
+        public string TempCheckinAfter { get; set; }
+        public string TempCheckoutAfter { get; set; }
         public string DayDesc { get; set; }
         public int? IsAddedManual { get; set; }
         public int? EmployeeWeeklHolidayStatusID { get; set; }
-        public string v_AttendanceDate  { get; set; }
+        public DateTime? v_AttendanceDate { get; set; }//التاريخ
         public string v_checkin { get; set; }
         public string v_checkout { get; set; }
     }
+    /*
+     * الخروج المبكر والتاخير الصباحى
+     * Flag=3
+     */
+    public class EmployeeAttendanceTreatmentOutput
+    {
+        public int? EmployeeID { get; set; }
+        public int? AttendanceDate { get; set; }
+        public int? CheckIn { get; set; }
+        public int? CheckOut { get; set; }
+        public int? WeekDayID { get; set; }
+        public int? BreakIn { get; set; }
+        public int? BreakOut { get; set; }
+        public int? ProjectID { get; set; }
+        public int? EmployeeNumber { get; set; }//الرمز
+        public string EmployeeName { get; set; }
+        public string ShiftName { get; set; }
+        public int? StartTime { get; set; }
+        public int? EndTime { get; set; }
+        public string Notes { get; set; }
+        public int? CheckoutAfterMidnight { get; set; }
+        public int? IsWorkingDay { get; set; }
+        public int? BreakTime { get; set; }
+        public int? IsVacation { get; set; }
+        public int? AllowedLate { get; set; }
+        public int? EarlyLeave { get; set; }
+        public int? CalculateAdditionalIfExceed { get; set; }
+        public int? MorningAttendanceAsAdditional { get; set; }
+        public int? AllowedAdditionalBefore { get; set; }
+        public int? FixedDayID { get; set; }
+        public int? IsEarlyLeaveChecked { get; set; }//الخروج المبكر 1 يعرضها 
+        public int? IsLateChecked { get; set; }//التاخير الصبحى 1 يعرضها
+        public int? StartTime2 { get; set; }
+        public int? EndTime2 { get; set; }
+        public string TempCheckinAfter { get; set; }
+        public string TempCheckoutAfter { get; set; }
+        public string DayDesc { get; set; }
+        public int? IsAddedManual { get; set; }
+        public int? EmployeeWeeklHolidayStatusID { get; set; }
+        public DateTime? v_AttendanceDate  { get; set; }//التاريخ
+        public string v_checkin { get; set; }
+        public string v_checkout { get; set; }
+
+    }
+    /*
+    * مغادرات
+    * Flag=9
+    */
+    public class EmployeeAttendanceTreatmentOutputFlag9
+    {
+        public int? EmployeeID { get; set; }
+        public int? AttendanceDate { get; set; }
+        public int? CheckIn { get; set; }
+        public int? CheckOut { get; set; }
+        public int? WeekDayID { get; set; }
+        public int? BreakIn { get; set; }
+        public int? BreakOut { get; set; }
+        public int? ProjectID { get; set; }
+        public int? EmployeeNumber { get; set; }//الرمز
+        public string EmployeeName { get; set; }
+        public string ShiftName { get; set; }
+        public int? StartTime { get; set; }
+        public int? EndTime { get; set; }
+        public string Notes { get; set; }
+        public int? CheckoutAfterMidnight { get; set; }
+        public int? IsWorkingDay { get; set; }
+        public int? BreakTime { get; set; }
+        public int? IsVacation { get; set; }
+        public int? AllowedLate { get; set; }
+        public int? EarlyLeave { get; set; }
+        public int? CalculateAdditionalIfExceed { get; set; }
+        public int? MorningAttendanceAsAdditional { get; set; }
+        public int? AllowedAdditionalBefore { get; set; }
+        public int? FixedDayID { get; set; }
+        public int? IsEarlyLeaveChecked { get; set; }//الخروج المبكر 1 يعرضها 
+        public int? IsLateChecked { get; set; }//التاخير الصبحى 1 يعرضها
+        public int? StartTime2 { get; set; }
+        public int? EndTime2 { get; set; }
+        public string TempCheckinAfter { get; set; }
+        public string TempCheckoutAfter { get; set; }
+        public string DayDesc { get; set; }
+        public int? IsAddedManual { get; set; }
+        public int? EmployeeWeeklHolidayStatusID { get; set; }
+        public DateTime? v_AttendanceDate { get; set; }//التاريخ
+        public string v_checkin { get; set; }
+        public string v_checkout { get; set; }
+        public int? IsLeave { get; set; }
+    }
+
 }
