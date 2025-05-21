@@ -29,7 +29,7 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
 
         public async Task<PagedResponse<EmployeeAttendanceOutput>> GetEmployeeAttendance(PaginationFilter<EmployeeAttendanceInput> filter)
         {
-
+    
             var _filter = filter.FilterCriteria;
             var result = await _payrolLogOnlyContext.GetProcedures().GetEmployeeAttendanceAsync(_filter.EmployeeID, _filter.FromDate.DateToIntValue(), _filter.ToDate.DateToIntValue(), _projectId, _filter.YearId, null, _filter.Flag, _filter.DepartmentID, _filter.LanguageID, null,_filter.ShiftID, _userId, _filter.ApprovalTypeID, null);           
 
@@ -50,7 +50,7 @@ namespace BusinessLogicLayer.Services.EmployeeAttendance
                                  ShiftName = item.ShiftName,
                                  //StartTime = item.StartTime.ConvertFromMinutesToTimeString(),
                                  StartTime = item.CheckIn.ConvertFromMinutesToTimeString(),
-                                 Workhours = (TimeSpan.FromMinutes((double)item.EndTime) - TimeSpan.FromMinutes((double)item.StartTime)).ToString(@"hh\:mm"),
+                                 Workhours = item.workhoursinstring/*(TimeSpan.FromMinutes((double)item.EndTime) - TimeSpan.FromMinutes((double)item.StartTime)).ToString(@"hh\:mm")*/,
                                  ShiftWithTimes = $"{item.StartTime.ConvertFromMinutesToTimeString()} | {item.EndTime.ConvertFromMinutesToTimeString()} | {item.ShiftName}",
                                  Systemtimeinminutes = item.Systemtimeinminutes,
                                  Approvedtimeinminutes = item.Approvedtimeinminutes,

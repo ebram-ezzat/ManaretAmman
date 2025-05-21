@@ -56,5 +56,6 @@ namespace DataAccessLayer.Models
         public string EmployeeImage { get; set; }
 		public string JobTitleName { get; set; }
         public int? AnyWhere { get; set; }
+        public string workhoursinstring { get; set; }
     }
 }
