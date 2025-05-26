@@ -30,7 +30,7 @@ namespace ManaretAmman.Controllers.Employees
         }
 
         [HttpGet("GetList")]
-        public async Task<IApiResponse> GetList() 
+        public async Task<IApiResponse> GetList()
         {
             var result = await _employeeService.GetEmployeesProc();
 
@@ -41,7 +41,7 @@ namespace ManaretAmman.Controllers.Employees
         public async Task<IApiResponse> SaveAttendanceByUser(SaveAttendance saveAttendance)
         {
             var result = await _employeeService.SaveAttendanceByUser(saveAttendance);
-            if(result==-3)
+            if (result == -3)
             {
                 return ApiResponse.Failure(" An unexpected error on validation occurred ", new string[] { "The user does not have permission to log in from this device" });
             }
@@ -66,12 +66,12 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<object>.Success("data has been retrieved succussfully", result);
         }
         [HttpDelete("Documents/DeleteEmployeePaper")]
-        public async Task<IApiResponse> DeleteEmployeePaper([FromQuery]  DeleteEmployeePaper model)
+        public async Task<IApiResponse> DeleteEmployeePaper([FromQuery] DeleteEmployeePaper model)
         {
             if (model.EmployeeId <= 0 || model.DetailId <= 0)
             {
 
-                return ApiResponse.Failure(" An unexpected error on validation occurred you should path each parameter bigger than 0",null);
+                return ApiResponse.Failure(" An unexpected error on validation occurred you should path each parameter bigger than 0", null);
             }
             var result = await _employeeService.DeleteEmployeePaperProc(model.EmployeeId, model.DetailId);
 
@@ -80,7 +80,7 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<int>.Success("data has been retrieved succussfully", result);
         }
         [HttpPost("Documents/SaveEmployeePaper")]
-        public async Task<IApiResponse> SaveEmployeePaper([FromForm]SaveEmployeePaper saveEmployeePaper)
+        public async Task<IApiResponse> SaveEmployeePaper([FromForm] SaveEmployeePaper saveEmployeePaper)
         {
             //var formCollection = await Request.ReadFormAsync();
             if (!ModelState.IsValid)
@@ -92,7 +92,7 @@ namespace ManaretAmman.Controllers.Employees
 
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
-           var result = await _employeeService.SaveEmployeePaperProc(saveEmployeePaper);
+            var result = await _employeeService.SaveEmployeePaperProc(saveEmployeePaper);
 
 
 
@@ -129,8 +129,8 @@ namespace ManaretAmman.Controllers.Employees
 
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
-            var result= await _employeeService.SaveEmployeeAffairsService(saveEmployeeAffairsService);
-            if(result ==-1)//error
+            var result = await _employeeService.SaveEmployeeAffairsService(saveEmployeeAffairsService);
+            if (result == -1)//error
             {
                 throw new Exception("Error on Save Operation");
             }
@@ -143,7 +143,7 @@ namespace ManaretAmman.Controllers.Employees
         /// <returns></returns>
         [AddLanguageHeaderAttribute]
         [HttpGet("GetEmployeeAffairsService")]
-        public async Task<IApiResponse> GetEmployeeAffairsService([FromQuery]GetEmployeeAffairsServiceRequest getEmployeeAffairsServiceRequest)
+        public async Task<IApiResponse> GetEmployeeAffairsService([FromQuery] GetEmployeeAffairsServiceRequest getEmployeeAffairsServiceRequest)
         {
             if (!ModelState.IsValid)
             {
@@ -155,7 +155,7 @@ namespace ManaretAmman.Controllers.Employees
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
             var result = await _employeeService.GetEmployeeAffairsService(getEmployeeAffairsServiceRequest);
-           
+
             return ApiResponse<dynamic>.Success("data has been returned succussfully", result);
         }
         /// <summary>
@@ -189,8 +189,8 @@ namespace ManaretAmman.Controllers.Employees
         #endregion
 
         #region Employee Evaluation
-            #region EvaluationCategory
-        [HttpPost("SaveOrUpdateEmployeeEvaluation")]        
+        #region EvaluationCategory
+        [HttpPost("SaveOrUpdateEmployeeEvaluation")]
         public async Task<IApiResponse> SaveOrUpdateEmployeeEvaluation(SaveOrUpdateEmployeeEvaluation saveOrUpdateEmployeeEvaluation)
         {
             if (!ModelState.IsValid)
@@ -215,7 +215,7 @@ namespace ManaretAmman.Controllers.Employees
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         [HttpGet("GetEmployeeEvaluation")]
-        public async Task<IApiResponse> GetEmployeeEvaluation([FromQuery]GetEmployeeEvaluation getEmployeeEvaluation)
+        public async Task<IApiResponse> GetEmployeeEvaluation([FromQuery] GetEmployeeEvaluation getEmployeeEvaluation)
         {
             if (!ModelState.IsValid)
             {
@@ -340,7 +340,7 @@ namespace ManaretAmman.Controllers.Employees
         #region Evaluation Survey questions
 
         [HttpPost("SaveEvaluationSurveyQuestions")]
-        public async Task<IApiResponse> SaveEvaluationSurveyQuestions([FromBody]List<SaveEvaluationSurveyQuestions> LstQuestions)
+        public async Task<IApiResponse> SaveEvaluationSurveyQuestions([FromBody] List<SaveEvaluationSurveyQuestions> LstQuestions)
         {
             if (!ModelState.IsValid)
             {
@@ -765,7 +765,7 @@ namespace ManaretAmman.Controllers.Employees
         [HttpGet("GetEmployeeAllowancesMainScreen")]
         public async Task<IApiResponse> GetEmployeeAllowancesMainScreen([FromQuery] GetEmployeeAllowancesInput getEmployeeAllowancesInput)
         {
-            if (!(getEmployeeAllowancesInput.Flag==1) )
+            if (!(getEmployeeAllowancesInput.Flag == 1))
             {
 
                 var errors = new List<string>()
@@ -813,7 +813,7 @@ namespace ManaretAmman.Controllers.Employees
                 return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
             }
             var result = await _employeeService.DeleteEmployeeAllowances(deleteEmployeeAllowances);
-            if(result == -3)
+            if (result == -3)
             {
                 var errors = new List<string>()
                 {
@@ -857,7 +857,7 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<int>.Success("data has been returned succussfully", result);
         }
-       
+
         #endregion
 
         #region اقتطاعات الموظفين
@@ -977,7 +977,7 @@ namespace ManaretAmman.Controllers.Employees
         [HttpGet("GetEmployees")]
         public async Task<IApiResponse> GetEmployees([FromQuery] GetEmployeesInput getEmployeeInput)
         {
-            
+
             var result = await _employeeService.GetEmployees(getEmployeeInput);
 
             return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
@@ -1339,7 +1339,7 @@ namespace ManaretAmman.Controllers.Employees
         /// </summary>
         /// <param name="deleteAllowance_deduction"></param>
         /// <returns></returns>
-       [HttpDelete("DeleteAllowance_Deduction")]
+        [HttpDelete("DeleteAllowance_Deduction")]
         public async Task<IApiResponse> DeleteAllowance_Deduction([FromQuery] DeleteAllowance_deduction deleteAllowance_deduction)
         {
             if (!ModelState.IsValid)
@@ -1378,6 +1378,56 @@ namespace ManaretAmman.Controllers.Employees
             var result = await _employeeService.GetEmployeeAllowancesDeductionDDL(getAllowanceDeductionInput);
 
             return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+        #endregion
+
+        #region Gradual Evaluation Model (نموذج التقييم التدريجي)
+        /// <summary>
+        /// نموذج التقييم التدريجي
+        /// </summary>
+        /// <param name="getEmployeeTypeTrainingInput"></param>
+        /// <returns></returns>
+        [HttpGet("GetEmployeeTypeTraining")]        
+        public async Task<IApiResponse> GetEmployeeTypeTraining([FromQuery] GetEmployeeTypeTrainingInput getEmployeeTypeTrainingInput)
+        {
+
+            var result = await _employeeService.GetEmployeeTypeTraining(getEmployeeTypeTrainingInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+
+        [HttpPost("SaveEmployeeTypeTraining")]
+        public async Task<IApiResponse> SaveEmployeeTypeTraining([FromBody] InsertEmployeeTypeTraining insertEmployeeTypeTraining)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveEmployeeTypeTraining(insertEmployeeTypeTraining);
+
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
+
+        [HttpPost("UpdateEmployeeTypeTraining")]
+        public async Task<IApiResponse> UpdateEmployeeTypeTraining([FromBody] InsertEmployeeTypeTraining insertEmployeeTypeTraining)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.UpdateEmployeeTypeTraining(insertEmployeeTypeTraining);
+
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
         }
         #endregion
 

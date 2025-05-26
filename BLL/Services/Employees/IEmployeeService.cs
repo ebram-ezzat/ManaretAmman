@@ -93,4 +93,9 @@ public interface IEmployeeService
     Task<int> SaveorUpdateAllowance_Deduction(SaveAllowance_DeductionInput saveAllowance_DeductionInput);
     Task<int> DeleteAllowance_Deduction(DeleteAllowance_deduction deleteAllowance_deduction);
 
+    Task<List<GetEmployeeTypeTrainingResponse>> GetEmployeeTypeTraining(GetEmployeeTypeTrainingInput getEmployeeTypeTrainingInput);
+
+    Task<int> SaveEmployeeTypeTraining(InsertEmployeeTypeTraining insertEmployeeTypeTraining);
+    Task<int> UpdateEmployeeTypeTraining(InsertEmployeeTypeTraining insertEmployeeTypeTraining);
+
 }

@@ -737,7 +737,7 @@ internal class EmployeeService : IEmployeeService
             { "pProjectID", _projectProvider.GetProjectId() },
             { "pEmployeeID", getEmployeeShifts.EmployeeID ?? Convert.DBNull },
         };
-        if(getEmployeeShifts.EmployeeID != null && getEmployeeShifts.EmployeeID=="-1")
+        if (getEmployeeShifts.EmployeeID != null && getEmployeeShifts.EmployeeID == "-1")
         {
             var (resultNaga, outputValuesNaga) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeShiftsResponseNagative>("dbo.GetEmployeeShiftCheck", inputParams, null);
             return resultNaga;
@@ -857,7 +857,7 @@ internal class EmployeeService : IEmployeeService
         {
             {"prowcount","int" }
         };
-        if(getEmployeeTransactionInput.Flag.HasValue&& getEmployeeTransactionInput.Flag == 2)
+        if (getEmployeeTransactionInput.Flag.HasValue && getEmployeeTransactionInput.Flag == 2)
         {
             var (resultFlag2, outputValuesFlag2) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<EmployeeTransactionAutoResult>("dbo.GetEmployeeTransaction", inputParams, outputParams);
             return PublicHelper.CreateResultPaginationObject(getEmployeeTransactionInput, resultFlag2, outputValuesFlag2);
@@ -1364,12 +1364,12 @@ internal class EmployeeService : IEmployeeService
         int employerId = await SaveOrUpdateEmployeeMainInFormation(saveOrUpdateEmployeeAllData.SaveOrUpdateEmployeeInFormation);
         if (employerId < 1)
         {
-            if(employerId ==-3)
+            if (employerId == -3)
             {
                 throw new Exception("error on saveing employee main information data, EmployeeNumber Existed Before,Error Code -3 ");
 
             }
-            if(employerId==-4)
+            if (employerId == -4)
             {
                 throw new Exception("error on saveing employee main information data, TheContract Existed Before at same date,Error Code -4 ");
 
@@ -1418,7 +1418,7 @@ internal class EmployeeService : IEmployeeService
             throw new Exception("error on saveing employee Shifts information data");
         }
 
-      
+
         return employerId;
     }
     private async Task<int> SaveOrUpdateEmployeeMainInFormation(SaveOrUpdateEmployeeInFormation saveOrUpdateEmployeeInFormation)
@@ -1638,32 +1638,32 @@ internal class EmployeeService : IEmployeeService
     {
         int perror = 1;
 
-    
 
-            Dictionary<string, object> inputParams = new Dictionary<string, object>
+
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
                 {
                     { "pEmployeeID",EmployeeId},
                     { "pProjectID",_projectProvider.GetProjectId() },
 
                 };
 
-            Dictionary<string, object> outputParams = new Dictionary<string, object>
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
                 {
                     { "pError", "int" } // OUTPUT
                 };
 
-            var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeAttendance", inputParams, outputParams);
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync("dbo.InsertEmployeeAttendance", inputParams, outputParams);
 
-            perror = (int)outputValues["pError"];
+        perror = (int)outputValues["pError"];
 
 
-            return perror;
-       
+        return perror;
+
     }
-    private async Task<int> SaveOrUpdateEmployeeBalance(int EmployeeId,int? CurrentBalance)
+    private async Task<int> SaveOrUpdateEmployeeBalance(int EmployeeId, int? CurrentBalance)
     {
         int perror = 1;
-        if(CurrentBalance.HasValue)
+        if (CurrentBalance.HasValue)
         {
             var settingResult = await _lookupsService.GetSettings();
 
@@ -1687,7 +1687,7 @@ internal class EmployeeService : IEmployeeService
 
             perror = (int)outputValues["pError"];
         }
-       
+
 
 
         return perror;
@@ -1756,9 +1756,9 @@ internal class EmployeeService : IEmployeeService
     {
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
-            
+
             { "pProjectID", _projectProvider.GetProjectId() },
-            { "pEmployeeID", getEmployeeAdditionalInfoInput.EmployeeID },            
+            { "pEmployeeID", getEmployeeAdditionalInfoInput.EmployeeID },
 
         };
         Dictionary<string, object> outputParams = new Dictionary<string, object>
@@ -1774,7 +1774,7 @@ internal class EmployeeService : IEmployeeService
         if (saveOrUpdateEmployeeAdditionalInfo != null)
         {
             Dictionary<string, object> inputParams = new Dictionary<string, object>
-        {            
+        {
             { "pStatusID", saveOrUpdateEmployeeAdditionalInfo.StatusID ?? Convert.DBNull },
             { "pSettingID", saveOrUpdateEmployeeAdditionalInfo.SettingID ?? Convert.DBNull },
             { "pCreatedBy", _projectProvider.UserId() < 1 ? Convert.DBNull : _projectProvider.UserId() },
@@ -1878,7 +1878,7 @@ internal class EmployeeService : IEmployeeService
     {
         Dictionary<string, object> inputParams = new Dictionary<string, object>
             {
-                { "pDetailID", deleteEmployeeIncrease.DetailID },  
+                { "pDetailID", deleteEmployeeIncrease.DetailID },
                 { "pEmployeeID", deleteEmployeeIncrease.EmployeeID},
                 { "pCreatedBy", _projectProvider.UserId()},
             };
@@ -1903,7 +1903,7 @@ internal class EmployeeService : IEmployeeService
                { "pSSNAmount", saveEmployeeIncrease.SSNAmount??Convert.DBNull },
                { "pCreatedBy", _projectProvider.UserId() },
                 { "pProjectID", _projectProvider.GetProjectId() },
-                
+
             };
 
         Dictionary<string, object> outputParams = new Dictionary<string, object>
@@ -1999,9 +1999,9 @@ internal class EmployeeService : IEmployeeService
                 { "pStatusID", 0 },
                 { "pattdateint", insertAttendance.attdateint??Convert.DBNull },
                 { "pProjectID", _projectProvider.GetProjectId() },
-                { "pDatetime", insertAttendance.Datetime??Convert.DBNull }, 
+                { "pDatetime", insertAttendance.Datetime??Convert.DBNull },
                { "pCreatedBY", _projectProvider.UserId() },
-                
+
 
             };
 
@@ -2047,11 +2047,11 @@ internal class EmployeeService : IEmployeeService
     {
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
-            
+
             { "pEmployeeID", getEmployeeRatingInput.EmployeeID },
             { "pProjectID", _projectProvider.GetProjectId() },
             { "pFromDate", getEmployeeRatingInput.FromDate.DateToIntValue()??Convert.DBNull },
-            { "pToDate", getEmployeeRatingInput.ToDate.DateToIntValue() ??Convert.DBNull },           
+            { "pToDate", getEmployeeRatingInput.ToDate.DateToIntValue() ??Convert.DBNull },
             { "pLoginUserID", _projectProvider.UserId() },
             { "pFlag", getEmployeeRatingInput.Flag },
             { "pDepartmentID", getEmployeeRatingInput.DepartmentID??Convert.DBNull },
@@ -2059,7 +2059,7 @@ internal class EmployeeService : IEmployeeService
             { "pStatusID", getEmployeeRatingInput.StatusID??Convert.DBNull },
 
         };
-      
+
 
         var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeRatingOutput>("dbo.GetEmployeeEvaluation", inputParams, null);
         return result;
@@ -2086,7 +2086,7 @@ internal class EmployeeService : IEmployeeService
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
             {"pEmployeeID", getEmployeeRatingDetailsInput.EmployeeID ?? Convert.DBNull},
-            {"pEvaluationID",getEmployeeRatingDetailsInput.EvaluationID }          
+            {"pEvaluationID",getEmployeeRatingDetailsInput.EvaluationID }
 
         };
 
@@ -2140,7 +2140,7 @@ internal class EmployeeService : IEmployeeService
         Dictionary<string, object> inputParams = new Dictionary<string, object>
         {
             {"pProjectID",_projectProvider.GetProjectId() },
-            {"pStatusID",saveEmployeeRatingDetailsInput.StatusID },            
+            {"pStatusID",saveEmployeeRatingDetailsInput.StatusID },
             {"pEmployeeID",saveEmployeeRatingDetailsInput.EmployeeID?? Convert.DBNull },
             {"pEvaluationID",saveEmployeeRatingDetailsInput.EvaluationID },
             {"pEvaluationdate",saveEmployeeRatingDetailsInput.EvaluationDate.DateToIntValue() ?? Convert.DBNull },
@@ -2161,11 +2161,11 @@ internal class EmployeeService : IEmployeeService
     #endregion
 
     #region (العلاوات (اعدادات عامة
-        public async Task<int> SaveorUpdateAllowance_Deduction(SaveAllowance_DeductionInput saveAllowance_DeductionInput)
-        {
-            // Prepare input parameters from the input model
-                Dictionary<string, object> inputParams = new Dictionary<string, object>
-            {               
+    public async Task<int> SaveorUpdateAllowance_Deduction(SaveAllowance_DeductionInput saveAllowance_DeductionInput)
+    {
+        // Prepare input parameters from the input model
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+            {
                 { "pDefaultDesc", saveAllowance_DeductionInput.DefaultDesc ??Convert.DBNull },
                 { "pTypeID", saveAllowance_DeductionInput.TypeID ??Convert.DBNull },
                 { "pAmount", saveAllowance_DeductionInput.Amount ??Convert.DBNull },
@@ -2182,45 +2182,153 @@ internal class EmployeeService : IEmployeeService
                 { "pDependInCheckin", saveAllowance_DeductionInput.DependInCheckin ??Convert.DBNull }
             };
 
-                // Prepare output parameters
-                Dictionary<string, object> outputParams = new Dictionary<string, object>
+        // Prepare output parameters
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
                 {
                     { "pError", "int" },
                      { "pAllowanceID", saveAllowance_DeductionInput.AllowanceID !=null && saveAllowance_DeductionInput.AllowanceID >0 ? saveAllowance_DeductionInput.AllowanceID:"int" }
                 };
 
-            // Execute stored procedure
-            var (result, outputValues) = await _payrolLogOnlyContext
-                .GetProcedures()
-                .ExecuteStoredProcedureAsync("dbo.SaveAllowance_Deduction", inputParams, outputParams);
+        // Execute stored procedure
+        var (result, outputValues) = await _payrolLogOnlyContext
+            .GetProcedures()
+            .ExecuteStoredProcedureAsync("dbo.SaveAllowance_Deduction", inputParams, outputParams);
 
-            // Extract output parameter value
-            int pErrorValue = (int)outputValues["pError"];
-            return pErrorValue;
-         }
-       public async Task<int> DeleteAllowance_Deduction(DeleteAllowance_deduction deleteAllowance_deduction)
-        {
-            Dictionary<string, object> inputParams = new Dictionary<string, object>
+        // Extract output parameter value
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+    public async Task<int> DeleteAllowance_Deduction(DeleteAllowance_deduction deleteAllowance_deduction)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
                 {
                     { "pAllowanceID", deleteAllowance_deduction.AllowanceID  },
                      { "pProjectID", _projectProvider.GetProjectId()  },
                 };
-            // Prepare output parameters
-            Dictionary<string, object> outputParams = new Dictionary<string, object>
+        // Prepare output parameters
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
                     {
                         { "pError", "int" },
-                   
+
                     };
 
-            // Execute stored procedure
-            var (result, outputValues) = await _payrolLogOnlyContext
-                .GetProcedures()
-                .ExecuteStoredProcedureAsync("dbo.DeleteAllowance_deduction", inputParams, outputParams);
+        // Execute stored procedure
+        var (result, outputValues) = await _payrolLogOnlyContext
+            .GetProcedures()
+            .ExecuteStoredProcedureAsync("dbo.DeleteAllowance_deduction", inputParams, outputParams);
 
-            // Extract output parameter value
-            int pErrorValue = (int)outputValues["pError"];
-            return pErrorValue;
-        }
+        // Extract output parameter value
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+    #endregion
+
+    #region Gradual Evaluation Model (نموذج التقييم التدريجي)
+    public async Task<List<GetEmployeeTypeTrainingResponse>> GetEmployeeTypeTraining(GetEmployeeTypeTrainingInput getEmployeeTypeTrainingInput)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+        {
+
+            { "pEmployeeID", getEmployeeTypeTrainingInput.EmployeeID },
+            { "pProjectID", _projectProvider.GetProjectId() },
+            { "pFromDate", getEmployeeTypeTrainingInput.FromDate.DateToIntValue()??Convert.DBNull },
+            { "pToDate", getEmployeeTypeTrainingInput.ToDate.DateToIntValue() ??Convert.DBNull },
+            { "pLoginUserID", _projectProvider.UserId() },
+            { "pID", getEmployeeTypeTrainingInput.ID??Convert.DBNull },            
+
+        };
+
+
+        var (result, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<GetEmployeeTypeTrainingResponse>("dbo.GetEmployeeTypeTraining", inputParams, null);
+        return result;
+    }
+    public async Task<int> SaveEmployeeTypeTraining(InsertEmployeeTypeTraining insertEmployeeTypeTraining)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+    {
+        { "pID", insertEmployeeTypeTraining.ID ?? Convert.DBNull },
+        { "pProjectID", _projectProvider.GetProjectId()},
+        { "pTypeID", insertEmployeeTypeTraining.TypeID ?? Convert.DBNull },
+        { "pDocNumber", insertEmployeeTypeTraining.DocNumber ?? Convert.DBNull },
+        { "pRevisionNumber", insertEmployeeTypeTraining.RevisionNumber ?? Convert.DBNull },
+        { "pIssueDate", insertEmployeeTypeTraining.IssueDate ?? Convert.DBNull },
+        { "pEffectiveDate", insertEmployeeTypeTraining.EffectiveDate ?? Convert.DBNull },
+        { "pRevisionDate", insertEmployeeTypeTraining.RevisionDate ?? Convert.DBNull },
+        { "pExternalTrainingSubject", insertEmployeeTypeTraining.ExternalTrainingSubject ?? Convert.DBNull },
+        { "pexpectedcost", insertEmployeeTypeTraining.ExpectedCost ?? Convert.DBNull },
+        { "pJustificationforrequest", insertEmployeeTypeTraining.JustificationForRequest ?? Convert.DBNull },
+        { "pDepartmentheadcomments", insertEmployeeTypeTraining.DepartmentHeadComments ?? Convert.DBNull },
+        { "pHRcomments", insertEmployeeTypeTraining.HRComments ?? Convert.DBNull },
+        { "pTopManagementcomments", insertEmployeeTypeTraining.TopManagementComments ?? Convert.DBNull },
+        { "pRejectReason", insertEmployeeTypeTraining.RejectReason ?? Convert.DBNull },
+        { "pNotes", insertEmployeeTypeTraining.Notes ?? Convert.DBNull },
+        { "pTraininglocation", insertEmployeeTypeTraining.TrainingLocation ?? Convert.DBNull },
+        { "pTrainingperiod", insertEmployeeTypeTraining.TrainingPeriod ?? Convert.DBNull },
+        { "pTrainingcompany", insertEmployeeTypeTraining.TrainingCompany ?? Convert.DBNull },
+        { "pTrainingobjective", insertEmployeeTypeTraining.TrainingObjective ?? Convert.DBNull },
+        { "pStatusID", insertEmployeeTypeTraining.StatusID ?? Convert.DBNull },
+        { "pApprovalStatusID", insertEmployeeTypeTraining.ApprovalStatusID ?? Convert.DBNull },
+        { "pCreatedBy", _projectProvider.UserId() },
+        { "pTrainerName", insertEmployeeTypeTraining.TrainerName ?? Convert.DBNull },
+        { "pTrainingTime", insertEmployeeTypeTraining.TrainingTime ?? Convert.DBNull }
+    };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+    {
+        { "pError", "int" }
+    };
+
+        var (result, outputValues) = await _payrolLogOnlyContext
+            .GetProcedures()
+            .ExecuteStoredProcedureAsync("dbo.InsertEmployeeTypeTraining", inputParams, outputParams);
+
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+    public async Task<int> UpdateEmployeeTypeTraining(InsertEmployeeTypeTraining insertEmployeeTypeTraining)
+    {
+        Dictionary<string, object> inputParams = new Dictionary<string, object>
+    {
+        { "pID", insertEmployeeTypeTraining.ID ?? Convert.DBNull },
+        { "pProjectID", _projectProvider.GetProjectId()},
+        { "pTypeID", insertEmployeeTypeTraining.TypeID ?? Convert.DBNull },
+        { "pDocNumber", insertEmployeeTypeTraining.DocNumber ?? Convert.DBNull },
+        { "pRevisionNumber", insertEmployeeTypeTraining.RevisionNumber ?? Convert.DBNull },
+        { "pIssueDate", insertEmployeeTypeTraining.IssueDate ?? Convert.DBNull },
+        { "pEffectiveDate", insertEmployeeTypeTraining.EffectiveDate ?? Convert.DBNull },
+        { "pRevisionDate", insertEmployeeTypeTraining.RevisionDate ?? Convert.DBNull },
+        { "pExternalTrainingSubject", insertEmployeeTypeTraining.ExternalTrainingSubject ?? Convert.DBNull },
+        { "pexpectedcost", insertEmployeeTypeTraining.ExpectedCost ?? Convert.DBNull },
+        { "pJustificationforrequest", insertEmployeeTypeTraining.JustificationForRequest ?? Convert.DBNull },
+        { "pDepartmentheadcomments", insertEmployeeTypeTraining.DepartmentHeadComments ?? Convert.DBNull },
+        { "pHRcomments", insertEmployeeTypeTraining.HRComments ?? Convert.DBNull },
+        { "pTopManagementcomments", insertEmployeeTypeTraining.TopManagementComments ?? Convert.DBNull },
+        { "pRejectReason", insertEmployeeTypeTraining.RejectReason ?? Convert.DBNull },
+        { "pNotes", insertEmployeeTypeTraining.Notes ?? Convert.DBNull },
+        { "pTraininglocation", insertEmployeeTypeTraining.TrainingLocation ?? Convert.DBNull },
+        { "pTrainingperiod", insertEmployeeTypeTraining.TrainingPeriod ?? Convert.DBNull },
+        { "pTrainingcompany", insertEmployeeTypeTraining.TrainingCompany ?? Convert.DBNull },
+        { "pTrainingobjective", insertEmployeeTypeTraining.TrainingObjective ?? Convert.DBNull },
+        { "pStatusID", insertEmployeeTypeTraining.StatusID ?? Convert.DBNull },
+        { "pApprovalStatusID", insertEmployeeTypeTraining.ApprovalStatusID ?? Convert.DBNull },
+        { "pCreatedBy", _projectProvider.UserId() },
+        { "pTrainerName", insertEmployeeTypeTraining.TrainerName ?? Convert.DBNull },
+        { "pTrainingTime", insertEmployeeTypeTraining.TrainingTime ?? Convert.DBNull }
+    };
+
+        Dictionary<string, object> outputParams = new Dictionary<string, object>
+    {
+        { "pError", "int" }
+    };
+
+        var (result, outputValues) = await _payrolLogOnlyContext
+            .GetProcedures()
+            .ExecuteStoredProcedureAsync("dbo.UpdateEmployeeTypeTraining", inputParams, outputParams);
+
+        int pErrorValue = (int)outputValues["pError"];
+        return pErrorValue;
+    }
+
     #endregion
 }
 
