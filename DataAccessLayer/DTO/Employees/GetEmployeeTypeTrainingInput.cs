@@ -26,7 +26,7 @@ namespace DataAccessLayer.DTO.Employees
         public DateTime? EffectiveDate { get; set; }
         public DateTime? RevisionDate { get; set; }
         public string ExternalTrainingSubject { get; set; }
-        public decimal? ExpectedCost { get; set; }
+        public string ExpectedCost { get; set; }
         public string JustificationForRequest { get; set; }
         public string DepartmentHeadComments { get; set; }
         public string HRComments { get; set; }
@@ -37,14 +37,14 @@ namespace DataAccessLayer.DTO.Employees
         public string TrainingPeriod { get; set; }
         public string TrainingCompany { get; set; }
         public string TrainingObjective { get; set; }
-        public int StatusID { get; set; }
-        public int ApprovalStatusID { get; set; }
-        public string CreatedBy { get; set; }
+        public int? StatusID { get; set; }
+        public int? ApprovalStatusID { get; set; }
+        public int? CreatedBy { get; set; }
         public DateTime? CreationDate { get; set; }
-        public string ModifiedBy { get; set; }
+        public int? ModifiedBy { get; set; }
         public DateTime? ModificationDate { get; set; }
         public string TrainerName { get; set; }
-        public string TrainingTime { get; set; }
+        public int? TrainingTime { get; set; }
         public int? ShowEmployeeComment { get; set; } = 1;
         public int? EnableEmployeeComment { get; set; } = 1;
         public int? ShowHRComment { get; set; } = 1;

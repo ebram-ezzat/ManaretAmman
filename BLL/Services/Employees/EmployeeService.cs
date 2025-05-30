@@ -2248,6 +2248,7 @@ internal class EmployeeService : IEmployeeService
     {
         { "pID", insertEmployeeTypeTraining.ID ?? Convert.DBNull },
         { "pProjectID", _projectProvider.GetProjectId()},
+        { "pEmployeeID", insertEmployeeTypeTraining.EmployeeID},
         { "pTypeID", insertEmployeeTypeTraining.TypeID ?? Convert.DBNull },
         { "pDocNumber", insertEmployeeTypeTraining.DocNumber ?? Convert.DBNull },
         { "pRevisionNumber", insertEmployeeTypeTraining.RevisionNumber ?? Convert.DBNull },
@@ -2291,6 +2292,7 @@ internal class EmployeeService : IEmployeeService
     {
         { "pID", insertEmployeeTypeTraining.ID ?? Convert.DBNull },
         { "pProjectID", _projectProvider.GetProjectId()},
+        { "pEmployeeID", insertEmployeeTypeTraining.EmployeeID},
         { "pTypeID", insertEmployeeTypeTraining.TypeID ?? Convert.DBNull },
         { "pDocNumber", insertEmployeeTypeTraining.DocNumber ?? Convert.DBNull },
         { "pRevisionNumber", insertEmployeeTypeTraining.RevisionNumber ?? Convert.DBNull },
