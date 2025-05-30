@@ -1391,6 +1391,7 @@ namespace ManaretAmman.Controllers.Employees
         public async Task<IApiResponse> GetEmployeeTypeTraining([FromQuery] GetEmployeeTypeTrainingInput getEmployeeTypeTrainingInput)
         {
 
+            
             var result = await _employeeService.GetEmployeeTypeTraining(getEmployeeTypeTrainingInput);
 
             return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);

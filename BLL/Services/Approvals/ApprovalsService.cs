@@ -173,8 +173,9 @@ namespace BusinessLogicLayer.Services.Approvals
                 { "pPageSize", inputModel.PageSize },
                 { "pLoginUserID", _userId },
                 { "pLanguageID", inputModel.LanguageID==0?1:inputModel.LanguageID},
-                { "pemployeeapprovalid" ,inputModel.ApprovalID }
-        
+                { "pemployeeapprovalid" ,inputModel.ApprovalID },
+                { "pOnlyApprovals", inputModel.OnlyApprovals==null?null:inputModel.OnlyApprovals },
+
             };
 
             var outputParameters = new Dictionary<string, object>

@@ -22,9 +22,18 @@ namespace DataAccessLayer.Models
 
             if (typeof(T).GetProperties().Any())
             {
+                try
+                {
+                    return await db.Set<T>().FromSqlRaw(sql, parameters).ToListAsync(cancellationToken);
+                }
+                catch (Exception excep)
+                {
+
+                    throw;
+                }
                // return await db.Database.SqlQueryRaw<T>(sql, parameters).ToListAsync();
                // string sqlQuery =  db.Set<T>().FromSqlRaw(sql, parameters).ToQueryString();
-                return await db.Set<T>().FromSqlRaw(sql, parameters).ToListAsync(cancellationToken);
+               
             }
             else
             {

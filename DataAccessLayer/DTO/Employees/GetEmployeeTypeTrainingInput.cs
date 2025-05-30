@@ -16,6 +16,8 @@ namespace DataAccessLayer.DTO.Employees
     public class GetEmployeeTypeTrainingResponse
     {
         public int? ID { get; set; }
+        public int? EmployeeID { get; set; }
+        public string EmployeeName { get; set; }
         public int? ProjectID { get; set; }
         public int? TypeID { get; set; }
         public string DocNumber { get; set; }

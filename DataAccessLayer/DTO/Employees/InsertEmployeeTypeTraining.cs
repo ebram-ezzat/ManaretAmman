@@ -8,7 +8,8 @@ namespace DataAccessLayer.DTO.Employees
 {
     public class InsertEmployeeTypeTraining
     {
-        public int? ID { get; set; }        
+        public int? ID { get; set; }
+        public int? EmployeeID { get; set; }
         public int? TypeID { get; set; }
         public string DocNumber { get; set; }
         public string RevisionNumber { get; set; }

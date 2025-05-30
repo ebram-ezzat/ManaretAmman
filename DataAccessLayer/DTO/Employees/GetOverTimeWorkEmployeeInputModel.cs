@@ -16,6 +16,6 @@ namespace DataAccessLayer.DTO.Employees
         public int? LoginUserID { get; set; }
         public int? LanguageID { get; set; }=1 ;
         public int? ApprovalID { get; set; }
-
+        public int? OnlyApprovals { get; set; } 
     }
 }
