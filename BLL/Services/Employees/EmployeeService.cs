@@ -2313,7 +2313,7 @@ internal class EmployeeService : IEmployeeService
         { "pTrainingobjective", insertEmployeeTypeTraining.TrainingObjective ?? Convert.DBNull },
         { "pStatusID", insertEmployeeTypeTraining.StatusID ?? Convert.DBNull },
         { "pApprovalStatusID", insertEmployeeTypeTraining.ApprovalStatusID ?? Convert.DBNull },
-        { "pCreatedBy", _projectProvider.UserId() },
+        { "pModifiedBy", _projectProvider.UserId() },
         { "pTrainerName", insertEmployeeTypeTraining.TrainerName ?? Convert.DBNull },
         { "pTrainingTime", insertEmployeeTypeTraining.TrainingTime ?? Convert.DBNull }
     };
