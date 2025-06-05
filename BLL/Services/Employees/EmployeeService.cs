@@ -2234,8 +2234,8 @@ internal class EmployeeService : IEmployeeService
             { "pFromDate", getEmployeeTypeTrainingInput.FromDate.DateToIntValue()??Convert.DBNull },
             { "pToDate", getEmployeeTypeTrainingInput.ToDate.DateToIntValue() ??Convert.DBNull },
             { "pLoginUserID", _projectProvider.UserId() },
-            { "pID", getEmployeeTypeTrainingInput.ID??Convert.DBNull },            
-
+            { "pID", getEmployeeTypeTrainingInput.ID??Convert.DBNull },
+            { "pTypeID", getEmployeeTypeTrainingInput.TypeID??Convert.DBNull },
         };
 
 
