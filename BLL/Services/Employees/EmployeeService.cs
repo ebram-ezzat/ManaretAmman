@@ -2271,7 +2271,8 @@ internal class EmployeeService : IEmployeeService
         { "pApprovalStatusID", insertEmployeeTypeTraining.ApprovalStatusID ?? Convert.DBNull },
         { "pCreatedBy", _projectProvider.UserId() },
         { "pTrainerName", insertEmployeeTypeTraining.TrainerName ?? Convert.DBNull },
-        { "pTrainingTime", insertEmployeeTypeTraining.TrainingTime ?? Convert.DBNull }
+        { "pTrainingTime", insertEmployeeTypeTraining.TrainingTime ?? Convert.DBNull },
+        { "pemployeeids", insertEmployeeTypeTraining.EmployeeIDs ?? Convert.DBNull }
     };
 
         Dictionary<string, object> outputParams = new Dictionary<string, object>
@@ -2315,7 +2316,8 @@ internal class EmployeeService : IEmployeeService
         { "pApprovalStatusID", insertEmployeeTypeTraining.ApprovalStatusID ?? Convert.DBNull },
         { "pModifiedBy", _projectProvider.UserId() },
         { "pTrainerName", insertEmployeeTypeTraining.TrainerName ?? Convert.DBNull },
-        { "pTrainingTime", insertEmployeeTypeTraining.TrainingTime ?? Convert.DBNull }
+        { "pTrainingTime", insertEmployeeTypeTraining.TrainingTime ?? Convert.DBNull },
+        { "pemployeeids", insertEmployeeTypeTraining.EmployeeIDs ?? Convert.DBNull }
     };
 
         Dictionary<string, object> outputParams = new Dictionary<string, object>

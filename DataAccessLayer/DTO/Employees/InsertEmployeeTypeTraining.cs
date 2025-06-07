@@ -10,6 +10,7 @@ namespace DataAccessLayer.DTO.Employees
     {
         public int? ID { get; set; }
         public int? EmployeeID { get; set; }
+        public string EmployeeIDs { get; set; }
         public int? TypeID { get; set; }
         public string DocNumber { get; set; }
         public string RevisionNumber { get; set; }
