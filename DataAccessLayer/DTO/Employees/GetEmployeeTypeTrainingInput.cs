@@ -13,6 +13,7 @@ namespace DataAccessLayer.DTO.Employees
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
         public int? TypeID { get; set; }
+        public int? Flag { get; set; } = 1;
     }
     public class GetEmployeeTypeTrainingResponse
     {

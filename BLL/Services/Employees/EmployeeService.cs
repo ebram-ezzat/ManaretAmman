@@ -2236,6 +2236,8 @@ internal class EmployeeService : IEmployeeService
             { "pLoginUserID", _projectProvider.UserId() },
             { "pID", getEmployeeTypeTrainingInput.ID??Convert.DBNull },
             { "pTypeID", getEmployeeTypeTrainingInput.TypeID??Convert.DBNull },
+            { "pflag", getEmployeeTypeTrainingInput.Flag??Convert.DBNull }
+
         };
 
 
