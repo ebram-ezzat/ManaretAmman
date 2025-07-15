@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer.Common;
 using BusinessLogicLayer.Extensions;
 using BusinessLogicLayer.Services.Auth;
+using BusinessLogicLayer.Services.FireBaseNotifications;
 using BusinessLogicLayer.Services.Lookups;
 using BusinessLogicLayer.Services.ProjectProvider;
 using DataAccessLayer.DTO.Employees;
@@ -14,11 +15,13 @@ namespace BusinessLogicLayer.Services.Notification
         private IProjectProvider _projectProvider;
         private readonly ILookupsService _lookupsService;
         private readonly PayrolLogOnlyContext _payrolLogOnlyContext;
+        private readonly IFireBaseNotification _fireBaseNotification;
         readonly IAuthService _authService;
         readonly int _userId;
         readonly int _projectId;
 
-        public NotificationsService(IProjectProvider projectProvider, ILookupsService lookupsService, PayrolLogOnlyContext payrolLogOnlyContext, IAuthService authService)
+        public NotificationsService(IProjectProvider projectProvider, ILookupsService lookupsService, PayrolLogOnlyContext payrolLogOnlyContext, IAuthService authService, IFireBaseNotification fireBaseNotification)
+
         {
             _projectProvider = projectProvider;
             _lookupsService = lookupsService;
@@ -26,6 +29,7 @@ namespace BusinessLogicLayer.Services.Notification
             _authService = authService;
             _userId = _projectProvider.UserId();
             _projectId = _projectProvider.GetProjectId();
+            _fireBaseNotification = fireBaseNotification;
         }
 
         public async Task<int?> AcceptOrRejectNotificationsAsync(AcceptOrRejectNotifcationInput model)
@@ -41,6 +45,7 @@ namespace BusinessLogicLayer.Services.Notification
 
         public async Task<object> GetNotificationsAsync(PaginationFilter<GetEmployeeNotificationInput> filter)
         {
+           // var send = await _fireBaseNotification.SendNotificationAsync("fjq9Q6I9Qq2HJQB8bm0And:APA91bG3WJdzyB-qbnobKjoy0Ma_KW3wwrB9QvRvpfYiDO9RjVO0Iwnd3d27ViiDxdfQ7LeXaVLQLtJs5FRHbYKbwMk-aiNxFp8PUWXsO8HK7T30gmWG9TY", "New Notification", "You have a new notification");
 
             //var result = await _payrolLogOnlyContext.GetProcedures()
             //            .GetRemindersAsync(_projectId, filter.FilterCriteria.EmployeeID, 1, filter.FilterCriteria.LanguageId, filter.FilterCriteria.Fromdate.DateToIntValue(),
@@ -70,7 +75,6 @@ namespace BusinessLogicLayer.Services.Notification
             };
 
             var (NotificationResponse, outputValues) = await _payrolLogOnlyContext.GetProcedures().ExecuteStoredProcedureAsync<RemiderOutput>("[dbo].[GetReminders]", inputParams, outputParams);
-
             return PublicHelper.CreateResultPaginationObject(filter.FilterCriteria, NotificationResponse, outputValues);
 
         }
