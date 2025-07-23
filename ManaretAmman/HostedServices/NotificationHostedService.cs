@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace ManaretAmman.HostedServices
 {
@@ -26,27 +27,41 @@ namespace ManaretAmman.HostedServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            using PeriodicTimer timer = new(TimeSpan.FromMinutes(DelayInMinutes));
+            while (await timer.WaitForNextTickAsync(stoppingToken))
             {
                 await GetNotificationsAsync();
-
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }
+           
         }
 
         private async Task GetNotificationsAsync()
         {
-            using var scope = _scopeFactory.CreateScope();
-            var fireBaseNotification = scope.ServiceProvider.GetRequiredService<IFireBaseNotification>();
-
-            var notifications = await fireBaseNotification.GetNotificationsForFireBaseAsync(ProjectId);
-
-            foreach (var item in notifications)
+            try
             {
-                await fireBaseNotification.SendNotificationAsync(item.Token, item.Typedesc, item.Notes);
-            }
+                var stopWatch = Stopwatch.StartNew();
+                using var scope = _scopeFactory.CreateScope();
+                var fireBaseNotification = scope.ServiceProvider.GetRequiredService<IFireBaseNotification>();
 
-            await fireBaseNotification.UpdateNotificationFireBase(notifications);
+                var notifications = await fireBaseNotification.GetNotificationsForFireBaseAsync(ProjectId);
+
+                foreach (var item in notifications)
+                {
+                    if (item.Token is not null)
+                    {
+                        var message = await fireBaseNotification.SendNotificationAsync(item.Token, item.Typedesc, item.Notes);
+                    }
+
+                }
+
+                await fireBaseNotification.UpdateNotificationFireBase(notifications);
+                stopWatch.Stop();
+            }
+            catch (Exception ex)
+            {
+
+            }
+       
         }
     }
 }
