@@ -11,6 +11,7 @@ namespace BusinessLogicLayer.Services.Notification
         public Task<int?> AcceptOrRejectNotificationsAsync(AcceptOrRejectNotifcationInput model);
         Task<int> UpdateNotification(int NotificationId);
 
+      
 
 
     }

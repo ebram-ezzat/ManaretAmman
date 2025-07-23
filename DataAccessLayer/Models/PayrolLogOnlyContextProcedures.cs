@@ -154,6 +154,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<UpdateEmployeeAttendance2Result>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeePaperResponse>().HasNoKey().ToView(null);
             modelBuilder.Entity<RemiderOutput>().HasNoKey().ToView(null);
+            modelBuilder.Entity<RemiderOutputNotifications>().HasNoKey().ToView(null);
             modelBuilder.Entity<EmployeeShiftDTO>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeSalaryReportResponse>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeAttendanceDailyResponse>().HasNoKey().ToView(null);

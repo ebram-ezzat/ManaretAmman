@@ -20,4 +20,15 @@
         public int? PrivillgeType { get; set; }
         public int EmployeeID { get; set; }
     }
+    public class RemiderOutputNotifications
+    {
+        public int ID { get; set; }
+        public int Date { get; set; }
+        public int? TypeID { get; set; }
+        public string Notes { get; set; }
+        
+        public string Token { get; set; }
+        public string Typedesc { get; set; }
+    }
+
 }

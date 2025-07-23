@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DataAccessLayer.DTO.Permissions;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using ManaretAmman.HostedServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,6 +64,7 @@ for (int i = 0; i < TypesToRegister.Count; i++)
     if (itype != null)
         builder.Services.AddScoped(itype, TypesToRegister[i]);
 }
+builder.Services.AddHostedService<NotificationHostedService>();
 
 #endregion
 
