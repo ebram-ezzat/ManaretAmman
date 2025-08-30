@@ -97,5 +97,8 @@ public interface IEmployeeService
 
     Task<int> SaveEmployeeTypeTraining(InsertEmployeeTypeTraining insertEmployeeTypeTraining);
     Task<int> UpdateEmployeeTypeTraining(InsertEmployeeTypeTraining insertEmployeeTypeTraining);
+    Task<List<GetATT_ShiftsOutput>> GetATT_Shifts(GetATT_ShiftsInput getATT_ShiftsInput);
+    Task<int> SaveorUpdateATT_Shifts(ATT_SaveShift aTT_SaveShift);
+    Task<int> DeleteATT_Shifts(DeleteATT_Shifts deleteATT_Shifts);
 
 }

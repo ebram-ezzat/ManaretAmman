@@ -1431,6 +1431,54 @@ namespace ManaretAmman.Controllers.Employees
             return ApiResponse<int>.Success("data has been saved succussfully", result);
         }
         #endregion
+        #region Att_Shifts (الشفتات)
+        /// <summary>
+        /// الشفتات
+        /// </summary>
+        /// <param name="getATT_ShiftsInput"></param>
+        /// <returns></returns>
+        [HttpGet("GetATT_Shifts")]
+        public async Task<IApiResponse> GetATT_Shifts([FromQuery] GetATT_ShiftsInput getATT_ShiftsInput)
+        {
+
+
+            var result = await _employeeService.GetATT_Shifts(getATT_ShiftsInput);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+        [HttpPost("SaveorUpdateATT_Shifts")]
+        public async Task<IApiResponse> SaveorUpdateATT_Shifts([FromBody] ATT_SaveShift aTT_SaveShift)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveorUpdateATT_Shifts(aTT_SaveShift);
+
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
+        [HttpDelete("DeleteATT_Shifts")]
+        public async Task<IApiResponse> DeleteATT_Shifts([FromQuery] DeleteATT_Shifts deleteATT_Shifts)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.DeleteATT_Shifts(deleteATT_Shifts);
+
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
+        #endregion
 
     }
 }
