@@ -22,4 +22,15 @@ namespace DataAccessLayer.DTO.EmployeeShifts
         public DateTime? CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }
     }
+    public class GetATT_ShiftsDetailsOutput
+    {
+        public int? ShiftID { get; set; }
+        public int? DetailID { get; set; }
+        public int? IsDependinSalary { get; set; }
+        public int? IsChecked { get; set; }
+        public string FieldValue { get; set; }
+
+
+    }
+
 }

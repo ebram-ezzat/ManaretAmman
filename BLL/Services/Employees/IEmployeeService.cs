@@ -100,5 +100,7 @@ public interface IEmployeeService
     Task<List<GetATT_ShiftsOutput>> GetATT_Shifts(GetATT_ShiftsInput getATT_ShiftsInput);
     Task<int> SaveorUpdateATT_Shifts(ATT_SaveShift aTT_SaveShift);
     Task<int> DeleteATT_Shifts(DeleteATT_Shifts deleteATT_Shifts);
+    Task<List<GetATT_ShiftsDetailsOutput>> GetATT_ShiftsDetails(int ShiftiD);
+    Task<int> SaveATT_ShiftsDetails(List<ATT_SaveShiftDetails> aTT_SaveShiftDetails);
 
 }

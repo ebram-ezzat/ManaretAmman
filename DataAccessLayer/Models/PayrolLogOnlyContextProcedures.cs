@@ -205,6 +205,7 @@ namespace DataAccessLayer.Models
             modelBuilder.Entity<EmployeeAttendanceTreatmentOutputFlag9>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetEmployeeTypeTrainingResponse>().HasNoKey().ToView(null);
             modelBuilder.Entity<GetATT_ShiftsOutput>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GetATT_ShiftsDetailsOutput>().HasNoKey().ToView(null);
 
 
 

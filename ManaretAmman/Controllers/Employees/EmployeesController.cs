@@ -1478,6 +1478,33 @@ namespace ManaretAmman.Controllers.Employees
 
             return ApiResponse<int>.Success("data has been saved succussfully", result);
         }
+        [HttpGet("GetATT_ShiftDetails")]
+        public async Task<IApiResponse> GetATT_ShiftDetails(int ShiftID)
+        {
+            if (ShiftID <= 0)
+            {
+                return ApiResponse.Failure(" An unexpected error on validation occurred", new string[] { "ShiftId Required" });
+            }
+                var result = await _employeeService.GetATT_ShiftsDetails(ShiftID);
+
+            return ApiResponse<dynamic>.Success("data has been retrieved succussfully", result);
+        }
+        [HttpPost("SaveATT_ShiftDetails")]
+        public async Task<IApiResponse> SaveATT_ShiftDetails([FromBody] List<ATT_SaveShiftDetails> aTT_SaveShiftDetails)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Model validation failed based on data annotations including your custom validation
+                // Retrieve error messages
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                return ApiResponse.Failure(" An unexpected error on validation occurred", errors.ToArray());
+            }
+            var result = await _employeeService.SaveATT_ShiftsDetails(aTT_SaveShiftDetails);
+
+            return ApiResponse<int>.Success("data has been saved succussfully", result);
+        }
         #endregion
 
     }
